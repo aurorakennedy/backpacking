@@ -8,6 +8,7 @@ function App() {
         <div className="App">
             <h1 id='title'> BP-Advisor</h1>
             <h2 id='subTitle'>Share your backpacking routes</h2>
+            <LogInBox />
         </div>
     );
 }

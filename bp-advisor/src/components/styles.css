@@ -1,0 +1,82 @@
+.logInBox {
+    height: 400px;
+    width: 400px;
+    background-color: #ECECEC;
+    border-radius: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+#logInBoxTitle {
+    font-family: "Knewave";
+    font-size: 23px;
+    position: absolute;
+    margin-top: 70px;
+    left: 0;
+    margin-left: 50px;
+}
+
+#inputFieldsBox {
+    position: absolute;
+    margin: auto;
+    margin-top: 110px;
+    height: 230px;
+    left: 0;
+    margin-left: 50px;
+    width: 300px;
+}
+
+#emailInputLabel {
+    float: left;
+    margin-top: 50px;
+    font-size: 18px;
+}
+
+#emailInput {
+    float: right;
+    margin-top: 50px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+#passwordInputLabel {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    font-size: 18px;
+}
+
+#passwordInput {
+    float: right;
+    margin-top: 30px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+#submitButton {
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 170px;
+    left: 100px;
+    width: 120px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #A1C88E;
+    color: white;
+}
+
+#signUpButton {
+    position: absolute;
+    bottom: 20px;
+    color: #4AA8FF;
+    text-decoration: underline;
+}
