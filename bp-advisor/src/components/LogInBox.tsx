@@ -10,14 +10,14 @@ import "./styles.css";
 const LogInBox = () => {
 
     return (
-        <div className="logInBox">
+        <div className='logInBox'>
             <form>
                 <h2 id='logInBoxTitle'> Welcome back, backpacker!</h2>
                 <div id='inputFieldsBox'>
                     <label id='emailInputLabel'>E-mail</label>
-                    <input id='emailInput' type="input" placeholder='   ...'></input>
+                    <input id='emailInput' type='input' placeholder='   ...'></input>
                     <label id='passwordInputLabel'>Password</label>
-                    <input id='passwordInput' type="input" placeholder='   ...'></input>
+                    <input id='passwordInput' type='input' placeholder='   ...'></input>
                     <button id='submitButton' type='submit'> Log in</button>
                 </div>
             </form>
