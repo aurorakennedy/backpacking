@@ -75,3 +75,11 @@ CREATE TABLE ads (
   ad_start_date DATE,
   link VARCHAR(255) NOT NULL
 );
+
+
+INSERT INTO User (email, password, username)
+VALUES ('mod1@backpacking.com', 'password', 'moderator1');
+
+INSERT INTO Moderator (email)
+VALUES ('mod1@backpacking.com');
+
