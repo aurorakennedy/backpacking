@@ -33,3 +33,5 @@ import "./signUpBoxStyle.css";
 }
 
 export default SingUpBox
+
+
