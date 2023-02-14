@@ -1,5 +1,6 @@
 import React from 'react';
 import "./styles.css";
+import { Link } from 'react-router-dom';
 
 /**
  * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
@@ -21,7 +22,10 @@ const LogInBox = () => {
                     <button id='submitButton' type='submit'> Log in</button>
                 </div>
             </form>
-            <p id='signUpButton'>Sign up</p>
+           {/*  <p id='signUpButton'>Sign up</p> */}
+            <Link id='signUpButton' to="/signUp">
+                    Sign Up 
+                </Link>
         </div>
     )
 }
