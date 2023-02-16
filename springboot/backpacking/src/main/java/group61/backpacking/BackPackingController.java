@@ -22,24 +22,30 @@ public class BackPackingController {
     public List<User> saveUser(User inUser){
         return null;
         //return rep.saveUser(inUser);
+        //return rep.findAll(User);
+
     }
 
     @GetMapping("/load")
     public List<User> loadUsers(){
         return null;
         //return rep.loadUsers();
+        
+
     }
 
     @GetMapping("/delete")
     public void deleteUser(User inUser){
         //rep.deleteUser(inUser);
+
     }
+
 
     // Suggestions:
 
     @PostMapping("/register")
     public void register(@RequestBody User user) {
-
+        //User savedUser = rep.save(user);  
     }
 
     @PostMapping("/login")
@@ -50,7 +56,7 @@ public class BackPackingController {
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id) {
-
+        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
     }
 
     @PutMapping("/users/{id}")
@@ -60,6 +66,7 @@ public class BackPackingController {
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable int id) {
+        //return rep.findOne(id); 
         return null;
     }
 

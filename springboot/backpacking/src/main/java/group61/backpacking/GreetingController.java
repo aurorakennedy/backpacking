@@ -12,7 +12,11 @@ public class GreetingController {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 
+	//The @GetMapping annotation ensures that HTTP GET requests to /greeting are mapped to the greeting() method.
+	//HTTP verbs (e.g. @PostMapping for POST)
+	//or... @RequestMapping(method=GET)
 	@GetMapping("/greeting")
+	//
 	public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return new Greeting(counter.incrementAndGet(), String.format(template, name));
 	}
