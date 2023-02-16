@@ -26,6 +26,9 @@ public class BackPackingController {
 
     }
 
+    
+
+    
     @GetMapping("/load")
     public List<User> loadUsers(){
         return null;
@@ -33,6 +36,7 @@ public class BackPackingController {
         
 
     }
+    
 
     @GetMapping("/delete")
     public void deleteUser(User inUser){

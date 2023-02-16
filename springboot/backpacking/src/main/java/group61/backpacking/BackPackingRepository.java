@@ -1,5 +1,7 @@
 package group61.backpacking;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,35 +11,47 @@ import org.springframework.jdbc.core.RowMapper;
 @Repository
 public class BackPackingRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate db;
 
-    public BackPackingRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    // public BackPackingRepository(JdbcTemplate jdbcTemplate) {
+    //     this.jdbcTemplate = jdbcTemplate;
+    // }
 
-    public void insertUser(User user) {
+    public User saveUser(User user) throws RuntimeException {
         try {
-        String query = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
-        jdbcTemplate.update(query, user.getUserName(), user.getPassword(), user.getEmail());
+            String sql = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
+            db.update(sql, user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");
+            
         }
+        try {
+            return loadUser(user.getEmail());
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+        
+        }
+        
     }
 
-    public User getUserByEmail(String email) {
+    public User loadUser(String email) throws RuntimeException {
         try {
-            String query = "SELECT * FROM User WHERE email = ?";
+
+            String sql = "SELECT * FROM User WHERE email = ?";
             RowMapper<User> rowMapper = new UserRowMapper();
-            return jdbcTemplate.queryForObject(query, rowMapper, email);
+            
+            return db.queryForObject(sql, rowMapper, email);
+    
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + email + " not found");
         }
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(User user) throws RuntimeException{
         try {
-            String query = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
-            jdbcTemplate.update(query, user.getUserName(), user.getPassword(), user.getEmail());
+            String sql = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
+            db.update(sql, user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
