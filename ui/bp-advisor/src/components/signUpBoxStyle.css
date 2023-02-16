@@ -1,12 +1,11 @@
-.signUpBox {
+#signUpBox {
     height: 500px;
-    width: 600px;
+    width: 400px;
     background-color: #ECECEC;
     border-radius: 10%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1rem;
     position: relative;
 }
 
@@ -14,90 +13,88 @@
     font-family: "Knewave";
     font-size: 23px;
     position: absolute;
-    margin-top: 40px;
+    top: 70px;
     left: 0;
-    margin-left: 170px;
+    margin-left: 90px;
 }
 
-#inputFieldsBox {
-    position: absolute;
-    margin: auto;
-    margin-top: 110px;
-    height: 230px;
-    left: 0;
-    margin-left: 140px;
-    width: 300px;
-}
 
 #nameInputLabel {
-    float: left;
-    margin-top: 10px;
+    position: absolute;
+    top: 160px;
+    left: 50px;
     font-size: 18px;
 }
 
 #nameInput {
+    position: absolute;
     float: right;
-    margin-top: 10px;
+    top: 160px;
+    right: 50px;
     width: 195px;
     height: 20px;
     border-radius: 10px;
     border: none;
 }
 
-#emailInputLabel {
+#emailSignUpInputLabel {
     position: absolute;
-    top: 70px;
-    left: 0;
+    top: 220px;
+    left: 50px;
     font-size: 18px;
 }
 
-#emailInput {
-    float: right;
-    margin-top: 40px;
+#emailSingUpInput {
+    position: absolute;
+    top: 220px;
+    right: 50px;
     width: 195px;
     height: 20px;
     border-radius: 10px;
     border: none;
 }
 
-#passwordInputLabel {
+#passwordSignUpInputLabel {
     position: absolute;
-    top: 130px;
-    left: 0;
+    top: 280px;
+    left: 50px;
     font-size: 18px;
 }
 
-#passwordInput {
-    float: right;
-    margin-top: 30px;
+#passwordSignUpInput {
+    position: absolute;
+    top: 280px;
+    right: 50px;
     width: 195px;
     height: 20px;
     border-radius: 10px;
     border: none;
 }
 
-#countrieInputLabel {
+#repeatPasswordSignUpInputLabel {
     position: absolute;
-    top: 185px;
-    left: 0;
+    top: 340px;
+    left: 50px;
     font-size: 18px;
 }
 
-#countrieInput {
-    float: right;
-    margin-top: 40px;
+#repeatPasswordSignUpInput {
+    position: absolute;
+    top: 340px;
+    right: 50px;
     width: 195px;
     height: 20px;
     border-radius: 10px;
     border: none;
 }
+
 
 #submitButton {
     font-size: 20px;
     font-weight: bold;
     position: absolute;
-    top: 300px;
-    left: 100px;
+    top: 400px;
+    left: 140px;
     width: 120px;
     height: 40px;
     border-radius: 10px;
@@ -106,3 +103,10 @@
     color: white;
 }
 
+#backToLogInButton {
+    position: absolute;
+    bottom: 20px;
+    left: 147px;
+    color: #4AA8FF;
+    text-decoration: underline;
+}

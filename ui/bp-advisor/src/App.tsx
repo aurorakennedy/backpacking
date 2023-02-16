@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
-import './components/logInBoxStyle.css'
-import './components/signUpBoxStyle.css'
-import { BrowserRouter as Router, Routes, Link, Route } from 'react-router-dom';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 //Switch er Routes 
 
 import LogInBox from './components/LogInBox';
@@ -25,6 +24,8 @@ function App() {
 
 
                     <Route path='/signUp' element={<SingUpBox />} />
+
+                    <Route path='/logIn' element={<LogInBox />} />
 
 
                 </Routes>
