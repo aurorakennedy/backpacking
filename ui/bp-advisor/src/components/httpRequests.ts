@@ -63,4 +63,15 @@ async function deleteUser(userId: number): Promise<void> {
     if (!response.ok) {
         throw new Error('Failed to delete user');
     }
+
 }
+
+const httpRequests = {
+    getUser,
+    register,
+    login,
+    updateUser,
+    deleteUser
+}
+
+export default httpRequests;
