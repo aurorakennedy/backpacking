@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Link, Route} from 'react-router-dom';
+import './components/logInBoxStyle.css'
+import './components/signUpBoxStyle.css'
+import { BrowserRouter as Router, Routes, Link, Route } from 'react-router-dom';
 //Switch er Routes 
 
 import LogInBox from './components/LogInBox';
@@ -13,23 +15,23 @@ function App() {
                 <h1 id='title'> BP-Advisor</h1>
                 <h2 id='subTitle'>Share your backpacking routes</h2>
                 {/*{ <LogInBox /> }*/}
-            {/*    { <SingUpBox /> } */}
+                {/*    { <SingUpBox /> } */}
                 <Routes>
-                {/*   <Route path='/'>
+                    {/*   <Route path='/'>
                         <LogInBox />
                     </Route> */}
 
-                    <Route path='/' element = {<LogInBox />} />
+                    <Route path='/' element={<LogInBox />} />
 
 
-                    <Route path='/signUp' element = {<SingUpBox />} />
-                        
+                    <Route path='/signUp' element={<SingUpBox />} />
+
 
                 </Routes>
-                
-    
+
+
             </div>
-            
+
         </Router>
     );
 }
