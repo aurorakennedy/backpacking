@@ -19,20 +19,31 @@ public class BackPackingController {
     private BackPackingRepository rep;
 
     @PostMapping("/save")
-    public List<User> saveUser(User inUser){
-        return null;
-        //return rep.saveUser(inUser);
+    public User saveUser(User inUser){
+        try {
+            return rep.saveUser(inUser);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    
+
+    
     @GetMapping("/load")
-    public List<User> loadUsers(){
-        return null;
-        //return rep.loadUsers();
+    public User loadUser(String email)  {
+        try {
+            return rep.loadUser(email);
+        } catch (Exception e) {
+            return null;
+        }
     }
+    
 
     @GetMapping("/delete")
     public void deleteUser(User inUser){
-        //rep.deleteUser(inUser);
+        rep.deleteUser(inUser);
     }
 
     // Suggestions:
