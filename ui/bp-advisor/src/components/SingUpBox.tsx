@@ -1,32 +1,37 @@
 import React from 'react';
-import "./signUpBoxStyle.css";
+import './signUpBoxStyle.css';
+import { Link } from 'react-router-dom';
 
 /**
- * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
- * a submit button, and a sign up button.
+ * Component for BP-Advisor signup box, including a title, username, e-mail and password input fields, 
+ * a sign up button, and a back to login button.
  * 
- * @returns HTML-code for a BP-Advisor login box.
+ * @returns HTML-code for a BP-Advisor signup box.
  */
  const SingUpBox = () => {
 
     return (
-        <div className="signUpBox">
+        <div id='signUpBox'>
             <form>
-                <h2 id='signUpBoxTitle'> Become a BP - Advisor!</h2>
-                <div id='inputFieldsBox'>
-                <label id='nameInputLabel'>Name</label>
+                <h2 id='signUpBoxTitle'> Become a BP-Advisor!</h2>
+                
+                <label id='nameInputLabel'>Username</label>
                     <input id='nameInput' type="input" placeholder='   ...'></input>
                     
 
-                    <label id='emailInputLabel'>E-mail</label>
-                    <input id='emailInput' type="input" placeholder='   ...'></input>
-                    <label id='passwordInputLabel'>Password</label>
-                    <input id='passwordInput' type="input" placeholder='   ...'></input>
+                    <label id='emailSignUpInputLabel'>E-mail</label>
+                    <input id='emailSingUpInput' type='email' placeholder='   ...'></input>
+                    <label id='passwordSignUpInputLabel'>Password</label>
+                    <input id='passwordSignUpInput' type='password' placeholder='   ...'></input>
 
-                    <label id='countrieInputLabel'>Countrie</label>
-                    <input id='countrieInput' type="input" placeholder='   ...'></input>
+                    <label id='repeatPasswordSignUpInputLabel'> Repeat </label>
+                    <input id='repeatPasswordSignUpInput' type='password' placeholder='   ...'></input>
+
                     <button id='submitButton' type='submit'> Sign Up</button>
-                </div>
+                
+                    <Link id='backToLogInButton' to='/logIn'>
+                        Back to Log In 
+                    </Link>
             </form>
         </div>
     )
