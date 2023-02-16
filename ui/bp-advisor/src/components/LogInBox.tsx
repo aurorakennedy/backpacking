@@ -1,6 +1,7 @@
 import React from 'react';
 import './logInBoxStyle.css';
 import { Link } from 'react-router-dom';
+import httpRequests from './httpRequests';
 
 /**
  * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
@@ -12,7 +13,7 @@ const LogInBox = () => {
 
     return (
         <div id='logInBox'>
-            <form>
+            <form onSubmit={submitLogInInfo}>
                 <h2 id='logInBoxTitle'> Welcome back, backpacker!</h2>
                 <label id='emailInputLabel'>E-mail</label>
                 <input id='emailInput' type='email' placeholder='   ...'></input>
@@ -26,6 +27,25 @@ const LogInBox = () => {
             </Link>
         </div>
     )
+
+    function submitLogInInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+        const emailInputValue: string = (document.getElementById('emailInput') as HTMLInputElement).value;
+        const passwordInputValue: string = (document.getElementById('passwordInput') as HTMLInputElement).value;
+
+        //TODO: Validation
+
+        //TODO: 
+        /*
+        try {
+            httpRequests.login();        
+            //TODO: New page must open if login successfull            
+        } catch (error) {
+            //TODO: Error handeling
+        }
+         */
+
+
+    }
 }
 
 export default LogInBox
