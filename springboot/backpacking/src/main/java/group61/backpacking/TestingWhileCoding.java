@@ -12,18 +12,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 public class TestingWhileCoding {
-    @Autowired
-    private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     
     
-    public TestingWhileCoding() {
-        
+    public TestingWhileCoding() { 
     }
 
     
@@ -76,45 +69,92 @@ public class TestingWhileCoding {
         
     }
 
+    // public User mapUserFromResultSet(ResultSet resultSet) throws SQLException {
+    //     User user = new User(null, null , null);
+    //     while (resultSet.next()) {
+    //         user.setEmail(resultSet.getString("email"));
+    //         user.setPassword(resultSet.getString("password"));
+    //         user.setUserName(resultSet.getString("username"));
+    //     }
+    //     return user;
+    // }
 
-    public User loadUser1(String email) throws RuntimeException {
-        
-        try (Connection conn = connectToDB()){
 
-            String sqlQuery = "SELECT * FROM User WHERE email = ?";
-            RowMapper<User> rowMapper = new UserRowMapper();
-            
-            return jdbcTemplate.queryForObject(sqlQuery, rowMapper, email);
     
-        } catch (SQLException e) {
-            throw new UserNotFoundException("User with email " + email + " not found");
-        }
-    }
 
     public User loadUser(String email) throws RuntimeException, SQLException {
-        try (Connection conn = connectToDB()) {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        User user = new User(null,null,null);
+
+        try  {
+            conn = connectToDB();
             String sqlQuery = "SELECT * FROM User WHERE email = ?";
-            RowMapper<User> rowMapper = new UserRowMapper();
-            return jdbcTemplate.queryForObject(sqlQuery, rowMapper, email);
-            // return db.queryForObject(sqlQuery, rowMapper, email);
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, email);
+            resultSet = statement.executeQuery();
+
+            
+            while (resultSet.next()) {
+                user.mapUserFromResultSet(resultSet);
+            }
+              
         } catch (SQLException e) {
-            throw new UserNotFoundException("User with email " + email + " not found");
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
         }
-    }
-
-    public String userToString(User user) {
-        return "User [email=" + user.getEmail() + ", password=" + user.getPassword() + ", username=" + user.getUserName() + "]";
-    }
-
-    public User loadUser2(String email) throws UserNotFoundException {
-        String sql = "SELECT * FROM User WHERE email = ?";
-        Object[] args = { email };
-        RowMapper<User> rowMapper = new UserRowMapper();
         try {
-            return jdbcTemplate.queryForObject(sql, args, rowMapper);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new UserNotFoundException("User with email " + email + " not found");
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
         }
+        return user;
+    }
+
+    
+
+   
+
+    public User saveUser(User user) throws SQLException, RuntimeException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+            
+        try {
+            //return loadUser(user.getEmail());
+            return new User(user.getUserName(), user.getPassword(), user.getEmail());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+        
     }
 
 
@@ -123,11 +163,13 @@ public class TestingWhileCoding {
 
     public static void main(String[] args) throws SQLException, RuntimeException {
         TestingWhileCoding t = new TestingWhileCoding();
-        t.doStuff();
+        //t.doStuff();
         //User user = new User("toob@test.com", "test", "tobbtest1");
+        
+        
+        //User user1 = t.saveUser(new User( "tobbtest1@test.com", "test", "test3979w4"));
         User user = t.loadUser("toob@test.com");
-        System.out.println(t.userToString(user));
-
+        System.out.println(user.toString());
     }
     
 }

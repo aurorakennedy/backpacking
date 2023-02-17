@@ -1,5 +1,8 @@
 package group61.backpacking;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 //@Entity
 public class User {
 
@@ -16,8 +19,17 @@ public class User {
         this.userName = userName;
     }
 
-    public User() {
+    public void mapUserFromResultSet(ResultSet resultSet) throws SQLException {
+        
+        
+        setEmail(resultSet.getString("email"));
+        setPassword(resultSet.getString("password"));
+        setUserName(resultSet.getString("username"));
+        
+        
     }
+
+    
 
     public String getEmail() {
         return email;
@@ -43,6 +55,10 @@ public class User {
     
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String toString() {
+        return "User [email=" + email + ", password=" + password + ", username=" + userName + "]";
     }
     
 

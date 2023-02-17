@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,19 @@ public class BackPackingController {
     @Autowired
     private BackPackingRepository rep;
 
-    @CrossOrigin(origins = "*")
-    @CrossOrigin(origins = "*")
-    @PostMapping("/save")
-    public User saveUser(User inUser) {
-        try {
-            return rep.saveUser(inUser);
+   
+    // @CrossOrigin(origins = "*")
+    // @PostMapping("/save")
+    // public User saveUser(User inUser) {
+    //     try {
+    //         return rep.saveUser(inUser);
 
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    //     } catch (Exception e) {
+    //         return null;
+    //     }
+    // }
 
-    @CrossOrigin(origins = "*")
+
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
     public User loadUser(String email) {
@@ -67,11 +68,11 @@ public class BackPackingController {
     // Create a new user
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
+    public void register(@RequestBody User user) throws SQLException, RuntimeException{
+        System.out.println("controller:  " + user.toString());
+        System.out.println("//////////////////////////////////////////////////////////////////////////////////");
         User savedUser = rep.saveUser(user);
-        System.out.println(user.getUserName());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
+        
     }
 
     /*
@@ -106,7 +107,7 @@ public class BackPackingController {
     }
 
     @PostMapping("/users/{id}")
-    public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) {
+    public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) throws RuntimeException, SQLException {
 
         User updatedUser = rep.updateUser(user, password, userName);
 
@@ -124,7 +125,7 @@ public class BackPackingController {
     // ResourceNotFoundException("User not exist with id: " + id));
 
     @GetMapping("/users/{id}")
-    public User getUserById(@RequestBody User user) {
+    public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
         return rep.loadUser(user.getEmail());
 
         // return new User("test@test.no", "123", "Jarl");

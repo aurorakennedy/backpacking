@@ -29,7 +29,7 @@ public class BackPackingRepository {
 
     public static Connection connectToDB() {
         Connection conn = null;
-        String url = "jdbc:sqlite:sqlitesample.db";
+        String url = "jdbc:sqlite:database.db";
         
 
         try {
@@ -71,14 +71,50 @@ public class BackPackingRepository {
 
         
     }
-
-
-    public User saveUser(User user) throws SQLException, RuntimeException {
+    public void createTable() throws SQLException{
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
         try {
             
+            conn = connectToDB();
+            String sqlQuery = "CREATE TABLE User (email VARCHAR(50) PRIMARY KEY, password VARCHAR(20) NOT NULL, username VARCHAR(20) NOT NULL);";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+               // do nothing
+            }
+
+    }
+
+    // endre input til User user for at det skal fungere som det skal etter at vi har funnet ut hva som er problemet
+    public User saveUser(User user1) throws SQLException, RuntimeException {
+        
+        try {
+            System.out.println("repository:   "+user1.toString()); // username er null av en eller annen grunn
+        } catch (Exception e) {
+            throw new RuntimeException("user kan ikke skrives ut");
+        }
+
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        // slett denne linjen når vi har funnet ut hva som er problemet
+        User user = new User("drhdhrhf1@test.com", "rdgdff", "wggrddgd");
+
+        try {
             conn = connectToDB();
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
@@ -98,34 +134,49 @@ public class BackPackingRepository {
             conn.close();
                 
         } catch (RuntimeException e) {
-                throw new RuntimeException(e);
+            // do nothing
             }
             
         try {
             //return loadUser(user.getEmail());
             return new User(user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-        
+            throw new RuntimeException(e);
         }
 
         
     }
+    public User loadUser(String email) throws RuntimeException, SQLException {
 
-    public User loadUser(String email) throws RuntimeException {
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try {
+        User user = new User(null,null,null);
 
+        try  {
+            conn = connectToDB();
             String sqlQuery = "SELECT * FROM User WHERE email = ?";
-            RowMapper<User> rowMapper = new UserRowMapper();
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, email);
+            resultSet = statement.executeQuery();
+
             
-            return db.queryForObject(sqlQuery, rowMapper, email);
-    
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + email + " not found");
+            while (resultSet.next()) {
+                user.mapUserFromResultSet(resultSet);
+            }
+              
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
         }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        return user;
     }
 
     public void deleteUser(User user) throws RuntimeException{
@@ -187,7 +238,7 @@ public class BackPackingRepository {
         }
     }
 
-    public User updateUser(User user, String password, String userName) throws RuntimeException {
+    public User updateUser(User user, String password, String userName) throws RuntimeException, SQLException {
 
         Connection conn = null;
         Statement statement = null;
@@ -206,12 +257,4 @@ public class BackPackingRepository {
         }
     }
 
-    public void createUser(String email, String password, String username){
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setUserName(username);
-
-        saveUser(user);
-    }
 }

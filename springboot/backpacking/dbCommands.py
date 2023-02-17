@@ -5,7 +5,7 @@ from sqlite3 import Error
 from datetime import datetime as d
 
 def db_file():
-    return str("sqlitesample.db")
+    return str("database.db")
 
 
 connection = None
@@ -15,9 +15,11 @@ try:
     cursor = connection.cursor()
     cursor.execute(
         """
-        INSERT INTO Moderator (email)
-VALUES ('mod1@backpacking.com');
-        """)
+        CREATE TABLE User (
+  email VARCHAR(50) PRIMARY KEY,
+  password VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL
+);""")
         
     connection.commit()
 except Error as e:
