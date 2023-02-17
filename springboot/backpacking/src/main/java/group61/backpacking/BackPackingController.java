@@ -20,6 +20,7 @@ public class BackPackingController {
     private BackPackingRepository rep;
 
     @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @PostMapping("/save")
     public User saveUser(User inUser) {
         try {
@@ -30,6 +31,7 @@ public class BackPackingController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
     public User loadUser(String email) {
@@ -96,13 +98,15 @@ public class BackPackingController {
 
     }
 
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id, @RequestBody User user) {
         // rep.deleteAllByIdInBatch(Iterable<ID> ids)
         rep.deleteUser(user);
     }
 
     @PostMapping("/users/{id}")
-    public Boolean updateUser(@RequestBody User user, @RequestBody String password, @RequestBody String userName) {
+    public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) {
 
         User updatedUser = rep.updateUser(user, password, userName);
 

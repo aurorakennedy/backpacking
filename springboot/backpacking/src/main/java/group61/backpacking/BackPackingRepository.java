@@ -2,11 +2,18 @@ package group61.backpacking;
 
 import java.util.List;
 
+import java.sql.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Repository
 public class BackPackingRepository {
@@ -18,30 +25,103 @@ public class BackPackingRepository {
     //     this.jdbcTemplate = jdbcTemplate;
     // }
 
-    public User saveUser(User user) throws RuntimeException {
+    
+
+    public static Connection connectToDB() {
+        Connection conn = null;
+        String url = "jdbc:sqlite:sqlitesample.db";
+        
+
         try {
-            String sql = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
-            db.update(sql, user.getUserName(), user.getPassword(), user.getEmail());
-        } catch (RuntimeException e) {
-            throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");
-            
+            conn = DriverManager.getConnection(url);
+            System.out.println("Connection to SQLite database established.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
+
+        return conn;
+    }
+
+    public void doStuff() throws RuntimeException{
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
-            return loadUser(user.getEmail());
+            conn = connectToDB();
+            statement = conn.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM User");
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("email"));
+        }
+            
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+            
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+
+        
+    }
+
+
+    public User saveUser(User user) throws SQLException, RuntimeException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
+            
+        try {
+            //return loadUser(user.getEmail());
+            return new User(user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         
         }
+
         
     }
 
     public User loadUser(String email) throws RuntimeException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
 
-            String sql = "SELECT * FROM User WHERE email = ?";
+            String sqlQuery = "SELECT * FROM User WHERE email = ?";
             RowMapper<User> rowMapper = new UserRowMapper();
             
-            return db.queryForObject(sql, rowMapper, email);
+            return db.queryForObject(sqlQuery, rowMapper, email);
     
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + email + " not found");
@@ -49,9 +129,12 @@ public class BackPackingRepository {
     }
 
     public void deleteUser(User user) throws RuntimeException{
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
-            String sql = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
-            db.update(sql, user.getUserName(), user.getPassword(), user.getEmail());
+            String sqlQuery = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
+            db.update(sqlQuery, user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
@@ -59,10 +142,13 @@ public class BackPackingRepository {
 
 // yoyo
     public User login(User user) throws RuntimeException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
-            String sql = "SELECT * FROM User WHERE email = ? AND password = ?";
+            String sqlQuery = "SELECT * FROM User WHERE email = ? AND password = ?";
             RowMapper<User> rowMapper = new UserRowMapper();
-            User loginUser = db.queryForObject(sql, rowMapper, user.getEmail(), user.getPassword());
+            User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail(), user.getPassword());
             if (loginUser != null) {
                 return loginUser; 
             } else {
@@ -74,28 +160,42 @@ public class BackPackingRepository {
     }
 
     public boolean isAdmin(User user) throws RuntimeException {
+        
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
         try {
-            
-            if (login(user) == null) {
-                return false;
-            }
-            String modEmailQuery = "SELECT * FROM Moderator WHERE email = ?";
+            if (login(user) == null) return false;
+
+            String sqlQuery = "SELECT email, password, username" +
+            "FROM User"+
+            "INNER RIGHT JOIN Moderator" +
+            "ON User.email = Moderator.email" +
+            "WHERE Moderator.email = ?;";
+
             RowMapper<User> rowMapper = new UserRowMapper();
-            User loginUser = db.queryForObject(modEmailQuery, rowMapper, user.getEmail(), user.getPassword());
+            User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail());
             if (loginUser != null) {
                 return true;
             } else {
                 return false;
             }
+
         } catch (RuntimeException e) {
             throw new UserNotFoundException("Something went wrong");
         }
     }
 
     public User updateUser(User user, String password, String userName) throws RuntimeException {
+
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
         try {
-            String sql = "UPDATE User SET username = ?, password = ? WHERE email = ?";
-            db.update(sql, userName, password,  user.getEmail());
+            String sqlQuery = "UPDATE User SET username = ?, password = ? WHERE email = ?";
+            db.update(sqlQuery, userName, password,  user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
