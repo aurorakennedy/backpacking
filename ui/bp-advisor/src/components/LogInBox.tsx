@@ -13,13 +13,13 @@ const LogInBox = () => {
 
     return (
         <div id='logInBox'>
-            <form onSubmit={submitLogInInfo}>
+            <form>
                 <h2 id='logInBoxTitle'> Welcome back, backpacker!</h2>
                 <label id='emailInputLabel'>E-mail</label>
-                <input id='emailInput' type='email' placeholder='   ...'></input>
+                <input id='emailInput' type='email' placeholder='   ...' required></input>
                 <label id='passwordInputLabel'>Password</label>
-                <input id='passwordInput' type='password' placeholder='   ...'></input>
-                <button id='logInButton' type='submit'> Log in</button>
+                <input id='passwordInput' type='password' placeholder='   ...' required></input>
+                <button id='logInButton' onClick={submitLogInInfo} type='button'> Log in</button>
             </form>
             {/*  <p id='signUpButton'>Sign up</p> */}
             <Link id='signUpButton' to='/signUp'>
@@ -32,17 +32,43 @@ const LogInBox = () => {
         const emailInputValue: string = (document.getElementById('emailInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordInput') as HTMLInputElement).value;
 
-        //TODO: Validation
+        if (emailInputValue.length > 0 && passwordInputValue.length > 0) {
+
+            interface User {
+                username: string;
+                email: string;
+                password: string;
+            }
+
+            try {
+                console.log(emailInputValue);
+                console.log(passwordInputValue);
+                const promise: Promise<User> = httpRequests.login({
+                    username: "",       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
+                    email: emailInputValue,
+                    password: passwordInputValue
+                });
+                promise.then((user: User) => {
+                    if (user.email == "failed") {
+                        alert('Incorrect username and/or password.');
+                    } else {
+                        console.log(user);
+                    }
+                });
+
+
+                //TODO: New page must open if login successfull            
+            } catch (error) {
+                //TODO: Error handeling
+            }
+
+        } else {
+            alert("You must insert both username and password.")
+        }
 
         //TODO: 
-        /*
-        try {
-            httpRequests.login();        
-            //TODO: New page must open if login successfull            
-        } catch (error) {
-            //TODO: Error handeling
-        }
-         */
+
+
 
 
     }
