@@ -25,7 +25,7 @@ const SingUpBox = () => {
                 <label id='repeatPasswordSignUpInputLabel'> Repeat </label>
                 <input id='repeatPasswordSignUpInput' type='password' placeholder='   ...'></input>
 
-                <button id='submitButton' type='submit'> Sign Up</button>
+                <button id='submitButton' onClick={submitSignUpInfo} type='button'> Sign Up</button>
 
                 <Link id='backToLogInButton' to='/logIn'>
                     Back to Log In
@@ -48,6 +48,12 @@ const SingUpBox = () => {
 
         //MUST ADD VALIDATION
 
+        interface User {
+            username: string;
+            email: string;
+            password: string;
+        }
+
         try {
             httpRequests.register({
                 username: nameInputValue,
@@ -55,10 +61,11 @@ const SingUpBox = () => {
                 password: passwordInputValue
             });
 
-            //TODO: LOGIN if register succeded
-            /* httpRequests.login(
-
-            ) */
+            const promise: Promise<User> = httpRequests.login({
+                username: "",
+                email: emailInputValue,
+                password: passwordInputValue
+            });
 
             //TODO: Change page if register and login succeded
 
