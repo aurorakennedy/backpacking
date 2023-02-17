@@ -57,14 +57,14 @@ public class BackPackingRepository {
         }
     }
 
-
+// yoyo
     public User login(User user) throws RuntimeException {
         try {
             String sql = "SELECT * FROM User WHERE email = ? AND password = ?";
             RowMapper<User> rowMapper = new UserRowMapper();
             User loginUser = db.queryForObject(sql, rowMapper, user.getEmail(), user.getPassword());
             if (loginUser != null) {
-                return loginUser;
+                return loginUser; 
             } else {
                 return null;
             }
