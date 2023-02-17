@@ -46,6 +46,18 @@ public class BackPackingController {
         rep.deleteUser(inUser);
     }
 
+
+    @PostMapping("/login")
+    public boolean login(@RequestBody User user) {
+        
+        try {
+            return rep.login(user);
+        } catch (Exception e) {
+            // TODO: handle exception
+            return false;
+        }
+    }
+
     // Suggestions:
 
     @PostMapping("/register")
