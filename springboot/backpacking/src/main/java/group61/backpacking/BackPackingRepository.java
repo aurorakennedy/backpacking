@@ -107,7 +107,7 @@ public class BackPackingRepository {
         }
 
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         
@@ -115,7 +115,7 @@ public class BackPackingRepository {
         try {
             conn = connectToDB();
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
@@ -128,7 +128,7 @@ public class BackPackingRepository {
 
         try {
             resultSet.close();
-            statement.close();
+            preparedStatement.close();
             conn.close();
                 
         } catch (RuntimeException e) {
@@ -208,51 +208,101 @@ public class BackPackingRepository {
         }
     }
 
-    public boolean isAdmin(User user) throws RuntimeException {
-        
+    public boolean isAdmin(User user) throws RuntimeException, SQLException {
+
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        User moderator = new User(null,null,null);
+
+        
 
         try {
-            if (login(user) == null) return false;
-
+            conn = connectToDB();
             String sqlQuery = "SELECT email, password, username" +
             "FROM User"+
             "INNER RIGHT JOIN Moderator" +
             "ON User.email = Moderator.email" +
             "WHERE Moderator.email = ?;";
+            
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, user.getEmail());
+            resultSet = preparedStatement.executeQuery();
 
-            RowMapper<User> rowMapper = new UserRowMapper();
-            User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail());
-            if (loginUser != null) {
-                return true;
-            } else {
-                return false;
+            while (resultSet.next()) {
+                moderator.mapUserFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
             }
 
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("Something went wrong");
+        if (moderator != null) {
+            if (moderator.getPassword().equals(user.getPassword())) {
+                return true;        
+            }
         }
+     
+        return false;
+            
+        
+
+        
     }
 
-    public User updateUser(User user, String password, String userName) throws RuntimeException, SQLException {
 
-        Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        
+        
+        
 
-        try {
-            String sqlQuery = "UPDATE User SET username = ?, password = ? WHERE email = ?";
-            db.update(sqlQuery, userName, password,  user.getEmail());
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-        }
-        try {
-            return loadUser(user.getEmail());
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-        }
-    }
+    //     try {
+    //         if (login(user) == null) return false;
+
+    //         String sqlQuery = "SELECT email, password, username" +
+    //         "FROM User"+
+    //         "INNER RIGHT JOIN Moderator" +
+    //         "ON User.email = Moderator.email" +
+    //         "WHERE Moderator.email = ?;";
+
+    //         RowMapper<User> rowMapper = new UserRowMapper();
+    //         User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail());
+    //         if (loginUser != null) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+
+    //     } catch (RuntimeException e) {
+    //         throw new UserNotFoundException("Something went wrong");
+    //     }
+    // }
+
+    // public User updateUser(User user, String password, String userName) throws RuntimeException, SQLException {
+
+    //     Connection conn = null;
+    //     Statement statement = null;
+    //     ResultSet resultSet = null;
+
+    //     try {
+    //         String sqlQuery = "UPDATE User SET username = ?, password = ? WHERE email = ?";
+    //         db.update(sqlQuery, userName, password,  user.getEmail());
+    //     } catch (RuntimeException e) {
+    //         throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+    //     }
+    //     try {
+    //         return loadUser(user.getEmail());
+    //     } catch (RuntimeException e) {
+    //         throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+    //     }
+    // }
 
 }
