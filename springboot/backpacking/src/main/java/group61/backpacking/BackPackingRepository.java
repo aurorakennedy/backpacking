@@ -205,5 +205,12 @@ public class BackPackingRepository {
         }
     }
 
+    public void createUser(String email, String password, String username){
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setUserName(username);
 
+        saveUser(user);
+    }
 }

@@ -68,8 +68,10 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
     public void register(@RequestBody User user) {
-         User savedUser = rep.saveUser(user);
-        System.out.println("Register http recieved");
+        rep.createUser(user.getEmail(), user.getPassword(), user.getUserName());
+        //User savedUser = rep.saveUser(user);
+        
+        System.out.println("Registetration Accepted");
         System.out.println(user.getUserName());
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
@@ -100,12 +102,12 @@ public class BackPackingController {
 
         
     //public void updateUser(){
-        //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
+    //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
 
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable int id) {
-        // return rep.findOne(id);
-        return new User("test@test.no", "123", "Jarl");
+    public User getUserById(@RequestBody User user) {
+        return rep.loadUser(user.getEmail());
+        //return new User("test@test.no", "123", "Jarl");
     }
 
 
