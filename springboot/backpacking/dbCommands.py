@@ -15,8 +15,8 @@ try:
     cursor = connection.cursor()
     cursor.execute(
         """
-        INSERT INTO User (email, password, username)
-VALUES ('mod1@backpacking.com', 'password', 'moderator1');
+        INSERT INTO Moderator (email)
+VALUES ('mod1@backpacking.com');
         """)
         
     connection.commit()
@@ -25,5 +25,27 @@ except Error as e:
 finally:
     if connection:
         connection.close()
+
+
+
+# connection = None
+# data = []
+# try:
+#     connection = sql.connect(db_file())
+#     print(sql.version)
+#     cursor = connection.cursor()
+#     cursor.execute("""
+#             SELECT *
+#             FROM User
+            
+#         """)
+#     data = cursor.fetchall()
+        
+# except Error as e:
+#         print(e)
+# finally:
+#     if connection:
+#             connection.close()
+# print(data) 
         
 print("Done")
