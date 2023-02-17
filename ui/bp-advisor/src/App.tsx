@@ -8,6 +8,7 @@ import LogInBox from './components/LogInBox';
 import SingUpBox from './components/SingUpBox';
 
 function App() {
+
     return (
         <Router>
             <div className="App">

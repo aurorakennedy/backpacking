@@ -101,6 +101,7 @@
     border: none;
     background-color: #A1C88E;
     color: white;
+    cursor: pointer;
 }
 
 #backToLogInButton {
