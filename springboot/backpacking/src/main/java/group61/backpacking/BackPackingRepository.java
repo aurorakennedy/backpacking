@@ -58,15 +58,15 @@ public class BackPackingRepository {
     }
 
 
-    public boolean login(User user) throws RuntimeException {
+    public User login(User user) throws RuntimeException {
         try {
             String sql = "SELECT * FROM User WHERE email = ? AND password = ?";
             RowMapper<User> rowMapper = new UserRowMapper();
             User loginUser = db.queryForObject(sql, rowMapper, user.getEmail(), user.getPassword());
             if (loginUser != null) {
-                return true;
+                return loginUser;
             } else {
-                return false;
+                return null;
             }
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
@@ -76,7 +76,7 @@ public class BackPackingRepository {
     public boolean isAdmin(User user) throws RuntimeException {
         try {
             
-            if (!login(user)) {
+            if (login(user) == null) {
                 return false;
             }
             String modEmailQuery = "SELECT * FROM Moderator WHERE email = ?";
@@ -89,6 +89,20 @@ public class BackPackingRepository {
             }
         } catch (RuntimeException e) {
             throw new UserNotFoundException("Something went wrong");
+        }
+    }
+
+    public User updateUser(User user, String password, String userName) throws RuntimeException {
+        try {
+            String sql = "UPDATE User SET username = ?, password = ? WHERE email = ?";
+            db.update(sql, userName, password,  user.getEmail());
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+        }
+        try {
+            return loadUser(user.getEmail());
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
     }
 
