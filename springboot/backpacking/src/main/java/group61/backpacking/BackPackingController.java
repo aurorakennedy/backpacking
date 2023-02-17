@@ -69,8 +69,8 @@ public class BackPackingController {
   //Create a new user
     @PostMapping("/register")
     public void register(@RequestBody User user) {
-        User savedUser = rep.saveUser(user);
-        
+        rep.createUser(user.getEmail(), user.getPassword(), user.getUserName());
+        //User savedUser = rep.saveUser(user);
         
         System.out.println("Registetration Accepted");
         System.out.println(user.getUserName());
@@ -78,7 +78,6 @@ public class BackPackingController {
         System.out.println(user.getPassword());
     }
 
-<<<<<<< HEAD
 
     @PostMapping("/login")
     public boolean login_2(@RequestBody User user) {
@@ -86,29 +85,9 @@ public class BackPackingController {
         //boolean loggedIn = false;
         //return loggedIn;
     }
-=======
-   
->>>>>>> 1c99ab6d804453d9efc7d3d401427136ad7565a2
-
 
     @DeleteMapping("/users/{id}")
-<<<<<<< HEAD
     public void deleteTheUser(@RequestBody User user) {
-=======
-<<<<<<< HEAD
-    public void deleteUser(@PathVariable int id) {
-        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
-    }
-
-    @CrossOrigin(origins = "*")
-    @PutMapping("/users/{id}")
-    public void updateUser(@PathVariable int id, @RequestBody User user) {
-
-    }
-=======
-    public void deleteUser(@PathVariable int id, @RequestBody User user) {
-        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
->>>>>>> 1c99ab6d804453d9efc7d3d401427136ad7565a2
         rep.deleteUser(user);
     }
 
@@ -128,13 +107,11 @@ public class BackPackingController {
 
         
     //public void updateUser(){
-        //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
->>>>>>> b4b276d71687a09bfc61f4761f16b24712db2b75
+    //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
 
     @GetMapping("/users/{id}")
     public User getUserById(@RequestBody User user) {
         return rep.loadUser(user.getEmail());
-
         //return new User("test@test.no", "123", "Jarl");
     }
 
