@@ -98,11 +98,10 @@ public class BackPackingRepository {
 
     }
 
-    // endre input til User user for at det skal fungere som det skal etter at vi har funnet ut hva som er problemet
-    public User saveUser(User user1) throws SQLException, RuntimeException {
+    public User saveUser(User user) throws SQLException, RuntimeException {
         
         try {
-            System.out.println("repository:   "+user1.toString()); // username er null av en eller annen grunn
+            System.out.println("repository:   "+user.toString()); // username er null av en eller annen grunn
         } catch (Exception e) {
             throw new RuntimeException("user kan ikke skrives ut");
         }
@@ -111,8 +110,7 @@ public class BackPackingRepository {
         Statement statement = null;
         ResultSet resultSet = null;
 
-        // slett denne linjen når vi har funnet ut hva som er problemet
-        User user = new User("lfdfdhf1@test.com", "rdgdff", "wggrddgd");
+        
 
         try {
             conn = connectToDB();
@@ -138,8 +136,8 @@ public class BackPackingRepository {
             }
             
         try {
-            //return loadUser(user.getEmail());
-            return new User(user.getUsername(), user.getPassword(), user.getEmail());
+            return loadUser(user.getEmail());
+            //return new User(user.getUsername(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

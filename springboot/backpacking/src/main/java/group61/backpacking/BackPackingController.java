@@ -69,9 +69,11 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
     public void register(@RequestBody User user) throws SQLException, RuntimeException{
-        System.out.println("controller:  " + user.toString());
-        System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+        
         User savedUser = rep.saveUser(user);
+        System.out.println("controller output savedUser:  " + savedUser.toString());
+        System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+        
         
     }
 
