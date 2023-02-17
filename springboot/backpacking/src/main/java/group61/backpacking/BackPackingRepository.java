@@ -102,7 +102,8 @@ public class BackPackingRepository {
             }
             
         try {
-            return loadUser(user.getEmail());
+            //return loadUser(user.getEmail());
+            return new User(user.getUserName(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         
