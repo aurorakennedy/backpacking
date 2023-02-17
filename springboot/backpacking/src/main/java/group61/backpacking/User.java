@@ -10,13 +10,13 @@ public class User {
     //@GeneratedValue(strategy = GenerationType.AUTO)
     private String email;
     private String password;
-    private String userName;
+    private String username;
 
 
     public User(String email, String password, String userName) {
         this.email = email;
         this.password = password;
-        this.userName = userName;
+        this.username = userName;
     }
 
     public void mapUserFromResultSet(ResultSet resultSet) throws SQLException {
@@ -24,7 +24,7 @@ public class User {
         
         setEmail(resultSet.getString("email"));
         setPassword(resultSet.getString("password"));
-        setUserName(resultSet.getString("username"));
+        setUsername(resultSet.getString("username"));
         
         
     }
@@ -39,8 +39,8 @@ public class User {
         return password;
     }
     
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
     
     
@@ -53,12 +53,12 @@ public class User {
         this.password = password;
     }
     
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String toString() {
-        return "User [email=" + email + ", password=" + password + ", username=" + userName + "]";
+        return "User [email=" + email + ", password=" + password + ", username=" + username + "]";
     }
     
 

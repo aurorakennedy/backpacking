@@ -112,14 +112,14 @@ public class BackPackingRepository {
         ResultSet resultSet = null;
 
         // slett denne linjen når vi har funnet ut hva som er problemet
-        User user = new User("drhdhrhf1@test.com", "rdgdff", "wggrddgd");
+        User user = new User("lfdfdhf1@test.com", "rdgdff", "wggrddgd");
 
         try {
             conn = connectToDB();
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
-            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.executeUpdate();
@@ -139,7 +139,7 @@ public class BackPackingRepository {
             
         try {
             //return loadUser(user.getEmail());
-            return new User(user.getUserName(), user.getPassword(), user.getEmail());
+            return new User(user.getUsername(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -185,7 +185,7 @@ public class BackPackingRepository {
         ResultSet resultSet = null;
         try {
             String sqlQuery = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
-            db.update(sqlQuery, user.getUserName(), user.getPassword(), user.getEmail());
+            db.update(sqlQuery, user.getUsername(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }

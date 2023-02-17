@@ -111,7 +111,7 @@ public class BackPackingController {
 
         User updatedUser = rep.updateUser(user, password, userName);
 
-        if (user.getUserName() != updatedUser.getUserName()) {
+        if (user.getUsername() != updatedUser.getUsername()) {
             return false;
         }
         if (user.getPassword() != updatedUser.getPassword()) {

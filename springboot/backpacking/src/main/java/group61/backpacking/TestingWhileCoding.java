@@ -129,7 +129,7 @@ public class TestingWhileCoding {
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
-            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.executeUpdate();
@@ -149,7 +149,7 @@ public class TestingWhileCoding {
             
         try {
             //return loadUser(user.getEmail());
-            return new User(user.getUserName(), user.getPassword(), user.getEmail());
+            return new User(user.getUsername(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

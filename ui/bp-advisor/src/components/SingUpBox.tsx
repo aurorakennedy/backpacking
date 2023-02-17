@@ -45,7 +45,8 @@ const SingUpBox = () => {
         const emailInputValue: string = (document.getElementById('emailSingUpInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordSignUpInput') as HTMLInputElement).value;
         const repeatPasswordInputValue: string = (document.getElementById('repeatPasswordSignUpInput') as HTMLInputElement).value;
-
+        console.log("////////////////////////");
+        console.log(nameInputValue);
         //MUST ADD VALIDATION
 
         interface User {
