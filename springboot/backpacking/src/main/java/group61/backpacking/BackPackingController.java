@@ -19,7 +19,7 @@ public class BackPackingController {
     @Autowired
     private BackPackingRepository rep;
 
-    @CrossOrigin(origins = "*")
+    //@CrossOrigin(origins = "*")
     @PostMapping("/save")
     public User saveUser(User inUser) {
         try {
@@ -31,7 +31,7 @@ public class BackPackingController {
 
     }
 
-    @CrossOrigin(origins = "*")
+   // @CrossOrigin(origins = "*")
     @GetMapping("/load")
     public User loadUser(String email) {
         try {
@@ -42,7 +42,7 @@ public class BackPackingController {
 
     }
 
-    @CrossOrigin(origins = "*")
+   // @CrossOrigin(origins = "*")
     @GetMapping("/delete")
     public void deleteUser(User inUser) {
         rep.deleteUser(inUser);
@@ -61,32 +61,35 @@ public class BackPackingController {
 
     // Suggestions:
 
-    @CrossOrigin(origins = "*")
+  //  @CrossOrigin(origins = "*")
+  //Create a new user
     @PostMapping("/register")
     public void register(@RequestBody User user) {
-         User savedUser = rep.saveUser(user);
-        System.out.println("Register http recieved");
+        User savedUser = rep.saveUser(user);
+        
+        
+        System.out.println("Registetration Accepted");
         System.out.println(user.getUserName());
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
     }
 
-    @CrossOrigin(origins = "*")
+
     @PostMapping("/login")
-    public boolean login(@RequestBody String[] request) {
-        boolean loggedIn = false;
-        return loggedIn;
+    public boolean login_2(@RequestBody User user) {
+        return rep.login(user);
+        //boolean loggedIn = false;
+        //return loggedIn;
     }
 
-    @CrossOrigin(origins = "*")
+
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id, @RequestBody User user) {
-        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
+    public void deleteTheUser(@RequestBody User user) {
         rep.deleteUser(user);
     }
 
     @PostMapping("/users/{id}")
-    public Boolean updateUser(@RequestBody String password,@RequestBody String userName , @RequestBody User user) {
+    public Boolean updateUser(@RequestBody User user, @RequestBody String password,@RequestBody String userName) {
 
         User updatedUser = rep.updateUser(user, password, userName);
 
@@ -104,9 +107,10 @@ public class BackPackingController {
         //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
 
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable int id) {
-        // return rep.findOne(id);
-        return new User("test@test.no", "123", "Jarl");
+    public User getUserById(@RequestBody User user) {
+        return rep.loadUser(user.getEmail());
+
+        //return new User("test@test.no", "123", "Jarl");
     }
 
 }
