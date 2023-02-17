@@ -21,7 +21,7 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("/save")
-    public User saveUser(User inUser) {
+    public User saveUser(User inUser){
         try {
             return rep.saveUser(inUser);
 
@@ -29,35 +29,39 @@ public class BackPackingController {
             return null;
         }
 
+
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
-    public User loadUser(String email) {
+    public User loadUser(String email)  {
         try {
             return rep.loadUser(email);
         } catch (Exception e) {
             return null;
         }
+        
 
     }
-
+    
     @CrossOrigin(origins = "*")
     @GetMapping("/delete")
-    public void deleteUser(User inUser) {
+    public void deleteUser(User inUser){
         rep.deleteUser(inUser);
     }
 
-    @PostMapping("/login")
-    public boolean login(@RequestBody User user) {
 
+    @PostMapping("/login")
+    public User login(@RequestBody User user) {
+        
         try {
             return rep.login(user);
         } catch (Exception e) {
             // TODO: handle exception
-            return false;
+            return null;
         }
     }
+
 
     // Suggestions:
 
@@ -71,22 +75,18 @@ public class BackPackingController {
         System.out.println(user.getPassword());
     }
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/login")
-    public boolean login(@RequestBody String[] request) {
-        boolean loggedIn = false;
-        return loggedIn;
-    }
+   
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id) {
-        // rep.deleteAllByIdInBatch(Iterable<ID> ids)
+        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
     }
 
     @CrossOrigin(origins = "*")
     @PutMapping("/users/{id}")
     public void updateUser(@PathVariable int id, @RequestBody User user) {
+
     }
 
     @CrossOrigin(origins = "*")
@@ -96,4 +96,6 @@ public class BackPackingController {
         return new User("test@test.no", "123", "Jarl");
     }
 
+
+    
 }
