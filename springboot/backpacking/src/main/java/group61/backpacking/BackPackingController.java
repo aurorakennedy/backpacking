@@ -67,7 +67,7 @@ public class BackPackingController {
 
     @PostMapping("/register")
     public void register(@RequestBody User user) {
-        //User savedUser = rep.save(user);  
+        User savedUser = rep.saveUser(user);  
     }
 
     @PostMapping("/login")
@@ -77,14 +77,28 @@ public class BackPackingController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable int id, @RequestBody User user) {
         //rep.deleteAllByIdInBatch(Iterable<ID> ids)
+        rep.deleteUser(user);
     }
 
-    @PutMapping("/users/{id}")
-    public void updateUser(@PathVariable int id, @RequestBody User user) {
+    @PostMapping("/users/{id}")
+    public Boolean updateUser(@RequestBody String password,@RequestBody String userName , @RequestBody User user) {
 
-    }
+        User updatedUser = rep.updateUser(user, password, userName);
+
+        if (user.getUserName() != updatedUser.getUserName()) {
+            return false;
+        } 
+        if (user.getPassword() != updatedUser.getPassword()){
+            return false;
+        }
+        return true;
+        }
+
+        
+    //public void updateUser(){
+        //User user = rep.loadUser(email).orElseThrow(() -> new ResourceNotFoundException("User not exist with id: " + id));
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable int id) {
