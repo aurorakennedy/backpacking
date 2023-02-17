@@ -1,6 +1,10 @@
 package group61.backpacking;
 
+//@Entity
 public class User {
+
+    //@ID
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private String email;
     private String password;
     private String userName;
