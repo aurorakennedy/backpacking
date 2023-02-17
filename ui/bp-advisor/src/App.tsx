@@ -6,25 +6,22 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import LogInBox from './components/LogInBox';
 import SingUpBox from './components/SingUpBox';
+import HomePage from './components/HomePage'; 
+
+
 
 function App() {
 
     return (
         <Router>
             <div className="App">
-                <h1 id='title'> BP-Advisor</h1>
-                <h2 id='subTitle'>Share your backpacking routes</h2>
-                {/*{ <LogInBox /> }*/}
-                {/*    { <SingUpBox /> } */}
+            
+                
                 <Routes>
-                    {/*   <Route path='/'>
-                        <LogInBox />
-                    </Route> */}
+                    
+                    <Route path='/' element={ <LogInBox />} />
 
-                    <Route path='/' element={<LogInBox />} />
-
-
-                    <Route path='/signUp' element={<SingUpBox />} />
+                    <Route path='/signUp' element={ <SingUpBox />} />
 
                     <Route path='/logIn' element={<LogInBox />} />
 
