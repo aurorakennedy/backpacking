@@ -56,4 +56,41 @@ public class BackPackingRepository {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
     }
+
+
+    public boolean login(User user) throws RuntimeException {
+        try {
+            String sql = "SELECT * FROM User WHERE email = ? AND password = ?";
+            RowMapper<User> rowMapper = new UserRowMapper();
+            User loginUser = db.queryForObject(sql, rowMapper, user.getEmail(), user.getPassword());
+            if (loginUser != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+        }
+    }
+
+    public boolean isAdmin(User user) throws RuntimeException {
+        try {
+            
+            if (!login(user)) {
+                return false;
+            }
+            String modEmailQuery = "SELECT * FROM Moderator WHERE email = ?";
+            RowMapper<User> rowMapper = new UserRowMapper();
+            User loginUser = db.queryForObject(modEmailQuery, rowMapper, user.getEmail(), user.getPassword());
+            if (loginUser != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (RuntimeException e) {
+            throw new UserNotFoundException("Something went wrong");
+        }
+    }
+
+
 }
