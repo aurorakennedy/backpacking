@@ -86,11 +86,22 @@ const SingUpBox = () => {
                 password: passwordInputValue
             });
 
+            //TODO: Login must wait for registration to finish
+
             const promise: Promise<User> = httpRequests.login({
                 username: "",
                 email: emailInputValue,
                 password: passwordInputValue
             });
+
+            promise.then((user: User) => {
+                // Access the user object here
+                console.log(user);
+            }).catch((error: Error) => {
+                // Handle the error here
+                console.error(error);
+            });
+
 
             //TODO: Change page if register and login succeded
 
