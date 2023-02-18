@@ -108,19 +108,19 @@ public class BackPackingController {
         rep.deleteUser(user);
     }
 
-    @PostMapping("/users/{id}")
-    public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) throws RuntimeException, SQLException {
+    // @PostMapping("/users/{id}")
+    // public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) throws RuntimeException, SQLException {
 
-        User updatedUser = rep.updateUser(user, password, userName);
+    //     User updatedUser = rep.updateUser(user, password, userName);
 
-        if (user.getUsername() != updatedUser.getUsername()) {
-            return false;
-        }
-        if (user.getPassword() != updatedUser.getPassword()) {
-            return false;
-        }
-        return true;
-    }
+    //     if (user.getUsername() != updatedUser.getUsername()) {
+    //         return false;
+    //     }
+    //     if (user.getPassword() != updatedUser.getPassword()) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     // public void updateUser(){
     // User user = rep.loadUser(email).orElseThrow(() -> new
