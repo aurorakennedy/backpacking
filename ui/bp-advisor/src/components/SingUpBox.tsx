@@ -41,13 +41,37 @@ const SingUpBox = () => {
     */
     function submitSignUpInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
 
-        const nameInputValue: string = (document.getElementById('nameInput') as HTMLInputElement).value;
+        const usernameInputValue: string = (document.getElementById('nameInput') as HTMLInputElement).value;
         const emailInputValue: string = (document.getElementById('emailSingUpInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordSignUpInput') as HTMLInputElement).value;
         const repeatPasswordInputValue: string = (document.getElementById('repeatPasswordSignUpInput') as HTMLInputElement).value;
         console.log("////////////////////////");
-        console.log(nameInputValue);
-        //MUST ADD VALIDATION
+        console.log(usernameInputValue);
+
+        if (usernameInputValue.length < 1 || emailInputValue.length < 1 || passwordInputValue.length < 1 || repeatPasswordInputValue.length < 1) {
+            alert("You must provide input into all fields.")
+            return;
+        }
+
+        if (usernameInputValue.length < 5) {
+            alert("Your username must at least be 5 characters long.")
+            return;
+        }
+
+        if (!(emailInputValue.includes(".") && emailInputValue.includes("@"))) {
+            alert("The e-mail is invalid.")
+            return;
+        }
+
+        if (passwordInputValue.length < 8) {
+            alert("The password need to be at least 8 characters long.")
+            return;
+        }
+
+        if (passwordInputValue !== repeatPasswordInputValue) {
+            alert("Password and repeat fields must have the same input.")
+            return;
+        }
 
         interface User {
             username: string;
@@ -57,7 +81,7 @@ const SingUpBox = () => {
 
         try {
             httpRequests.register({
-                username: nameInputValue,
+                username: usernameInputValue,
                 email: emailInputValue,
                 password: passwordInputValue
             });
@@ -71,7 +95,7 @@ const SingUpBox = () => {
             //TODO: Change page if register and login succeded
 
         } catch (error) {
-            //TODO: Error handeling
+            //TODO: Error handling
         }
     }
 }
