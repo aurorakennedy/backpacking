@@ -157,19 +157,141 @@ public class TestingWhileCoding {
         
     }
 
+    public void deleteUser(User user) throws RuntimeException, SQLException{
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+    
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM User WHERE email = ?;";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");  
+        }
+
+        try {
+            preparedStatement.close();
+            conn.close();   
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
+    }
 
 
+    public boolean isAdmin(User user) throws RuntimeException, SQLException {
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        User moderator = new User(null,null,null);
+
+        
+
+        try {
+            conn = connectToDB();
+            
+            String sqlQuery = "SELECT User.email, User.password, User.username " +
+            "FROM User " +
+            "JOIN Moderator " + 
+            "ON User.email = Moderator.email "+
+            "WHERE Moderator.email = ?";
+
+            
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, user.getEmail());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                moderator.mapUserFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
+        if (moderator != null) {
+            if (moderator.getPassword().equals(user.getPassword())) {
+                return true;        
+            }
+        }
+     
+        return false;
+        
+    }
+
+    public User login(User user) throws RuntimeException, SQLException {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String password = "";
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT password FROM User WHERE email = ?;";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            resultSet = statement.executeQuery();
+
+            
+            while (resultSet.next()) {
+                password = (resultSet.getString("password"));
+            }
+              
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
+            }
+
+        if (password.equals(user.getPassword())) {
+            try {
+                return loadUser(user.getEmail());
+            } catch (RuntimeException e) {
+                throw new RuntimeException("User with email " + user.getEmail() + " did not match the password");
+            }
+        } 
+
+        return null;
+
+    }
 
 
     public static void main(String[] args) throws SQLException, RuntimeException {
         TestingWhileCoding t = new TestingWhileCoding();
         //t.doStuff();
-        //User user = new User("toob@test.com", "test", "tobbtest1");
+        User user = new User("tobbtest1@test.com", "test", "tet3979w4");
         
         
-        //User user1 = t.saveUser(new User( "tobbtest1@test.com", "test", "test3979w4"));
-        User user = t.loadUser("toob@test.com");
-        System.out.println(user.toString());
+        // User user1 = t.saveUser(new User( "tobbtest1@test.com", "test", "tet3979w4"));
+        // t.deleteUser(new User( "tobbtest2@test.com", "test", "tet3979w4"));
+        // User user = t.loadUser("toob@test.com");
+        // System.out.println(user.toString());
+
+        // test admin below
+        // Boolean admin =t.isAdmin(new User("mod1@backpacking.com", "password", "moderator1"));
+        // if (admin) {
+        //     System.out.println("admin /////////////////////////////////////////");
+        // } else {
+        //     System.out.println("not admin -------------------------------------");
+        // }
+
+        // test login below
+        User user3000 = t.login(user);
+        System.out.println(user3000.toString());
+        
+    
     }
     
 }

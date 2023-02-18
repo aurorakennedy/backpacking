@@ -42,79 +42,14 @@ public class BackPackingRepository {
         return conn;
     }
 
-    public void doStuff() throws RuntimeException{
-        Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conn = connectToDB();
-            statement = conn.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM User");
-
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("email"));
-        }
-            
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-            
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-
-        
-    }
-    public void createTable() throws SQLException{
-        Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            
-            conn = connectToDB();
-            String sqlQuery = "CREATE TABLE User (email VARCHAR(50) PRIMARY KEY, password VARCHAR(20) NOT NULL, username VARCHAR(20) NOT NULL);";
-            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e);
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
-        }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-                
-        } catch (RuntimeException e) {
-               // do nothing
-            }
-
-    }
-
     public User saveUser(User user) throws SQLException, RuntimeException {
-        
-        try {
-            System.out.println("repository:   "+user.toString()); // username er null av en eller annen grunn
-        } catch (Exception e) {
-            throw new RuntimeException("user kan ikke skrives ut");
-        }
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        
 
         try {
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
+            String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?);";
             preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
             preparedStatement.setString(1, user.getUsername());
@@ -127,17 +62,14 @@ public class BackPackingRepository {
         }
 
         try {
-            resultSet.close();
             preparedStatement.close();
-            conn.close();
-                
+            conn.close();   
         } catch (RuntimeException e) {
             // do nothing
             }
             
         try {
             return loadUser(user.getEmail());
-            //return new User(user.getUsername(), user.getPassword(), user.getEmail());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +85,7 @@ public class BackPackingRepository {
 
         try  {
             conn = connectToDB();
-            String sqlQuery = "SELECT * FROM User WHERE email = ?";
+            String sqlQuery = "SELECT * FROM User WHERE email = ?;";
             statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, email);
             resultSet = statement.executeQuery();
@@ -177,36 +109,67 @@ public class BackPackingRepository {
         return user;
     }
 
-    public void deleteUser(User user) throws RuntimeException{
+    public void deleteUser(User user) throws RuntimeException, SQLException{
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+    
         try {
-            String sqlQuery = "DELETE FROM User (username, password, email) VALUES (?, ?, ?)";
-            db.update(sqlQuery, user.getUsername(), user.getPassword(), user.getEmail());
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM User WHERE email = ?;";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");  
         }
+
+        try {
+            preparedStatement.close();
+            conn.close();   
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
     }
 
-// yoyo
-    public User login(User user) throws RuntimeException {
+
+    public User login(User user) throws RuntimeException, SQLException {
+
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try {
-            String sqlQuery = "SELECT * FROM User WHERE email = ? AND password = ?";
-            RowMapper<User> rowMapper = new UserRowMapper();
-            User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail(), user.getPassword());
-            if (loginUser != null) {
-                return loginUser; 
-            } else {
-                return null;
+        String password = "";
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT password FROM User WHERE email = ?;";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            resultSet = statement.executeQuery();
+
+            
+            while (resultSet.next()) {
+                password = (resultSet.getString("password"));
             }
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-        }
+              
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
+            }
+
+        if (password.equals(user.getPassword())) {
+            try {
+                return loadUser(user.getEmail());
+            } catch (RuntimeException e) {
+                throw new RuntimeException("User with email " + user.getEmail() + " did not match the password");
+            }
+        } 
+
+        return null;
+
     }
+
+
 
     public boolean isAdmin(User user) throws RuntimeException, SQLException {
 
@@ -219,11 +182,13 @@ public class BackPackingRepository {
 
         try {
             conn = connectToDB();
-            String sqlQuery = "SELECT email, password, username" +
-            "FROM User"+
-            "INNER RIGHT JOIN Moderator" +
-            "ON User.email = Moderator.email" +
-            "WHERE Moderator.email = ?;";
+            
+            String sqlQuery = "SELECT User.email, User.password, User.username " +
+            "FROM User " +
+            "JOIN Moderator " + 
+            "ON User.email = Moderator.email "+
+            "WHERE Moderator.email = ?";
+
             
             preparedStatement = conn.prepareStatement(sqlQuery);
             preparedStatement.setString(1, user.getEmail());
@@ -253,56 +218,9 @@ public class BackPackingRepository {
         }
      
         return false;
-            
-        
-
         
     }
 
 
-        
-        
-        
-
-    //     try {
-    //         if (login(user) == null) return false;
-
-    //         String sqlQuery = "SELECT email, password, username" +
-    //         "FROM User"+
-    //         "INNER RIGHT JOIN Moderator" +
-    //         "ON User.email = Moderator.email" +
-    //         "WHERE Moderator.email = ?;";
-
-    //         RowMapper<User> rowMapper = new UserRowMapper();
-    //         User loginUser = db.queryForObject(sqlQuery, rowMapper, user.getEmail());
-    //         if (loginUser != null) {
-    //             return true;
-    //         } else {
-    //             return false;
-    //         }
-
-    //     } catch (RuntimeException e) {
-    //         throw new UserNotFoundException("Something went wrong");
-    //     }
-    // }
-
-    // public User updateUser(User user, String password, String userName) throws RuntimeException, SQLException {
-
-    //     Connection conn = null;
-    //     Statement statement = null;
-    //     ResultSet resultSet = null;
-
-    //     try {
-    //         String sqlQuery = "UPDATE User SET username = ?, password = ? WHERE email = ?";
-    //         db.update(sqlQuery, userName, password,  user.getEmail());
-    //     } catch (RuntimeException e) {
-    //         throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-    //     }
-    //     try {
-    //         return loadUser(user.getEmail());
-    //     } catch (RuntimeException e) {
-    //         throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
-    //     }
-    // }
 
 }

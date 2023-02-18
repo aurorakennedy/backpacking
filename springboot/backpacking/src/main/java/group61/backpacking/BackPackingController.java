@@ -46,7 +46,7 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/delete")
-    public void deleteUser(User inUser) {
+    public void deleteUser(User inUser) throws RuntimeException, SQLException {
         rep.deleteUser(inUser);
     }
 
@@ -103,7 +103,7 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id, @RequestBody User user) {
+    public void deleteUser(@PathVariable int id, @RequestBody User user) throws RuntimeException, SQLException {
         // rep.deleteAllByIdInBatch(Iterable<ID> ids)
         rep.deleteUser(user);
     }
