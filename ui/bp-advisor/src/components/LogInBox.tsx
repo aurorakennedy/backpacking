@@ -1,8 +1,8 @@
-import React from 'react';
 import './logInBoxStyle.css';
 import { Link } from 'react-router-dom';
-import httpRequests from './httpRequests';
 import { LoggedInUser, User } from './types';
+import httpRequests from './httpRequests';
+import React from 'react';
 
 type LogInBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -12,7 +12,7 @@ type LogInBoxProps = {
  * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
  * a submit button, and a sign up button.
  * 
- * @returns HTML-code for a BP-Advisor login box.
+ * @returns HTML-code for a BP-Advisor login box and functions to support login.
  */
 const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
@@ -33,12 +33,17 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
         </div>
     )
 
+    /**
+     * Gets the input from the email and password input fields, validates it, and sends it to the
+     * backend for processing. If a user with the corresponding emal and password is found, it
+     * is returned and saved in the browser storage.
+     */
     function submitLogInInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
         const emailInputValue: string = (document.getElementById('emailInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordInput') as HTMLInputElement).value;
 
         if (emailInputValue.length < 1 || passwordInputValue.length < 1) {
-            alert("You must insert username and password to log in.")
+            alert('You must insert username and password to log in.')
             return;
         }
 
@@ -61,8 +66,6 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                 }
             });
 
-
-            //TODO: New page must open if login successfull            
         } catch (error) {
             //TODO: Error handling
         }

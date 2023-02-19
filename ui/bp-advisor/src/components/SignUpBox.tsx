@@ -1,8 +1,8 @@
-import React from 'react';
 import './signUpBoxStyle.css';
-import httpRequests from './httpRequests';
 import { Link } from 'react-router-dom';
 import { LoggedInUser, User } from './types';
+import httpRequests from './httpRequests';
+import React from 'react';
 
 type SignUpBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -42,7 +42,7 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
     /**
     * A function that gets the values of the input fields in the SignUpBox component, validates them,
     * and then sends the data to the backend through the register function of the httpRequests.ts file.
-    * If the registration is successfull, logs in the user and opens the home page.
+    * If the registration is successful, saves the user to the browser storage.
     */
     async function submitSignUpInfo(): Promise<React.MouseEventHandler<HTMLButtonElement> | any> {
 
@@ -50,31 +50,29 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
         const emailInputValue: string = (document.getElementById('emailSingUpInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordSignUpInput') as HTMLInputElement).value;
         const repeatPasswordInputValue: string = (document.getElementById('repeatPasswordSignUpInput') as HTMLInputElement).value;
-        console.log("////////////////////////");
-        console.log(usernameInputValue);
 
         if (usernameInputValue.length < 1 || emailInputValue.length < 1 || passwordInputValue.length < 1 || repeatPasswordInputValue.length < 1) {
-            alert("You must provide input into all fields.")
+            alert('You must provide input into all fields.')
             return;
         }
 
         if (usernameInputValue.length < 5) {
-            alert("Your username must at least be 5 characters long.")
+            alert('Your username must at least be 5 characters long.')
             return;
         }
 
         if (!(emailInputValue.includes(".") && emailInputValue.includes("@"))) {
-            alert("The e-mail is invalid.")
+            alert('The e-mail is invalid.')
             return;
         }
 
         if (passwordInputValue.length < 8) {
-            alert("The password need to be at least 8 characters long.")
+            alert('The password need to be at least 8 characters long.')
             return;
         }
 
         if (passwordInputValue !== repeatPasswordInputValue) {
-            alert("Password and repeat fields must have the same input.")
+            alert('Password and repeat fields must have the same input.')
             return;
         }
 
@@ -90,6 +88,7 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
                 email: emailInputValue,
                 password: passwordInputValue
             });
+
             promise.then((user: User) => {
                 if (user.email === 'failed') {
                     console.log(user);
@@ -100,9 +99,6 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
                     setLoggedInUser({ username, email })
                 }
             });
-
-
-            //TODO: Change page if register and login succeded
 
         } catch (error) {
             //TODO: Error handling
