@@ -2,6 +2,11 @@ import React from 'react';
 import './logInBoxStyle.css';
 import { Link } from 'react-router-dom';
 import httpRequests from './httpRequests';
+import { LoggedInUser, User } from './types';
+
+type LogInBoxProps = {
+    setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
+}
 
 /**
  * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
@@ -9,7 +14,7 @@ import httpRequests from './httpRequests';
  * 
  * @returns HTML-code for a BP-Advisor login box.
  */
-const LogInBox = () => {
+const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
     return (
         <div id='logInBox'>
@@ -37,26 +42,22 @@ const LogInBox = () => {
             return;
         }
 
-        interface User {
-            username: string;
-            email: string;
-            password: string;
-        }
-
         try {
             console.log(emailInputValue);
             console.log(passwordInputValue);
             const promise: Promise<User> = httpRequests.login({
-                username: "",       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
+                username: '',       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
                 email: emailInputValue,
                 password: passwordInputValue
             });
             promise.then((user: User) => {
-                if (user.email == "failed") {
+                if (user.email === 'failed') {
                     console.log(user);
                     alert('Incorrect username and/or password.');
                 } else {
                     console.log(user);
+                    const { username, email } = user;
+                    setLoggedInUser({ username, email })
                 }
             });
 

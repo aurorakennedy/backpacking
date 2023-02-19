@@ -2,6 +2,11 @@ import React from 'react';
 import './signUpBoxStyle.css';
 import httpRequests from './httpRequests';
 import { Link } from 'react-router-dom';
+import { LoggedInUser, User } from './types';
+
+type SignUpBoxProps = {
+    setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
+}
 
 /**
  * Component for BP-Advisor signup box, including a title, username, e-mail and password input fields, 
@@ -9,7 +14,7 @@ import { Link } from 'react-router-dom';
  * 
  * @returns HTML-code for a BP-Advisor signup box.
  */
-const SingUpBox = () => {
+const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
 
     return (
         <div id='signUpBox'>
@@ -39,7 +44,7 @@ const SingUpBox = () => {
     * and then sends the data to the backend through the register function of the httpRequests.ts file.
     * If the registration is successfull, logs in the user and opens the home page.
     */
-    function submitSignUpInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+    async function submitSignUpInfo(): Promise<React.MouseEventHandler<HTMLButtonElement> | any> {
 
         const usernameInputValue: string = (document.getElementById('nameInput') as HTMLInputElement).value;
         const emailInputValue: string = (document.getElementById('emailSingUpInput') as HTMLInputElement).value;
@@ -73,33 +78,27 @@ const SingUpBox = () => {
             return;
         }
 
-        interface User {
-            username: string;
-            email: string;
-            password: string;
-        }
-
         try {
-            httpRequests.register({
+            await httpRequests.register({
                 username: usernameInputValue,
                 email: emailInputValue,
                 password: passwordInputValue
             });
 
-            //TODO: Login must wait for registration to finish
-
             const promise: Promise<User> = httpRequests.login({
-                username: "",
+                username: '',       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
                 email: emailInputValue,
                 password: passwordInputValue
             });
-
             promise.then((user: User) => {
-                // Access the user object here
-                console.log(user);
-            }).catch((error: Error) => {
-                // Handle the error here
-                console.error(error);
+                if (user.email === 'failed') {
+                    console.log(user);
+                    alert('Incorrect username and/or password.');
+                } else {
+                    console.log(user);
+                    const { username, email } = user;
+                    setLoggedInUser({ username, email })
+                }
             });
 
 
