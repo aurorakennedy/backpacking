@@ -1,10 +1,4 @@
-import React from "react";
-
-interface User {
-    username: string;
-    email: string;
-    password: string;
-}
+import { User } from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
