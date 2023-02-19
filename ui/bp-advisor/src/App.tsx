@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 //Switch er Routes 
 
 import LogInBox from './components/LogInBox';
-import SingUpBox from './components/SingUpBox';
+import SignUpBox from './components/SignUpBox';
 
 function App() {
 
@@ -24,7 +24,7 @@ function App() {
                     <Route path='/' element={<LogInBox />} />
 
 
-                    <Route path='/signUp' element={<SingUpBox />} />
+                    <Route path='/signUp' element={<SignUpBox />} />
 
                     <Route path='/logIn' element={<LogInBox />} />
 
