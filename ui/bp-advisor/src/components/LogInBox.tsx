@@ -1,15 +1,20 @@
-import React from 'react';
 import './logInBoxStyle.css';
 import { Link } from 'react-router-dom';
+import { LoggedInUser, User } from './types';
 import httpRequests from './httpRequests';
+import React from 'react';
+
+type LogInBoxProps = {
+    setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
+}
 
 /**
  * Component for BP-Advisor login box, including a title, e-mail and password input fields, 
  * a submit button, and a sign up button.
  * 
- * @returns HTML-code for a BP-Advisor login box.
+ * @returns HTML-code for a BP-Advisor login box and functions to support login.
  */
-const LogInBox = () => {
+const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
     return (
         <div id='logInBox'>
@@ -28,46 +33,42 @@ const LogInBox = () => {
         </div>
     )
 
+    /**
+     * Gets the input from the email and password input fields, validates it, and sends it to the
+     * backend for processing. If a user with the corresponding emal and password is found, it
+     * is returned and saved in the browser storage.
+     */
     function submitLogInInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
         const emailInputValue: string = (document.getElementById('emailInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordInput') as HTMLInputElement).value;
 
-        if (emailInputValue.length > 0 && passwordInputValue.length > 0) {
-
-            interface User {
-                username: string;
-                email: string;
-                password: string;
-            }
-
-            try {
-                console.log(emailInputValue);
-                console.log(passwordInputValue);
-                const promise: Promise<User> = httpRequests.login({
-                    username: "",       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
-                    email: emailInputValue,
-                    password: passwordInputValue
-                });
-                promise.then((user: User) => {
-                    if (user.email == "failed") {
-                        alert('Incorrect username and/or password.');
-                    } else {
-                        console.log(user);
-                    }
-                });
-
-
-                //TODO: New page must open if login successfull            
-            } catch (error) {
-                //TODO: Error handeling
-            }
-
-        } else {
-            alert("You must insert both username and password.")
+        if (emailInputValue.length < 1 || passwordInputValue.length < 1) {
+            alert('You must insert username and password to log in.')
+            return;
         }
 
-        //TODO: 
+        try {
+            console.log(emailInputValue);
+            console.log(passwordInputValue);
+            const promise: Promise<User> = httpRequests.login({
+                username: '',       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
+                email: emailInputValue,
+                password: passwordInputValue
+            });
+            promise.then((user: User) => {
+                if (user.email === 'failed') {
+                    console.log(user);
+                    alert('Incorrect username and/or password.');
+                } else {
+                    console.log(user);
+                    const { username, email } = user;
+                    setLoggedInUser({ username, email })
+                }
+            });
 
+        } catch (error) {
+            //TODO: Error handling
+        }
 
 
 

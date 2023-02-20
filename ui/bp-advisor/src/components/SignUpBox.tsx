@@ -1,7 +1,12 @@
-import React from 'react';
 import './signUpBoxStyle.css';
-import httpRequests from './httpRequests';
 import { Link } from 'react-router-dom';
+import { LoggedInUser, User } from './types';
+import httpRequests from './httpRequests';
+import React from 'react';
+
+type SignUpBoxProps = {
+    setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
+}
 
 /**
  * Component for BP-Advisor signup box, including a title, username, e-mail and password input fields, 
@@ -9,7 +14,7 @@ import { Link } from 'react-router-dom';
  * 
  * @returns HTML-code for a BP-Advisor signup box.
  */
-const SingUpBox = () => {
+const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
 
     return (
         <div id='signUpBox'>
@@ -37,41 +42,66 @@ const SingUpBox = () => {
     /**
     * A function that gets the values of the input fields in the SignUpBox component, validates them,
     * and then sends the data to the backend through the register function of the httpRequests.ts file.
-    * If the registration is successfull, logs in the user and opens the home page.
+    * If the registration is successful, saves the user to the browser storage.
     */
-    function submitSignUpInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+    async function submitSignUpInfo(): Promise<React.MouseEventHandler<HTMLButtonElement> | any> {
 
-        const nameInputValue: string = (document.getElementById('nameInput') as HTMLInputElement).value;
+        const usernameInputValue: string = (document.getElementById('nameInput') as HTMLInputElement).value;
         const emailInputValue: string = (document.getElementById('emailSingUpInput') as HTMLInputElement).value;
         const passwordInputValue: string = (document.getElementById('passwordSignUpInput') as HTMLInputElement).value;
         const repeatPasswordInputValue: string = (document.getElementById('repeatPasswordSignUpInput') as HTMLInputElement).value;
-        console.log("////////////////////////");
-        console.log(nameInputValue);
-        //MUST ADD VALIDATION
 
-        interface User {
-            username: string;
-            email: string;
-            password: string;
+        if (usernameInputValue.length < 1 || emailInputValue.length < 1 || passwordInputValue.length < 1 || repeatPasswordInputValue.length < 1) {
+            alert('You must provide input into all fields.')
+            return;
+        }
+
+        if (usernameInputValue.length < 5) {
+            alert('Your username must at least be 5 characters long.')
+            return;
+        }
+
+        if (!(emailInputValue.includes(".") && emailInputValue.includes("@"))) {
+            alert('The e-mail is invalid.')
+            return;
+        }
+
+        if (passwordInputValue.length < 8) {
+            alert('The password need to be at least 8 characters long.')
+            return;
+        }
+
+        if (passwordInputValue !== repeatPasswordInputValue) {
+            alert('Password and repeat fields must have the same input.')
+            return;
         }
 
         try {
-            httpRequests.register({
-                username: nameInputValue,
+            await httpRequests.register({
+                username: usernameInputValue,
                 email: emailInputValue,
                 password: passwordInputValue
             });
 
             const promise: Promise<User> = httpRequests.login({
-                username: "",
+                username: '',       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
                 email: emailInputValue,
                 password: passwordInputValue
             });
 
-            //TODO: Change page if register and login succeded
+            promise.then((user: User) => {
+                if (user.email === 'failed') {
+                    console.log(user);
+                    alert('Incorrect username and/or password.');
+                } else {
+                    console.log(user);
+                    const { username, email } = user;
+                    setLoggedInUser({ username, email })
+                }
+            });
 
         } catch (error) {
-            //TODO: Error handeling
+            //TODO: Error handling
         }
     }
 }
