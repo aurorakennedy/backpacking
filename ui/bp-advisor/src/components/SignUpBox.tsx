@@ -77,14 +77,8 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
         }
 
         try {
-            await httpRequests.register({
+            const promise: Promise<User> = httpRequests.register({
                 username: usernameInputValue,
-                email: emailInputValue,
-                password: passwordInputValue
-            });
-
-            const promise: Promise<User> = httpRequests.login({
-                username: '',       //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
                 email: emailInputValue,
                 password: passwordInputValue
             });
@@ -92,7 +86,7 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
             promise.then((user: User) => {
                 if (user.email === 'failed') {
                     console.log(user);
-                    alert('Incorrect username and/or password.');
+                    alert('A user with the same username and/or e-mail already exists');
                 } else {
                     console.log(user);
                     const { username, email } = user;

@@ -9,7 +9,7 @@ async function getUser(userId: number): Promise<User> {
     return user;
 }
 
-async function register(user: User): Promise<void> {
+async function register(user: User): Promise<User> {
     const response: Response = await fetch('http://localhost:8080/register', {
         method: 'POST',
         headers: {
@@ -19,6 +19,17 @@ async function register(user: User): Promise<void> {
     });
     if (!response.ok) {
         throw new Error('Failed to register user');
+    }
+    try {
+        const loggedInUser: User = await response.json();
+        return loggedInUser;
+    } catch (error) {
+        //THIS SHOULD BE FIXED: UGLY!
+        return {
+            username: "failed",
+            email: "failed",
+            password: "failed"
+        };
     }
 }
 
