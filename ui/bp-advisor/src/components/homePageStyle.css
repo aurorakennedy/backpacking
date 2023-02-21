@@ -1,0 +1,37 @@
+
+#homePage{
+    padding: 100px;
+    justify-content: space-between;
+    background-color: rgba(255, 254, 250, 1);
+    padding-top: 100px;
+    
+}
+
+#search{
+    display: flex;
+    margin-top: 150px;
+    left: 100px;
+    color: #D65745;
+    
+}
+
+
+#searchBar{
+    margin-left: 80px;
+    flex-grow: 0.5;
+    height: 40px;
+    font-family: 'Cabin Condensed';
+    font-weight: 40;
+    font-size: 25px;
+    color: #4B4B4B;
+    border-radius: 10px;
+}
+
+#travelRouteDiv {
+    display: inline;
+    background-color: #D65745;
+
+    
+}
+
+
