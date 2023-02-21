@@ -16,17 +16,43 @@ const HomePage = () => {
                 <input id='searchBar' type='text' placeholder='Where do you want to travel?' /* onChange={} */ />
             </div>
             
-            <div id='reiseruter'>
-            <TravelRoute
-                        title='Route 1'
-                        description='Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-                        duration='5 days'
-                        price='$500' /* image={''}      */       />
-            <TravelRoute
-                        title='Route 2'
-                        description='Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.'
-                        duration='7 days'
-                        price='$700' /* image={''}   */          />
+            <div id='travelRouteDiv'>
+
+                <h2>Recomenden Routes</h2>
+
+                <a href="">
+                    <TravelRoute
+                            title='Route 1'
+                            description='Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                            duration='5 days'
+                            price='$500' /* image={''}      */       />
+                </a>
+
+                <a href="">
+                    <TravelRoute
+                            title='Route 2'
+                            description='Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.'
+                            duration='7 days'
+                            price='$700' /* image={''}   */          />
+                </a>
+                <a href="">
+                    <TravelRoute
+                            title='Route 1'
+                            description='Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                            duration='5 days'
+                            price='$500' /* image={''}      */       />
+                </a>
+
+                <a href="">
+                    <TravelRoute
+                            title='Route 2'
+                            description='Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.'
+                            duration='7 days'
+                            price='$700' /* image={''}   */          />
+                </a>
+            
+            
+        
             </div>
 
 

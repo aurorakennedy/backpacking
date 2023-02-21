@@ -12,10 +12,12 @@
 
 
 #logo{
-    position: absolute;
+    padding: 5px;
     width: 400px;
     margin-left: 120px;
     margin-top: 120px;
+    padding-right: 30px; 
+    margin: auto;
 
     font-family: 'Bubbler One';
     font-size: 60px;
@@ -26,15 +28,14 @@
 } 
 
 #profilIconButton{
-    position: absolute;
-    right: 120px;
-    top: 70px;
+    margin-right: 160px;
+    margin: auto;
+    margin-top: 40px; 
     border: none;
     background-color: transparent;
     color: inherit;
     font: inherit;
     cursor: pointer;
-    padding: 0; 
    
 }
 
@@ -47,12 +48,13 @@
 
 
 #addRoute{
-    position: fixed;
-    
-    margin-top: 60px;
+    margin: auto;
+    margin-left: 400px; 
+    margin-top: 40px;
     width: 150px;
     height: 50px;
-    right: 250px;
+    
+    /* right: 50px; */
     cursor: pointer;
     
 
@@ -63,7 +65,7 @@
 
     font-family: 'Cabin Condensed';
     font-weight: 40;
-    font-size: 25px;
+    font-size: 22px;
     color: #4B4B4B;
 }
 
@@ -77,10 +79,10 @@
 
 } */
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1000px) {
     #nav {
-      height: 80px;
-      padding: 10px;
+      height: 120px;
+      padding: 5px;
     }
     
     #logo {
@@ -90,15 +92,23 @@
     }
     
     #profilIconButton {
-      right: 20px;
-      top: 20px;
+      /* right: 20px; */
+      margin-right: 80px;
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+
+    #profilIcon{
+        width: 45px;
+        height: 45px;
+       
     }
     
     #addRoute {
       right: 20px;
       margin-top: 20px;
-      width: 120px;
+      width: 250px;
       height: 40px;
       font-size: 20px;
     }
-}
+} 
