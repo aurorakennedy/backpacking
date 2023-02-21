@@ -169,8 +169,6 @@ public class BackPackingRepository {
 
     }
 
-
-
     public boolean isAdmin(User user) throws RuntimeException, SQLException {
 
         Connection conn = null;
@@ -222,5 +220,42 @@ public class BackPackingRepository {
     }
 
 
+
+
+//Travel Route/ Itinerary//
+    public void addItinerary(Itinerary itinerary) throws SQLException, RuntimeException {
+    }
+
+    public Itinerary getItinerary(int itinaryID){
+        return null;
+    }
+
+    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary WHERE itinerary_description = ?;";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            
+            preparedStatement.setString(1, itinerary.getTitle());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
+        }
+
+        try {
+            preparedStatement.close();
+            conn.close();   
+        } catch (RuntimeException e) {}
+    }
+
+    public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException{
+        return null;
+    }
+
+    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id){
+        return null;
+    }
 
 }

@@ -1,6 +1,7 @@
 package group61.backpacking;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,45 +140,42 @@ public class BackPackingController {
 
 
 //Travel Routes/ Itinerary 
+
     @CrossOrigin(origins = "*")
-    @PostMapping("/register")
-    public Itinerary createItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
-        try {
-            Itinerary savediItinerary = rep.saveItinerary(itinerary);
-            return savediItinerary;
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            return null;
-        }
+    @PostMapping("/itinerary")
+    public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException  {
+       rep.addItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/load")
-    public Itinerary loadItinerary(@PathVariable int id) {
+    @GetMapping("/itinerary/{id}")
+    public Itinerary getItinerary(@PathVariable int id) {
         try {
-            return rep.loadItinerary(id);
-        } catch (Exception e) {
-            return null;
-        }
+            return rep.getItinerary(id);
+        } catch (Exception e) {return null;}
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/delete")
-    public void deleteItinerary(Itinerary itinerary) {
+    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary) throws RuntimeException, SQLException {
         rep.deleteItinerary(itinerary);
     }
 
-    @GetMapping("/users/{id}")
-    public Itinerary getItineraryByUserId(@RequestBody User user) {
-        return rep.getItineraryByUserId(user.getEmail());
-
+    @GetMapping("/itineraries/{userEmail}")
+    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail) throws RuntimeException, SQLException {
+        //List<Itinerary> arrayList = new ArrayList<>();
+        //arrayList.add(rep.getItineraryByUserEmail(userEmail));
+        //return arrayList;
+        return rep.getItinerariesByUserEmail(userEmail);
     }
 
-    @GetMapping("/users/{id}")
-    public List<Itinerary> getUsersItinerary(@PathVariable int id, @RequestBody User user) {
-        List<Itinerary> arrayList = new ArrayList<>();
-        arrayList.add(rep.getItineraryByUserId(user));
-        return arrayList;
+    @GetMapping("")
+    public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID){
+        return rep.GetItineraryDestiationJoined(itineraryID);
+    }
+
+    @PostMapping("/itinaries")
+    public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination){
     }
 
 }
