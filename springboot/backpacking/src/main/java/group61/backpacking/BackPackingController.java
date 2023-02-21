@@ -136,4 +136,48 @@ public class BackPackingController {
         // return new User("test@test.no", "123", "Jarl");
     }
 
+
+
+//Travel Routes/ Itinerary 
+    @CrossOrigin(origins = "*")
+    @PostMapping("/register")
+    public Itinerary createItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
+        try {
+            Itinerary savediItinerary = rep.saveItinerary(itinerary);
+            return savediItinerary;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/load")
+    public Itinerary loadItinerary(@PathVariable int id) {
+        try {
+            return rep.loadItinerary(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/delete")
+    public void deleteItinerary(Itinerary itinerary) {
+        rep.deleteItinerary(itinerary);
+    }
+
+    @GetMapping("/users/{id}")
+    public Itinerary getItineraryByUserId(@RequestBody User user) {
+        return rep.getItineraryByUserId(user.getEmail());
+
+    }
+
+    @GetMapping("/users/{id}")
+    public List<Itinerary> getUsersItinerary(@PathVariable int id, @RequestBody User user) {
+        List<Itinerary> arrayList = new ArrayList<>();
+        arrayList.add(rep.getItineraryByUserId(user));
+        return arrayList;
+    }
+
 }
