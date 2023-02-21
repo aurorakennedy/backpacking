@@ -51,7 +51,7 @@ public class BackPackingRepository {
         try {
             conn = connectToDB();
 
-            String sqlQueryDupUsername = "SELECT COUNT(*) FROM users WHERE username = ?";
+            String sqlQueryDupUsername = "SELECT COUNT(*) FROM User WHERE username = ?";
             preparedStatement = conn.prepareStatement(sqlQueryDupUsername);
             preparedStatement.setString(1, user.getUsername());
             resultSet = preparedStatement.executeQuery();
