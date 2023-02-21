@@ -19,7 +19,7 @@ import java.sql.SQLException;
 public class BackPackingRepository {
 
     @Autowired
-    private JdbcTemplate db;
+    private JdbcTemplate db;  
 
     // public BackPackingRepository(JdbcTemplate jdbcTemplate) {
     //     this.jdbcTemplate = jdbcTemplate;
