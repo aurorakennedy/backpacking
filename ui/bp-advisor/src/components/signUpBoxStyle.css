@@ -1,0 +1,113 @@
+#signUpBox {
+    height: 500px;
+    width: 400px;
+    background-color: #ECECEC;
+    border-radius: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+#signUpBoxTitle {
+    font-family: "Knewave";
+    font-size: 23px;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    margin-left: 90px;
+}
+
+
+#nameInputLabel {
+    position: absolute;
+    top: 160px;
+    left: 50px;
+    font-size: 18px;
+}
+
+#nameInput {
+    position: absolute;
+    float: right;
+    top: 160px;
+    right: 50px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+#emailSignUpInputLabel {
+    position: absolute;
+    top: 220px;
+    left: 50px;
+    font-size: 18px;
+}
+
+#emailSingUpInput {
+    position: absolute;
+    top: 220px;
+    right: 50px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+#passwordSignUpInputLabel {
+    position: absolute;
+    top: 280px;
+    left: 50px;
+    font-size: 18px;
+}
+
+#passwordSignUpInput {
+    position: absolute;
+    top: 280px;
+    right: 50px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+#repeatPasswordSignUpInputLabel {
+    position: absolute;
+    top: 340px;
+    left: 50px;
+    font-size: 18px;
+}
+
+#repeatPasswordSignUpInput {
+    position: absolute;
+    top: 340px;
+    right: 50px;
+    width: 195px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+
+#submitButton {
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 400px;
+    left: 140px;
+    width: 120px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #A1C88E;
+    color: white;
+    cursor: pointer;
+}
+
+#backToLogInButton {
+    position: absolute;
+    bottom: 20px;
+    left: 147px;
+    color: #4AA8FF;
+    text-decoration: underline;
+}
