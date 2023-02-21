@@ -46,9 +46,19 @@ public class BackPackingRepository {
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             conn = connectToDB();
+
+            String sqlQueryDupUsername = "SELECT COUNT(*) FROM users WHERE username = ?";
+            preparedStatement = conn.prepareStatement(sqlQueryDupUsername);
+            preparedStatement.setString(1, user.getUsername());
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                throw new DuplicateUserException("Username " + user.getUsername() + " is already taken");
+            }
+
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?);";
             preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
