@@ -1,0 +1,46 @@
+
+#homePage{
+    padding: 100px;
+    justify-content: space-between;
+    background-color: rgba(255, 254, 250, 1);
+    padding-top: 100px;
+}
+
+#search{
+    display: flex;
+    margin-top: 100px;
+    left: 100px;
+    color: #D65745;
+}
+
+
+#searchBar{
+    margin-left: 80px;
+    flex-grow: 0.5;
+    height: 40px;
+    font-family: 'Cabin Condensed';
+    font-weight: 40;
+    font-size: 25px;
+    color: #4B4B4B;
+    border-radius: 10px;
+}
+
+#travelRouteDiv {
+    width: 1000px;
+    margin-top: 30px; 
+    margin-left: 50px;
+    margin-right: 50px;   
+    padding: 20px; 
+    overflow: auto;
+    white-space: nowrap;
+
+    
+}
+
+#travelRouteDiv a {
+    display: inline-block;
+    text-align: center;
+    padding: 14px;
+  }
+
+
