@@ -20,18 +20,16 @@ public class BackPackingController {
     @Autowired
     private BackPackingRepository rep;
 
-   
     // @CrossOrigin(origins = "*")
     // @PostMapping("/save")
     // public User saveUser(User inUser) {
-    //     try {
-    //         return rep.saveUser(inUser);
+    // try {
+    // return rep.saveUser(inUser);
 
-    //     } catch (Exception e) {
-    //         return null;
-    //     }
+    // } catch (Exception e) {
+    // return null;
     // }
-
+    // }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
@@ -68,13 +66,17 @@ public class BackPackingController {
     // Create a new user
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
-    public void register(@RequestBody User user) throws SQLException, RuntimeException{
-        
-        User savedUser = rep.saveUser(user);
-        System.out.println("controller output savedUser:  " + savedUser.toString());
-        System.out.println("//////////////////////////////////////////////////////////////////////////////////");
-        
-        
+    public User register(@RequestBody User user) throws SQLException, RuntimeException {
+        try {
+            User savedUser = rep.saveUser(user);
+            System.out.println("controller output savedUser:  " + savedUser.toString());
+            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+            return savedUser;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            // TODO: handle exception
+            return null;
+        }
     }
 
     /*
@@ -109,17 +111,18 @@ public class BackPackingController {
     }
 
     // @PostMapping("/users/{id}")
-    // public Boolean updateUser(@RequestBody String password, @RequestBody String userName, @RequestBody User user) throws RuntimeException, SQLException {
+    // public Boolean updateUser(@RequestBody String password, @RequestBody String
+    // userName, @RequestBody User user) throws RuntimeException, SQLException {
 
-    //     User updatedUser = rep.updateUser(user, password, userName);
+    // User updatedUser = rep.updateUser(user, password, userName);
 
-    //     if (user.getUsername() != updatedUser.getUsername()) {
-    //         return false;
-    //     }
-    //     if (user.getPassword() != updatedUser.getPassword()) {
-    //         return false;
-    //     }
-    //     return true;
+    // if (user.getUsername() != updatedUser.getUsername()) {
+    // return false;
+    // }
+    // if (user.getPassword() != updatedUser.getPassword()) {
+    // return false;
+    // }
+    // return true;
     // }
 
     // public void updateUser(){
