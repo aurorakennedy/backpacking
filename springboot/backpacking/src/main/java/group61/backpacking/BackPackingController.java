@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BackPackingController {
 
     @Autowired
-    private BackPackingRepository rep;
+    private UserRepository UserRep;
 
     // @CrossOrigin(origins = "*")
     // @PostMapping("/save")
@@ -36,7 +36,7 @@ public class BackPackingController {
     @GetMapping("/load")
     public User loadUser(String email) {
         try {
-            return rep.loadUser(email);
+            return UserRep.loadUser(email);
         } catch (Exception e) {
             return null;
         }
@@ -46,7 +46,7 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @GetMapping("/delete")
     public void deleteUser(User inUser) throws RuntimeException, SQLException {
-        rep.deleteUser(inUser);
+        UserRep.deleteUser(inUser);
     }
 
     @CrossOrigin(origins = "*")
@@ -54,7 +54,7 @@ public class BackPackingController {
     public User login(@RequestBody User user) {
         System.out.println("Login request recieved on backend.");
         try {
-            return rep.login(user);
+            return UserRep.login(user);
         } catch (Exception e) {
             System.out.println(e.toString());
             // TODO: handle exception
@@ -69,7 +69,7 @@ public class BackPackingController {
     @PostMapping("/register")
     public User register(@RequestBody User user) throws SQLException, RuntimeException {
         try {
-            User savedUser = rep.saveUser(user);
+            User savedUser = UserRep.saveUser(user);
             System.out.println("controller output savedUser:  " + savedUser.toString());
             System.out.println("//////////////////////////////////////////////////////////////////////////////////");
             return savedUser;
@@ -108,7 +108,7 @@ public class BackPackingController {
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id, @RequestBody User user) throws RuntimeException, SQLException {
         // rep.deleteAllByIdInBatch(Iterable<ID> ids)
-        rep.deleteUser(user);
+        UserRep.deleteUser(user);
     }
 
     // @PostMapping("/users/{id}")
@@ -132,7 +132,7 @@ public class BackPackingController {
 
     @GetMapping("/users/{id}")
     public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
-        return rep.loadUser(user.getEmail());
+        return UserRep.loadUser(user.getEmail());
 
         // return new User("test@test.no", "123", "Jarl");
     }
@@ -144,21 +144,21 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException  {
-       rep.addItinerary(itinerary);
+       UserRep.addItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerary/{id}")
     public Itinerary getItinerary(@PathVariable int id) {
         try {
-            return rep.getItinerary(id);
+            return UserRep.getItinerary(id);
         } catch (Exception e) {return null;}
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/delete")
     public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary) throws RuntimeException, SQLException {
-        rep.deleteItinerary(itinerary);
+        UserRep.deleteItinerary(itinerary);
     }
 
     @GetMapping("/itineraries/{userEmail}")
@@ -166,12 +166,12 @@ public class BackPackingController {
         //List<Itinerary> arrayList = new ArrayList<>();
         //arrayList.add(rep.getItineraryByUserEmail(userEmail));
         //return arrayList;
-        return rep.getItinerariesByUserEmail(userEmail);
+        return UserRep.getItinerariesByUserEmail(userEmail);
     }
 
     @GetMapping("/itineraries/{id}")
     public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID){
-        return rep.GetItineraryDestiationJoined(itineraryID);
+        return UserRep.GetItineraryDestiationJoined(itineraryID);
     }
 
     @PostMapping("/itineraries")
