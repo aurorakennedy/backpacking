@@ -43,11 +43,11 @@ public class BackPackingController {
 
     }
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/delete")
-    public void deleteUser(User inUser) throws RuntimeException, SQLException {
-        rep.deleteUser(inUser);
-    }
+    // @CrossOrigin(origins = "*")
+    // @GetMapping("/delete")
+    // public void deleteUser(User inUser) throws RuntimeException, SQLException {
+    //     rep.deleteUser(inUser);
+    // }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/login")
