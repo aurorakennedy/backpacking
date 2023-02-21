@@ -227,7 +227,12 @@ public class BackPackingRepository {
     }
 
     public Itinerary getItinerary(int itinaryID){
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
         return null;
+        
     }
 
     public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
