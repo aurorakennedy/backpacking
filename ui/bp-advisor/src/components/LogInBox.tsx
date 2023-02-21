@@ -1,8 +1,10 @@
 import './logInBoxStyle.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LoggedInUser, User } from './types';
 import httpRequests from './httpRequests';
 import React from 'react';
+import Header from './Header';
+import HomePage from './HomePage';
 
 type LogInBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -16,21 +18,37 @@ type LogInBoxProps = {
  */
 const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
+    let navigate = useNavigate(); 
+
+    function handelClick() {
+        navigate('/HomePage');
+    }
+
+    function handleLogin() {
+        submitLogInInfo();
+        handelClick();
+      }
+
+    
     return (
-        <div id='logInBox'>
+
+        <><Header /><div id='logInBox'>
+
             <form>
                 <h2 id='logInBoxTitle'> Welcome back, backpacker!</h2>
                 <label id='emailInputLabel'>E-mail</label>
                 <input id='emailInput' type='email' placeholder='   ...' required></input>
                 <label id='passwordInputLabel'>Password</label>
                 <input id='passwordInput' type='password' placeholder='   ...' required></input>
-                <button id='logInButton' onClick={submitLogInInfo} type='button'> Log in</button>
+                <button id='logInButton' onClick={handleLogin} type='button'> Log in</button>
             </form>
             {/*  <p id='signUpButton'>Sign up</p> */}
+
+
             <Link id='signUpButton' to='/signUp'>
                 Sign Up
             </Link>
-        </div>
+        </div></>
     )
 
     /**
@@ -63,6 +81,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                     console.log(user);
                     const { username, email } = user;
                     setLoggedInUser({ username, email })
+                    handelClick();
                 }
             });
 
