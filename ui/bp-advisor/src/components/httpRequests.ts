@@ -1,10 +1,4 @@
-import React from "react";
-
-interface User {
-    username: string;
-    email: string;
-    password: string;
-}
+import { User } from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
@@ -15,7 +9,7 @@ async function getUser(userId: number): Promise<User> {
     return user;
 }
 
-async function register(user: User): Promise<void> {
+async function register(user: User): Promise<User> {
     const response: Response = await fetch('http://localhost:8080/register', {
         method: 'POST',
         headers: {
@@ -26,21 +20,42 @@ async function register(user: User): Promise<void> {
     if (!response.ok) {
         throw new Error('Failed to register user');
     }
+    try {
+        const loggedInUser: User = await response.json();
+        return loggedInUser;
+    } catch (error) {
+        //THIS SHOULD BE FIXED: UGLY!
+        return {
+            username: "failed",
+            email: "failed",
+            password: "failed"
+        };
+    }
 }
 
-async function login(request: string[]): Promise<boolean> {
+async function login(user: User): Promise<User> {
     const response: Response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(user),
     });
+    console.log("Response: " + response.status);
     if (!response.ok) {
         throw new Error('Failed to log in');
     }
-    const loggedIn: boolean = await response.json();
-    return loggedIn;
+    try {
+        const loggedInUser: User = await response.json();
+        return loggedInUser;
+    } catch (error) {
+        //THIS SHOULD BE FIXED: UGLY!
+        return {
+            username: "failed",
+            email: "failed",
+            password: "failed"
+        };
+    }
 }
 
 async function updateUser(userId: number, user: User): Promise<void> {

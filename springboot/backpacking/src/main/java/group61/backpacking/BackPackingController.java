@@ -1,8 +1,10 @@
 package group61.backpacking;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,80 +20,164 @@ public class BackPackingController {
     @Autowired
     private BackPackingRepository rep;
 
-    @PostMapping("/save")
-    public User saveUser(User inUser){
-        try {
-            return rep.saveUser(inUser);
+    // @CrossOrigin(origins = "*")
+    // @PostMapping("/save")
+    // public User saveUser(User inUser) {
+    // try {
+    // return rep.saveUser(inUser);
 
+    // } catch (Exception e) {
+    // return null;
+    // }
+    // }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/load")
+    public User loadUser(String email) {
+        try {
+            return rep.loadUser(email);
         } catch (Exception e) {
             return null;
         }
 
-
     }
 
-    
-
-    
-    @GetMapping("/load")
-    public User loadUser(String email)  {
-        try {
-            return rep.loadUser(email);
-        } catch (Exception e) {
-        return null;
-        }
-        
-
-    }
-    
-
+    @CrossOrigin(origins = "*")
     @GetMapping("/delete")
-    public void deleteUser(User inUser){
+    public void deleteUser(User inUser) throws RuntimeException, SQLException {
         rep.deleteUser(inUser);
     }
 
-
+    @CrossOrigin(origins = "*")
     @PostMapping("/login")
-    public boolean login(@RequestBody User user) {
-        
+    public User login(@RequestBody User user) {
+        System.out.println("Login request recieved on backend.");
         try {
             return rep.login(user);
         } catch (Exception e) {
+            System.out.println(e.toString());
             // TODO: handle exception
-            return false;
+            return null;
         }
     }
 
-
     // Suggestions:
 
+    // Create a new user
+    @CrossOrigin(origins = "*")
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
-        //User savedUser = rep.save(user);  
+    public User register(@RequestBody User user) throws SQLException, RuntimeException {
+        try {
+            User savedUser = rep.saveUser(user);
+            System.out.println("controller output savedUser:  " + savedUser.toString());
+            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+            return savedUser;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            // TODO: handle exception
+            return null;
+        }
     }
 
-    @PostMapping("/login")
-    public boolean login(@RequestBody String[] request) {
-        boolean loggedIn = false;
-        return loggedIn;
-    }
+    /*
+     * @PostMapping("/login")
+     * public boolean login_2(@RequestBody User user) {
+     * return rep.login(user);
+     * //boolean loggedIn = false;
+     * //return loggedIn;
+     * }
+     */
 
-    @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
-        //rep.deleteAllByIdInBatch(Iterable<ID> ids)
-    }
+    /*
+     * @DeleteMapping("/users/{id}")
+     * public void deleteTheUser(@RequestBody User user) {
+     * 
+     * public void deleteUser(@PathVariable int id) {
+     * // rep.deleteAllByIdInBatch(Iterable<ID> ids)
+     * }
+     */
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/users/{id}")
     public void updateUser(@PathVariable int id, @RequestBody User user) {
 
     }
 
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable int id, @RequestBody User user) throws RuntimeException, SQLException {
+        // rep.deleteAllByIdInBatch(Iterable<ID> ids)
+        rep.deleteUser(user);
+    }
+
+    // @PostMapping("/users/{id}")
+    // public Boolean updateUser(@RequestBody String password, @RequestBody String
+    // userName, @RequestBody User user) throws RuntimeException, SQLException {
+
+    // User updatedUser = rep.updateUser(user, password, userName);
+
+    // if (user.getUsername() != updatedUser.getUsername()) {
+    // return false;
+    // }
+    // if (user.getPassword() != updatedUser.getPassword()) {
+    // return false;
+    // }
+    // return true;
+    // }
+
+    // public void updateUser(){
+    // User user = rep.loadUser(email).orElseThrow(() -> new
+    // ResourceNotFoundException("User not exist with id: " + id));
+
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable int id) {
-        //return rep.findOne(id); 
-        return null;
+    public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
+        return rep.loadUser(user.getEmail());
+
+        // return new User("test@test.no", "123", "Jarl");
     }
 
 
-    
+
+//Travel Routes/ Itinerary 
+    @CrossOrigin(origins = "*")
+    @PostMapping("/register")
+    public Itinerary createItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
+        try {
+            Itinerary savediItinerary = rep.saveItinerary(itinerary);
+            return savediItinerary;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/load")
+    public Itinerary loadItinerary(@PathVariable int id) {
+        try {
+            return rep.loadItinerary(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/delete")
+    public void deleteItinerary(Itinerary itinerary) {
+        rep.deleteItinerary(itinerary);
+    }
+
+    @GetMapping("/users/{id}")
+    public Itinerary getItineraryByUserId(@RequestBody User user) {
+        return rep.getItineraryByUserId(user.getEmail());
+
+    }
+
+    @GetMapping("/users/{id}")
+    public List<Itinerary> getUsersItinerary(@PathVariable int id, @RequestBody User user) {
+        List<Itinerary> arrayList = new ArrayList<>();
+        arrayList.add(rep.getItineraryByUserId(user));
+        return arrayList;
+    }
+
 }
