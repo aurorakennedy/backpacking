@@ -23,4 +23,10 @@ body {
     margin-top: 0px;
     margin-bottom: 60px;
     font-size: 20px;
-} 
+}
+
+#logOutButton {
+    color: #4AA8FF;
+    text-decoration: underline;
+    cursor: pointer;
+}
