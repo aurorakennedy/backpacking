@@ -15,6 +15,7 @@ export interface Itinerary {
     cost: number,
     distance: number,
     duration: number,
+    description: string;
 }
 
 export interface ItineraryDestination {
