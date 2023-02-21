@@ -121,7 +121,8 @@ public class UserRepository {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");  
+            throw new SQLException("User with email " + user.getEmail() + " not found");
+        
         }
 
         try {
@@ -246,7 +247,8 @@ public class UserRepository {
             preparedStatement.setString(1, itinerary.getTitle());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
+            throw new SQLException("Itinerary with name " + itinerary.getTitle() + " not found");
+           
         }
 
         try {

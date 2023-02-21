@@ -39,48 +39,6 @@ public class Playground {
         return conn;
     }
 
-    public void doStuff() throws RuntimeException{
-        Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conn = connectToDB();
-            statement = conn.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM User");
-
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("email"));
-                System.out.println(resultSet.getString("password"));
-                System.out.println(resultSet.getString("username"));
-        }
-            
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-            
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-
-        
-    }
-
-    // public User mapUserFromResultSet(ResultSet resultSet) throws SQLException {
-    //     User user = new User(null, null , null);
-    //     while (resultSet.next()) {
-    //         user.setEmail(resultSet.getString("email"));
-    //         user.setPassword(resultSet.getString("password"));
-    //         user.setUserName(resultSet.getString("username"));
-    //     }
-    //     return user;
-    // }
-
 
     
 
