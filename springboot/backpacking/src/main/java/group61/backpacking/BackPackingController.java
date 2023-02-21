@@ -169,12 +169,12 @@ public class BackPackingController {
         return rep.getItinerariesByUserEmail(userEmail);
     }
 
-    @GetMapping("")
+    @GetMapping("/itineraries/{id}")
     public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID){
         return rep.GetItineraryDestiationJoined(itineraryID);
     }
 
-    @PostMapping("/itinaries")
+    @PostMapping("/itineraries")
     public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination){
     }
 
