@@ -137,14 +137,12 @@ public class BackPackingController {
         // return new User("test@test.no", "123", "Jarl");
     }
 
-
-
-//Travel Routes/ Itinerary 
+    // Travel Routes/ Itinerary
 
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerary")
-    public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException  {
-       UserRep.addItinerary(itinerary);
+    public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
+        UserRep.addItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
@@ -152,30 +150,34 @@ public class BackPackingController {
     public Itinerary getItinerary(@PathVariable int id) {
         try {
             return UserRep.getItinerary(id);
-        } catch (Exception e) {return null;}
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/delete")
-    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary) throws RuntimeException, SQLException {
+    @GetMapping("/deleteItinerary")
+    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
+            throws RuntimeException, SQLException {
         UserRep.deleteItinerary(itinerary);
     }
 
     @GetMapping("/itineraries/{userEmail}")
-    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail) throws RuntimeException, SQLException {
-        //List<Itinerary> arrayList = new ArrayList<>();
-        //arrayList.add(rep.getItineraryByUserEmail(userEmail));
-        //return arrayList;
+    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
+            throws RuntimeException, SQLException {
+        // List<Itinerary> arrayList = new ArrayList<>();
+        // arrayList.add(rep.getItineraryByUserEmail(userEmail));
+        // return arrayList;
         return UserRep.getItinerariesByUserEmail(userEmail);
     }
 
     @GetMapping("/itineraries/{id}")
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID){
+    public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID) {
         return UserRep.GetItineraryDestiationJoined(itineraryID);
     }
 
     @PostMapping("/itineraries")
-    public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination){
+    public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination) {
     }
 
 }
