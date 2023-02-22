@@ -4,7 +4,6 @@ import { LoggedInUser, User } from './types';
 import httpRequests from './httpRequests';
 import React from 'react';
 import Header from './Header';
-import HomePage from './HomePage';
 
 type LogInBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -18,18 +17,6 @@ type LogInBoxProps = {
  */
 const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
-    let navigate = useNavigate(); 
-
-    function handelClick() {
-        navigate('/HomePage');
-    }
-
-    function handleLogin() {
-        submitLogInInfo();
-        handelClick();
-      }
-
-    
     return (
 
         <><Header /><div id='logInBox'>
@@ -40,7 +27,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                 <input id='emailInput' type='email' placeholder='   ...' required></input>
                 <label id='passwordInputLabel'>Password</label>
                 <input id='passwordInput' type='password' placeholder='   ...' required></input>
-                <button id='logInButton' onClick={handleLogin} type='button'> Log in</button>
+                <button id='logInButton' onClick={submitLogInInfo} type='button'> Log in</button>
             </form>
             {/*  <p id='signUpButton'>Sign up</p> */}
 
@@ -81,7 +68,6 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                     console.log(user);
                     const { username, email } = user;
                     setLoggedInUser({ username, email })
-                    handelClick();
                 }
             });
 
