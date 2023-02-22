@@ -1,4 +1,4 @@
-import { Itinerary, ItineraryDestination, ItineraryDestinationJoined, User } from "./types";
+import { Itinerary, ItineraryDestinationJoined, User } from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
@@ -98,15 +98,15 @@ async function getItinerariesByUserEmail(userEmail: string): Promise<Itinerary[]
     return itineraries;
 }
 
-async function getItineraryDestinationsJoined(itineraryID: number): 
+async function getItineraryDestinationsJoined(itineraryID: number):
     Promise<ItineraryDestinationJoined[]> {
-        const response: Response = await 
-            fetch(`http://localhost:8080/itinerarydestinations/${itineraryID}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch itinerary destinations');
-        }
-        const itineraryDestinations: ItineraryDestinationJoined[] = await response.json();
-        return itineraryDestinations;
+    const response: Response = await
+        fetch(`http://localhost:8080/itinerarydestinations/${itineraryID}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch itinerary destinations');
+    }
+    const itineraryDestinations: ItineraryDestinationJoined[] = await response.json();
+    return itineraryDestinations;
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
@@ -122,18 +122,18 @@ async function addItinerary(itinerary: Itinerary): Promise<void> {
     }
 }
 
-async function addItineraryDestinationsJoined(itineraryDestinations: 
+async function addItineraryDestinationsJoined(itineraryDestinations:
     ItineraryDestinationJoined[]): Promise<void> {
-        const response: Response = await fetch('http://localhost:8080/itinerarydestinations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(itineraryDestinations),
-        });
-        if (!response.ok) {
-            throw new Error('Failed to add itinerary destinations');
-        }
+    const response: Response = await fetch('http://localhost:8080/itinerarydestinations', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(itineraryDestinations),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to add itinerary destinations');
+    }
 }
 
 const httpRequests = {
@@ -141,7 +141,12 @@ const httpRequests = {
     register,
     login,
     updateUser,
-    deleteUser
+    deleteUser,
+    addItinerary,
+    addItineraryDestinationsJoined,
+    getItinerary,
+    getItinerariesByUserEmail,
+    getItineraryDestinationsJoined
 }
 
 export default httpRequests;
