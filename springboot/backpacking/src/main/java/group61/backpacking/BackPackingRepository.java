@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.sql.*;
@@ -14,6 +15,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Repository
 public class BackPackingRepository {
@@ -235,6 +238,35 @@ public class BackPackingRepository {
         
     }
 
+
+    // sletting basert på tittel og email
+    public void deleteItinerary(User user, String title) throws SQLException{
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary WHERE title = ? AND writer_email = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(2, title);
+            
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        try {
+            preparedStatement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
+
+    }
+
     public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -256,7 +288,38 @@ public class BackPackingRepository {
     }
 
     public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException{
-        return null;
+        List<Itinerary> itineraries = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary WHERE writer_email = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+
+            preparedStatement.setString(1, userEmail);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(-1, null, null, null, null, null, null);  // TODO: kostruktør i Itinerary
+                itinerary.mapItineraryFromResultSet(resultSet);
+                // TODO: Legge til destinations
+                itineraries.add(itinerary);
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                // handle exception
+            }
+        }
+        return itineraries;
     }
 
     public ItineraryDestinationJoined GetItineraryDestiationJoined(int id){
