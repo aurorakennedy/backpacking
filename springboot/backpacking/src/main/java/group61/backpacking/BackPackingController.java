@@ -162,6 +162,7 @@ public class BackPackingController {
         UserRep.deleteItinerary(itinerary);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
             throws RuntimeException, SQLException {
@@ -171,12 +172,14 @@ public class BackPackingController {
         return UserRep.getItinerariesByUserEmail(userEmail);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{id}")
     public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID) {
         return UserRep.GetItineraryDestiationJoined(itineraryID);
     }
 
-    @PostMapping("/itineraries")
+    @CrossOrigin(origins = "*")
+    @PostMapping("/itinerarydestinations")
     public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination) {
     }
 
