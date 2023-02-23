@@ -2,6 +2,8 @@ import './createNewItineraryFormStyle.css'
 import { Destination, ItineraryDestinationJoined } from './types';
 import httpRequests from './httpRequests';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Nav from './NavBar';
 
 
 /**
@@ -95,6 +97,8 @@ const CreateNewItineraryForm = () => {
                 description: descriptionInputValue
             });
             httpRequests.addItineraryDestinationsJoined(itineraryDestinations);
+            window.location.reload();
+            window.location.replace('/homePage');
         } catch (error) {
             alert("There was an error when trying to add the route, please try again.");
         }
@@ -102,45 +106,55 @@ const CreateNewItineraryForm = () => {
     }
 
     return (
-        <div id='newRouteBox'>
-            <form>
-                <h2 id='signUpBoxTitle'> Add a backpacking itinerary</h2>
-                <br></br>
-                <label className='newRouteLabel' id='titleInputLabel'>Title</label>
-                <input className='newRouteInput' id='titleInput' type="input" placeholder='   ...'></input>
-                <br></br>
-                <label className='newRouteLabel' id='estimatedTimeInputLabel'>Estimated time (in days)</label>
-                <input className='newRouteInput' id='estimatedTimeInput' type='input' placeholder='   ...'></input>
-                <label className='newRouteLabel' id='estimatedPriceInputLabel'>Estimated price (in dollars)</label>
-                <input className='newRouteInput' id='estimatedPriceInput' type='input' placeholder='   ...'></input>
-                <br></br>
-                <label className='newRouteLabel' id='descriptionInputLabel'> Description </label>
-                <textarea className='newRouteInput' id='descriptionInput' placeholder='   ...'></textarea>
-                <br></br>
-                <br></br>
-                <label className='newRouteLabel' id='destinationInputLabel'>Add destination to itinerary</label>
-                <br></br>
-                <div id='destinationInputBox'>
-                    <div>
-                        <label className='newRouteLabel' id='destinationNameInputLabel'>Destination name</label>
-                        <input className='newRouteInput' id='destinationNameInput' type='input' placeholder='   ...'></input>
+        <>
+            <Nav />
+            <div id='newRouteBox'>
+                <form>
+                    <h2> Add a backpacking itinerary</h2>
+                    <Link id='cancelButton' to='/homePage'>
+                        Cancel
+                    </Link>
+                    <br></br>
+                    <label className='newRouteLabel' id='titleInputLabel'>Title</label>
+                    <input className='newRouteInput' id='titleInput' type="input" placeholder='   ...'></input>
+                    <br></br>
+                    <label className='newRouteLabel' id='estimatedTimeInputLabel'>Estimated time (in days)</label>
+                    <input className='newRouteInput' id='estimatedTimeInput' type='input' placeholder='   ...'></input>
+                    <br></br>
+                    <label className='newRouteLabel' id='estimatedPriceInputLabel'>Estimated price (in dollars)</label>
+                    <input className='newRouteInput' id='estimatedPriceInput' type='input' placeholder='   ...'></input>
+                    <br></br>
+                    <label className='newRouteLabel' id='descriptionInputLabel'> Description </label>
+                    <textarea className='newRouteInput' id='descriptionInput' placeholder='   ...'></textarea>
+                    <br></br>
+                    <br></br>
+                    <label className='newRouteLabel' id='destinationInputLabel'>Add destination to itinerary</label>
+                    <br></br>
+                    <div id='destinationInputBox'>
+                        <div>
+                            <label className='newRouteLabel' id='destinationNameInputLabel'>Destination name</label>
+                            <input className='newRouteInput' id='destinationNameInput' type='input' placeholder='   ...'></input>
+                        </div>
+                        <div>
+                            <label className='newRouteLabel' id='countryInputLabel'>Country of destination</label>
+                            <input className='newRouteInput' id='countryInput' type='input' placeholder='   ...'></input>
+                        </div>
                     </div>
-                    <div>
-                        <label className='newRouteLabel' id='countryInputLabel'>Country of destination</label>
-                        <input className='newRouteInput' id='countryInput' type='input' placeholder='   ...'></input>
+                    <br></br>
+                    <button id='addDestinationButton' onClick={handleAddDestination} type='button'> Add destination</button>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div id='destinationsAsHTML'>
+                        <p id='destinationsAsHTMLTitle'>Destinations added:</p>
+                        <br></br>
+                        <br></br>
+
                     </div>
-                </div>
-                <br></br>
-                <button id='addDestinationButton' onClick={handleAddDestination} type='button'> Add destination</button>
-                <br></br>
-                <br></br>
-                <br></br>
-                <div id='destinationsAsHTML'>
-                    <p id='destinationsAsHTMLTitle'>Destinations added:</p>
-                </div>
-                <button id='submitItineraryButton' onClick={submitDestinationInfo} type='button'> Add route</button>
-            </form>
-        </div >)
+                    <button id='submitItineraryButton' onClick={submitDestinationInfo} type='button'> Add route</button>
+                </form>
+            </div>
+        </>)
 }
 
 export default CreateNewItineraryForm;
