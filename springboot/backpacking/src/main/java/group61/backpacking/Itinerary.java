@@ -35,8 +35,6 @@ public class Itinerary {
     public void mapItineraryFromResultSet(ResultSet resultSet) throws SQLException {
         
 
-        
-
         setId(resultSet.getInt("id"));
         setWriterEmail(resultSet.getString("writer_email"));
         setWrittenDate(resultSet.getDate("written_date"));
