@@ -142,14 +142,15 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
-        UserRep.addItinerary(itinerary);
+        //UserRep.addItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerary/{id}")
     public Itinerary getItinerary(@PathVariable int id) {
         try {
-            return UserRep.getItinerary(id);
+            //return UserRep.getItinerary(id);
+            return null;
         } catch (Exception e) {
             return null;
         }
