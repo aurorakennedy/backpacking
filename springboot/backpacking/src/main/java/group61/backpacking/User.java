@@ -21,7 +21,7 @@ public class User {
 
     public void mapUserFromResultSet(ResultSet resultSet) throws SQLException {
         
-        
+
         setEmail(resultSet.getString("email"));
         setPassword(resultSet.getString("password"));
         setUsername(resultSet.getString("username"));
@@ -60,8 +60,6 @@ public class User {
     public String toString() {
         return "User [email=" + email + ", password=" + password + ", username=" + username + "]";
     }
-    
-
 
 
 }

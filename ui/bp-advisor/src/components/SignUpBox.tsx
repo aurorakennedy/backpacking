@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { LoggedInUser, User } from './types';
 import httpRequests from './httpRequests';
 import React from 'react';
+import Header from './Header';
+import { useNavigate } from 'react-router-dom';
+import HomePage from './HomePage';
 
 type SignUpBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -16,8 +19,10 @@ type SignUpBoxProps = {
  */
 const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
 
+
     return (
-        <div id='signUpBox'>
+        
+        <><Header /><div id='signUpBox'>
             <form onSubmit={submitSignUpInfo}>
                 <h2 id='signUpBoxTitle'> Become a BP-Advisor!</h2>
 
@@ -30,13 +35,15 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
                 <label id='repeatPasswordSignUpInputLabel'> Repeat </label>
                 <input id='repeatPasswordSignUpInput' type='password' placeholder='   ...'></input>
 
+
                 <button id='submitButton' onClick={submitSignUpInfo} type='button'> Sign Up</button>
+
 
                 <Link id='backToLogInButton' to='/logIn'>
                     Back to Log In
                 </Link>
             </form>
-        </div>
+        </div></>
     )
 
     /**
@@ -91,6 +98,7 @@ const SingUpBox = ({ setLoggedInUser }: SignUpBoxProps) => {
                     console.log(user);
                     const { username, email } = user;
                     setLoggedInUser({ username, email })
+                    
                 }
             });
 

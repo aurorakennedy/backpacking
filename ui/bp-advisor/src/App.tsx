@@ -32,12 +32,12 @@ function App() {
     return (
         <Router>
             <div className="App">
-                <h1 id='title'> BP-Advisor</h1>
-                <h2 id='subTitle'>Share your backpacking routes</h2>
 
-                {loggedInUser ? ( //TODO: Front page must show when user is logged in
-                    <><p>Welcome back, {loggedInUser.username}!</p>
-                        <p id='logOutButton' onClick={logOut}> Log out </p></>
+                {loggedInUser ? (
+                    <>
+                        <HomePage />
+                        <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
+                    </>
                 ) : (
                     <Routes>
                         <Route path='/' element={<LogInBox setLoggedInUser={setLoggedInUser} />} />
