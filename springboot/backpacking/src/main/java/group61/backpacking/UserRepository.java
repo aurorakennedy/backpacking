@@ -2,7 +2,7 @@ package group61.backpacking;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.io.InputStream;
 import java.sql.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,24 +233,204 @@ public class UserRepository {
     }
 
 
+    public Date getDate(){
+        // find out how to get current date
 
+        return new Date(2020, 12, 12);
 
-//Travel Route/ Itinerary//
-    public void addItinerary(Itinerary itinerary) throws SQLException, RuntimeException {
     }
 
-    public Itinerary getItinerary(int itinaryID){
+//Travel Route/ Itinerary//
+    public void saveItineraryDestination(User user, String title, String destination, Integer order, Itinerary itinerary ) throws SQLException{
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        
+
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number) VALUES (?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            preparedStatement.setInt(1, itinerary.getId());
+            preparedStatement.setString(2, destination);
+            preparedStatement.setInt(3, order);
+            
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
+
+    }
+
+    public Itinerary loadItineraryByInput(String title, String email) throws RuntimeException, SQLException {
+
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
 
-        return null;
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary WHERE title == ? AND writer_email == ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, title);
+            statement.setString(2, email);
+            resultSet = statement.executeQuery();
+
+            System.out.println("loadItinerary 1");
+
+            
+            while (resultSet.next()) {
+
+                itinerary.mapItineraryFromResultSet(resultSet);
+                
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+            
+            // throw new UserNotFoundException("User with email " + email + " not found");
+            
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+
+        if(itinerary.getId() == -1){
+            return null;
+        }
+
         
+        return itinerary;
+    }
+
+
+    public boolean validateItinerary(String title, String email) throws RuntimeException, SQLException {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary WHERE title = ? AND writer_email = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, title);
+            statement.setString(2, email);
+            resultSet = statement.executeQuery();
+
+            
+
+            
+            while (resultSet.next()) {
+                itinerary.mapItineraryFromResultSet(resultSet);
+            }
+            
+            
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        if(itinerary.getId() == -1){
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+
+    // time to apropriate dataType
+    public void saveItinerary(User user, String estimatedTime, String description, InputStream image, String title, List<String> destinationsList) throws SQLException{
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            if (validateItinerary(title, user.getEmail()) == false){
+                throw new SQLException("Itinerary with this title already exists");
+                
+            }
+            
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Itinerary ( writer_email, written_date, estimated_time, itinerary_description, image, title ) VALUES (?,?,?,?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setDate(2, getDate());
+            preparedStatement.setString(3, estimatedTime);
+            preparedStatement.setString(4, description);
+            preparedStatement.setBinaryStream(5, image);
+            preparedStatement.setString(6, title);
+            
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+                
+        } catch (RuntimeException e) {
+            // do nothing
+            }
+
+        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
+
+        try {
+            itinerary = loadItineraryByInput(title, user.getEmail());
+        } catch (Exception e) {
+                // do nothing
+        }
+        System.out.println(itinerary.toString());
+
+        try {
+
+            for (int i = 0; i < destinationsList.size(); i++) {
+                saveItineraryDestination(user, title, destinationsList.get(i), i+1, itinerary);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+            
+
+
     }
 
 
     // sletting basert på tittel og email
-    public void deleteItinerary(User user, String title) throws SQLException{
+    public void deleteItinerary_byEmail(User user, String title) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -312,7 +492,7 @@ public class UserRepository {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(-1, null, null, null, null, null, null);  // TODO: kostruktør i Itinerary
+                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);  // TODO: kostruktør i Itinerary
                 itinerary.mapItineraryFromResultSet(resultSet);
                 // TODO: Legge til destinations
                 itineraries.add(itinerary);

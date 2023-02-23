@@ -188,7 +188,7 @@ public class Playground {
         try {
 
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order) VALUES (?,?,?)";
+            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number) VALUES (?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
@@ -202,8 +202,8 @@ public class Playground {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            // throw new DuplicateUserException("User with email " + user.getEmail() + "
-            // already exists");
+            
+            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
         }
 
         try {
@@ -255,6 +255,11 @@ public class Playground {
             // do nothing
         }
 
+        if(itinerary.getId() == -1){
+            return null;
+        }
+
+        
         return itinerary;
     }
 
@@ -276,7 +281,8 @@ public class Playground {
             while (resultSet.next()) {
                 itinerary.mapItineraryFromResultSet(resultSet);
             }
-
+            
+              
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
@@ -350,8 +356,8 @@ public class Playground {
             for (int i = 0; i < destinationsList.size(); i++) {
                 saveItineraryDestination(user, title, destinationsList.get(i), i + 1, itinerary);
             }
-        } catch (Exception e) {
-            // do nothing
+        } catch (SQLException e) {
+            throw new SQLException(e);
         }
 
     }
@@ -508,11 +514,10 @@ public class Playground {
 
         // test itinerarystuff below: //////////////////////////////////////
         List<String> destinationsList = Arrays.asList("Oslo", "Bergen", "Trondheim");
-        t.saveItinerary(user, "11.2", "a cool trip", null, "cool trip1", destinationsList);
+        t.saveItinerary(user, "11.2", "a cool trip", null, "t2", destinationsList);
 
-        // System.out.println( t.loadItineraryByInput("cool trip2",
-        // "tobbtest1@test.com").toString()
-        // );
+        //System.out.println(        t.loadItineraryByInput("cool trip3", "tobbtest1@test.com").toString());
+        
 
         // t.saveContinent("Europe");
         // t.saveContinent("Asia");
