@@ -16,13 +16,13 @@ public class Itinerary {
     private int id;
     private String writerEmail;
     private Date writtenDate;
-    private Time estimatedTime;
+    private int estimatedTime;
     private String description;
     private String image;
     private String title;
 
 
-    public Itinerary(int id, String writerEmail, Date writtenDate, Time estimatedTime, String description, String image, String title) {
+    public Itinerary(int id, String writerEmail, Date writtenDate, int estimatedTime, String description, String image, String title) {
         this.id = id;
         this.writerEmail = writerEmail;
         this.writtenDate = writtenDate;
@@ -38,7 +38,7 @@ public class Itinerary {
         setId(resultSet.getInt("id"));
         setWriterEmail(resultSet.getString("writer_email"));
         setWrittenDate(resultSet.getDate("written_date"));
-        setEstimatedTime(resultSet.getTime("estimated_time"));
+        setEstimatedTime(resultSet.getInt("estimated_time"));
         setDescription(resultSet.getString("itinerary_description"));
         setImage(resultSet.getString("image"));
         setTitle(resultSet.getString("title"));
@@ -58,7 +58,7 @@ public class Itinerary {
         return writtenDate;
     }
 
-    public Time getEstimatedTime() {
+    public int getEstimatedTime() {
         return estimatedTime;
     }
 
@@ -86,7 +86,7 @@ public class Itinerary {
         this.writtenDate = writtenDate;
     }
 
-    public void setEstimatedTime(Time estimatedTime) {
+    public void setEstimatedTime(int estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 
@@ -106,7 +106,4 @@ public class Itinerary {
         return "Itinerary [description=" + description + ", estimatedTime=" + estimatedTime + ", id=" + id + ", image="
                 + image + ", title=" + title + ", writerEmail=" + writerEmail + ", writtenDate=" + writtenDate + "]";
     }
-
-
-
 }

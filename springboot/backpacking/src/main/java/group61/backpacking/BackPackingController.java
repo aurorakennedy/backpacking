@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,48 +138,46 @@ public class BackPackingController {
         // return new User("test@test.no", "123", "Jarl");
     }
 
-    // Travel Routes/ Itinerary
+
+// Travel Routes/ Itinerary
 
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerary")
-    public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
-        //UserRep.addItinerary(itinerary);
-    }
+    public void saveItinerary(@RequestBody Itinerary itinerary) throws SQLException{
+        //Does not exist yet:
+        List<String> destinationList = UserRep.loadDestinationList(itinerary);
+
+
+        User itineraryUser = UserRep.loadUser(itinerary.getWriterEmail());
+        UserRep.saveItinerary(itineraryUser, itinerary.getEstimatedTime(),itinerary.getDescription(), itinerary.getImage(), itinerary.getTitle(), destinationList);
+    } //If there's a problem, it's here^: saveItinerary takes in User object, itinerary only gets userID
+
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerary/{id}")
-    public Itinerary getItinerary(@PathVariable int id) {
-        try {
-            //return UserRep.getItinerary(id);
-            return null;
-        } catch (Exception e) {
-            return null;
-        }
+    public Itinerary getItinerary(@PathVariable int id, @RequestBody Itinerary itinerary) throws SQLException, RuntimeException{
+        return UserRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/deleteItinerary")
-    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
-            throws RuntimeException, SQLException {
+    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary) throws RuntimeException, SQLException {
         UserRep.deleteItinerary(itinerary);
     }
 
     @GetMapping("/itineraries/{userEmail}")
-    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
-            throws RuntimeException, SQLException {
-        // List<Itinerary> arrayList = new ArrayList<>();
-        // arrayList.add(rep.getItineraryByUserEmail(userEmail));
-        // return arrayList;
+    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail) throws RuntimeException, SQLException {
         return UserRep.getItinerariesByUserEmail(userEmail);
     }
 
-    @GetMapping("/itineraries/{id}")
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID) {
-        return UserRep.GetItineraryDestiationJoined(itineraryID);
-    }
+   // @GetMapping("/itineraries/{id}")
+    // public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID) {
+   //     return UserRep.GetItineraryDestiationJoined(itineraryID);
+   // }
 
-    @PostMapping("/itineraries")
-    public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination) {
-    }
-
+  //  @PostMapping("/itineraries")
+   // public void addItineraryDesitation(@RequestBody List<ItineraryDestinationJoined> destination) {
+        //UserRep.saveItineraryDestination(null, null, null, null, null);
+   // }
+    
 }
