@@ -1,7 +1,8 @@
 #travelRoute {
-/*     background-color: rgba(233, 234, 179, 0.8);
- */    background-color: rgb(212, 234, 201, 0.8);
-;
+    /*     background-color: rgba(233, 234, 179, 0.8);
+ */
+    background-color: rgb(212, 234, 201, 0.8);
+    ;
 
 
     width: 250px;
@@ -12,42 +13,45 @@
     display: flex;
     flex-direction: column;
     color: #393838;
-    
+
     white-space: pre-line;
-  
-  }
-  
-  #routeName {
-    font-family: 'Bubbler One';
+}
+
+#routeName {
     letter-spacing: 0.05em;
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
-  }
-  
-  #routeDescription {
+    color: #D65745;
+    height: 50px;
+}
+
+#routeDescription {
     font-family: 'Cabin Condensed';
     font-size: 16px;
     margin-bottom: 10px;
     word-wrap: break-word;
-    
-    
-    
-    
-  }
-  
+    padding: 15px;
+    height: 80px;
+
+
+
+
+
+}
+
 /*   #routeImage {
     
   }
    */
 
-  
-  #routeDuration {
-    font-family: 'Cabin Condensed';
-    margin-right: 10px;
-  }
 
-  #routePrice {
-    font-family: 'Cabin Condensed';
+#routeDuration {
     margin-right: 10px;
-  }
+    font-weight: bold;
+}
+
+#routePrice {
+    margin-right: 10px;
+    font-weight: bold;
+}
