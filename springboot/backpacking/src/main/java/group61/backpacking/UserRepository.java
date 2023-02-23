@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Repository
-public class BackPackingRepository {
+public class UserRepository {
 
     @Autowired
     private JdbcTemplate db;

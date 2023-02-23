@@ -1,8 +1,9 @@
 import './logInBoxStyle.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LoggedInUser, User } from './types';
 import httpRequests from './httpRequests';
 import React from 'react';
+import Header from './Header';
 
 type LogInBoxProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
@@ -17,7 +18,9 @@ type LogInBoxProps = {
 const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
 
     return (
-        <div id='logInBox'>
+
+        <><Header /><div id='logInBox'>
+
             <form>
                 <h2 id='logInBoxTitle'> Welcome back, backpacker!</h2>
                 <label id='emailInputLabel'>E-mail</label>
@@ -27,10 +30,12 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                 <button id='logInButton' onClick={submitLogInInfo} type='button'> Log in</button>
             </form>
             {/*  <p id='signUpButton'>Sign up</p> */}
+
+
             <Link id='signUpButton' to='/signUp'>
                 Sign Up
             </Link>
-        </div>
+        </div></>
     )
 
     /**

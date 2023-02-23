@@ -2,7 +2,8 @@
 #homePage{
     padding: 100px;
     justify-content: space-between;
-    background-color: rgba(255, 254, 250, 1);
+   /*  background-color: rgba(255, 254, 250, 1); */
+    background-color: #FFF3E9;
     padding-top: 100px;
 }
 
@@ -10,7 +11,6 @@
     display: flex;
     margin-top: 100px;
     left: 100px;
-    color: #D65745;
 }
 
 
