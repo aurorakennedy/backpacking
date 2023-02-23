@@ -282,7 +282,7 @@ public class UserRepository {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,null,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
 
         try  {
             conn = connectToDB();
@@ -330,7 +330,7 @@ public class UserRepository {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,null,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
 
         try  {
             conn = connectToDB();
@@ -407,7 +407,7 @@ public class UserRepository {
             // do nothing
             }
 
-        Itinerary itinerary = new Itinerary(-1, null, null, null, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
 
         try {
             itinerary = loadItineraryByInput(title, user.getEmail());
@@ -442,7 +442,7 @@ public class UserRepository {
 
 
     // sletting basert på tittel og email
-    public void deleteItinerary(User user, String title) throws SQLException{
+    public void deleteItinerary_byEmail(User user, String title) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -504,7 +504,7 @@ public class UserRepository {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(-1, null, null, null, null, null, null);  // TODO: kostruktør i Itinerary
+                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);  // TODO: kostruktør i Itinerary
                 itinerary.mapItineraryFromResultSet(resultSet);
                 // TODO: Legge til destinations
                 itineraries.add(itinerary);
@@ -580,7 +580,7 @@ public class UserRepository {
             
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, null, null, null, null);
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }

@@ -1,46 +1,48 @@
-
-#homePage{
+#homePage {
     padding: 100px;
     justify-content: space-between;
-   /*  background-color: rgba(255, 254, 250, 1); */
+    /*  background-color: rgba(255, 254, 250, 1); */
     background-color: #FFF3E9;
     padding-top: 100px;
 }
 
-#search{
-    display: flex;
+#search {
     margin-top: 100px;
-    left: 100px;
+    margin-bottom: 50px;
 }
 
 
-#searchBar{
-    margin-left: 80px;
-    flex-grow: 0.5;
+
+#searchBar {
     height: 40px;
     font-family: 'Cabin Condensed';
     font-weight: 40;
     font-size: 25px;
     color: #4B4B4B;
     border-radius: 10px;
+    border: none;
+    width: 700px;
+}
+
+#searchBar::placeholder {
+    text-align: center;
 }
 
 #travelRouteDiv {
     width: 1000px;
-    margin-top: 30px; 
+    margin-top: 30px;
     margin-left: 50px;
-    margin-right: 50px;   
-    padding: 20px; 
+    margin-right: 50px;
+    padding: 20px;
     overflow: auto;
     white-space: nowrap;
 
-    
+
 }
 
 #travelRouteDiv a {
     display: inline-block;
     text-align: center;
     padding: 14px;
-  }
-
-
+    text-decoration: none;
+}

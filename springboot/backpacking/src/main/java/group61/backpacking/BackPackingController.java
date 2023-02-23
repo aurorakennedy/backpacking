@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,21 +140,27 @@ public class BackPackingController {
 
     // Travel Routes/ Itinerary
 
+
+
+    // argumentene må endres
     // @CrossOrigin(origins = "*")
     // @PostMapping("/itinerary")
-    // public void addItinerary(@RequestBody Itinerary itinerary) throws SQLException, RuntimeException {
-    //     UserRep.addItinerary(itinerary);
-    // }
+    // public void saveItinerary(@RequestBody Itinerary itinerary) throws SQLException {
+    //     // Does not exist yet:
+    //     List<String> destinationList = UserRep.loadDestinationList(itinerary);
 
-    // @CrossOrigin(origins = "*")
-    // @GetMapping("/itinerary/{id}")
-    // public Itinerary getItinerary(@PathVariable int id) {
-    //     try {
-    //         return UserRep.loadItinerary(id);
-    //     } catch (Exception e) {
-    //         return null;
-    //     }
-    // }
+    //     User itineraryUser = UserRep.loadUser(itinerary.getWriterEmail());
+    //     UserRep.saveItinerary(itineraryUser, itinerary.getEstimatedTime(), itinerary.getDescription(),
+    //             itinerary.getImage(), itinerary.getTitle(), destinationList);
+    // } // If there's a problem, it's here^: saveItinerary takes in User object,
+    //   // itinerary only gets userID
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/itinerary/{id}")
+    public Itinerary getItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
+            throws SQLException, RuntimeException {
+        return UserRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
+    }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/deleteItinerary")
@@ -162,6 +169,7 @@ public class BackPackingController {
         UserRep.deleteItinerary(itinerary);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
             throws RuntimeException, SQLException {
