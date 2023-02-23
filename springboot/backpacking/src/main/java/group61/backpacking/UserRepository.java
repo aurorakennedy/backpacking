@@ -1,6 +1,7 @@
 package group61.backpacking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.io.InputStream;
 import java.sql.*;
@@ -428,6 +429,17 @@ public class UserRepository {
 
     }
 
+    
+
+
+
+
+
+      
+
+
+    
+
 
     // sletting basert på tittel og email
     public void deleteItinerary(User user, String title) throws SQLException{
@@ -477,7 +489,7 @@ public class UserRepository {
         } catch (RuntimeException e) {}
     }
 
-    public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException{
+    public List<Itinerary> loadItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException{
         List<Itinerary> itineraries = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -512,8 +524,213 @@ public class UserRepository {
         return itineraries;
     }
 
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id){
-        return null;
+    
+
+    
+
+    public List<Destination> loadDestinationsOnItinerary(Itinerary itinerary) throws SQLException{
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Destination> destinationList = new ArrayList<Destination>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT Itinerary_destination.destination_name, Destinations.country, Destinations.destination_description " +
+            "FROM Itinerary_destination "+
+            "JOIN Destinations "+
+            "ON Itinerary_destination.destination_name = Destinations.destination_name "+
+            "WHERE Itinerary_destination.itinerary_id = ? "+
+            "ORDER BY Itinerary_destination.order_number ASC;";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itinerary.getId());
+            resultSet = statement.executeQuery();
+        
+
+            while (resultSet.next()) {
+    
+                Destination destination = new Destination(null, null, null);
+                destination.mapDestinationFromResultSet(resultSet);
+                destinationList.add(destination);
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+        }
+        System.out.println(destinationList.size());
+        return destinationList;
+
+
     }
+
+    public List<Itinerary> loadEveryItinerary() throws SQLException{
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> itineraryList = new ArrayList<Itinerary>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, null, null, null, null);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+            
+            // throw new UserNotFoundException("User with email " + email + " not found");
+            
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+
+        return itineraryList;
+    }
+
+    public List<ItineraryDestination>loadItineraryDestinations() throws SQLException{
+        List<ItineraryDestination> itinerary_destinationList = new ArrayList<ItineraryDestination>();
+        List<Itinerary> itineraryList = loadEveryItinerary();
+        
+        for (Itinerary itinerary : itineraryList) {
+            List<Destination> destinationList = new ArrayList<Destination>();
+            destinationList = loadDestinationsOnItinerary(itinerary);
+            ItineraryDestination itinerary_destination = new ItineraryDestination(itinerary, destinationList);
+            itinerary_destinationList.add(itinerary_destination);
+        }
+        return itinerary_destinationList;
+    }
+
+
+
+    public void saveDestination(String destName, String country, String destDescription) throws SQLException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Destinations (destination_name, country, destination_description) VALUES (?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
+            preparedStatement.setString(1, destName);
+            preparedStatement.setString(2, country);
+            preparedStatement.setString(3, destDescription);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+
+        } catch (RuntimeException e) {
+            // do nothing
+        }
+
+    }
+
+    public void saveCountry(String countryName, String continent) throws SQLException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            saveContinent(continent);
+        } catch (Exception e) {
+            // Do nothing
+        }
+
+        try {
+
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Countries (country_name, continent) VALUES (?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
+            preparedStatement.setString(1, countryName);
+            preparedStatement.setString(2, continent);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+
+        } catch (RuntimeException e) {
+            // do nothing
+        }
+    }
+
+    public void saveContinent(String continent) throws SQLException {
+        Connection conn = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Continents (continent_name) VALUES (?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
+            preparedStatement.setString(1, continent);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
+        }
+
+        try {
+            resultSet.close();
+            statement.close();
+            conn.close();
+
+        } catch (RuntimeException e) {
+            // do nothing
+        }
+
+    }
+
+
+
+
+
+
+
+
+    
+
+
 
 }
