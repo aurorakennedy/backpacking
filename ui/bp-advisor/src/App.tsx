@@ -5,7 +5,7 @@ import LogInBox from './components/LogInBox';
 import React, { useEffect, useState } from 'react';
 import SignUpBox from './components/SignUpBox';
 import HomePage from './components/HomePage';
-
+import CreateNewItineraryForm from './components/CreateNewItineraryForm';
 
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(
         JSON.parse(localStorage.getItem('loggedInUser') || 'null')
     );
+
 
     // Saves the logged in user to the browser storage when user logges in.
     useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
     const logOut: React.MouseEventHandler<HTMLParagraphElement> | undefined = () => {
         localStorage.setItem('loggedInUser', 'null');
         window.location.reload();
+        window.location.replace('/logIn');
     }
 
     return (
@@ -35,7 +37,13 @@ function App() {
 
                 {loggedInUser ? (
                     <>
-                        <HomePage />
+                        <Routes>
+                            <Route path='/' element={<HomePage />} />
+                            <Route path='/logIn' element={<HomePage />} />
+                            <Route path='/signUp' element={<HomePage />} />
+                            <Route path='/homePage' element={<HomePage />} />
+                            <Route path='/createItinerary' element={<CreateNewItineraryForm />} />
+                        </Routes>
                         <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
                     </>
                 ) : (
