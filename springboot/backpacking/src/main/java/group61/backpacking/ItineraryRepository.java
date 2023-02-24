@@ -284,42 +284,7 @@ public class ItineraryRepository {
 
     
 
-    public List<Destination> loadDestinationsOnItinerary(Itinerary itinerary) throws SQLException{
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        List<Destination> destinationList = new ArrayList<Destination>();
-
-        try  {
-            conn = connectToDB();
-            String sqlQuery = "SELECT Itinerary_destination.destination_name, Destinations.country, Destinations.destination_description " +
-            "FROM Itinerary_destination "+
-            "JOIN Destinations "+
-            "ON Itinerary_destination.destination_name = Destinations.destination_name "+
-            "WHERE Itinerary_destination.itinerary_id = ? "+
-            "ORDER BY Itinerary_destination.order_number ASC;";
-            statement = conn.prepareStatement(sqlQuery);
-            statement.setInt(1, itinerary.getId());
-            resultSet = statement.executeQuery();
-        
-
-            while (resultSet.next()) {
     
-                Destination destination = new Destination(null, null, null);
-                destination.mapDestinationFromResultSet(resultSet);
-                destinationList.add(destination);
-            }
-            
-            
-        } catch (SQLException e) {
-            System.out.println("Error in loadItinerary   1");
-            throw new SQLException(e);
-        }
-        System.out.println(destinationList.size());
-        return destinationList;
-
-
-    }
 
     public List<Itinerary> loadEveryItinerary() throws SQLException{
 
@@ -360,9 +325,47 @@ public class ItineraryRepository {
         return itineraryList;
     }
 
-    public List<ItineraryDestination>loadItineraryDestinations() throws SQLException{
+
+    public List<Destination> loadDestinationsOnItinerary(Itinerary itinerary) throws SQLException{
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Destination> destinationList = new ArrayList<Destination>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT Itinerary_destination.destination_name, Destinations.country, Destinations.destination_description " +
+            "FROM Itinerary_destination "+
+            "JOIN Destinations "+
+            "ON Itinerary_destination.destination_name = Destinations.destination_name "+
+            "WHERE Itinerary_destination.itinerary_id = ? "+
+            "ORDER BY Itinerary_destination.order_number ASC;";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itinerary.getId());
+            resultSet = statement.executeQuery();
+        
+
+            while (resultSet.next()) {
+    
+                Destination destination = new Destination(null, null, null);
+                destination.mapDestinationFromResultSet(resultSet);
+                destinationList.add(destination);
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+        }
+        System.out.println(destinationList.size());
+        return destinationList;
+
+
+    }
+
+    public List<ItineraryDestination>loadItineraryDestinations(List<Itinerary> itineraryList) throws SQLException{
         List<ItineraryDestination> itinerary_destinationList = new ArrayList<ItineraryDestination>();
-        List<Itinerary> itineraryList = loadEveryItinerary();
+         
         
         for (Itinerary itinerary : itineraryList) {
             List<Destination> destinationList = new ArrayList<Destination>();
