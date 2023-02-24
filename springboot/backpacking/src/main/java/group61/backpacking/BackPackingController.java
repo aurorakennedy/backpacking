@@ -21,6 +21,7 @@ public class BackPackingController {
 
     @Autowired
     private UserRepository UserRep;
+    private ItineraryRepository ItineraryRep;
 
     // @CrossOrigin(origins = "*")
     // @PostMapping("/save")
@@ -159,14 +160,14 @@ public class BackPackingController {
     @GetMapping("/itinerary/{id}")
     public Itinerary getItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
             throws SQLException, RuntimeException {
-        return UserRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
+        return ItineraryRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/deleteItinerary")
     public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
             throws RuntimeException, SQLException {
-        UserRep.deleteItinerary(itinerary);
+                ItineraryRep.deleteItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
@@ -176,7 +177,7 @@ public class BackPackingController {
         // List<Itinerary> arrayList = new ArrayList<>();
         // arrayList.add(rep.getItineraryByUserEmail(userEmail));
         // return arrayList;
-        return UserRep.loadItinerariesByUserEmail(userEmail);
+        return ItineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     // @GetMapping("/itineraries/{id}")
