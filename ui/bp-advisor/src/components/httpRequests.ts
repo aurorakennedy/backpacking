@@ -1,4 +1,4 @@
-import { Itinerary, ItineraryDestinationJoined, User } from "./types";
+import { Itinerary, ItineraryDestination, User } from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
@@ -112,19 +112,19 @@ async function addItinerary(itinerary: Itinerary): Promise<void> {
     }
 }
 
-async function getItineraryDestinationsJoined(itineraryID: number):
-    Promise<ItineraryDestinationJoined[]> {
+async function getItineraryDestinations(itineraryID: number):
+    Promise<ItineraryDestination[]> {
     const response: Response = await
         fetch(`http://localhost:8080/itinerarydestinations/${itineraryID}`);
     if (!response.ok) {
         throw new Error('Failed to fetch itinerary destinations');
     }
-    const itineraryDestinations: ItineraryDestinationJoined[] = await response.json();
+    const itineraryDestinations: ItineraryDestination[] = await response.json();
     return itineraryDestinations;
 }
 
-async function addItineraryDestinationsJoined(itineraryDestinations:
-    ItineraryDestinationJoined[]): Promise<void> {
+async function addItineraryDestinations(itineraryDestinations:
+    ItineraryDestination[]): Promise<void> {
     const response: Response = await fetch('http://localhost:8080/itinerarydestinations', {
         method: 'POST',
         headers: {
@@ -144,10 +144,10 @@ const httpRequests = {
     updateUser,
     deleteUser,
     addItinerary,
-    addItineraryDestinationsJoined,
+    addItineraryDestinations,
     getItineraryById,
     getItinerariesByUserEmail,
-    getItineraryDestinationsJoined,
+    getItineraryDestinations,
 }
 
 export default httpRequests;
