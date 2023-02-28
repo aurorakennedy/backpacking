@@ -102,8 +102,11 @@ public class Itinerary {
         this.title = title;
     }
 
+    @Override
     public String toString() {
-        return "Itinerary [description=" + description + ", estimatedTime=" + estimatedTime + ", id=" + id + ", image="
-                + image + ", title=" + title + ", writerEmail=" + writerEmail + ", writtenDate=" + writtenDate + "]";
+        return "Itinerary [id=" + id + ", writerEmail=" + writerEmail + ", writtenDate=" + writtenDate
+                + ", estimatedTime=" + estimatedTime + ", description=" + description + ", image=" + image + ", title="
+                + title + ", cost=" + cost + "]";
     }
+
 }

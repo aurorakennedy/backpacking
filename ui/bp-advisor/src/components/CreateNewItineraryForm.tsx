@@ -99,7 +99,7 @@ const CreateNewItineraryForm = ({
       return;
     }
 
-    const createdId: number = Math.random();
+    const createdId: number = Math.random()*100000000;
 
     const itineraryDestinations: ItineraryDestination[] = [];
 
@@ -127,9 +127,9 @@ const CreateNewItineraryForm = ({
         description: descriptionInputValue,
         image: "",
       });
-      httpRequests.addItineraryDestinations(itineraryDestinations);
-      window.location.reload();
-      window.location.replace("/homePage");
+      // httpRequests.addItineraryDestinations(itineraryDestinations);
+      // window.location.reload();
+      // window.location.replace("/homePage");
     } catch (error) {
       alert(
         "There was an error when trying to add the route, please try again."
