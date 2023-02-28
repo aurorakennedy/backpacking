@@ -181,16 +181,16 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerarydestinations/{id}")
-    public List<ItineraryDestinationsJoined>
-         getItineraryDestinationsJoined(@PathVariable int itineraryID) {
+    public List<ItineraryDestination>
+         getItineraryDestinations(@PathVariable int itineraryID) {
             //return UserRep.loadDestinationsOnItinerary(itineraryID);
             return null;
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerarydestinations")
-    public void addItineraryDestinationsJoined(@RequestBody 
-        List<ItineraryDestinationsJoined> itineraryDestinations) {
+    public void addItineraryDestinations(@RequestBody 
+        List<ItineraryDestination> itineraryDestinations) {
     }
 
 }

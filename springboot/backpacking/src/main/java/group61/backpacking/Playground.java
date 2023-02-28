@@ -179,7 +179,7 @@ public class Playground {
 
     }
 
-    public void saveItineraryDestination(User user, String title, String destination, Integer order,
+    public void saveItineraryAndDestinations(User user, String title, String destination, Integer order,
             Itinerary itinerary) throws SQLException {
         Connection conn = null;
         Statement statement = null;
@@ -353,7 +353,7 @@ public class Playground {
         try {
 
             for (int i = 0; i < destinationsList.size(); i++) {
-                saveItineraryDestination(user, title, destinationsList.get(i), i + 1, itinerary);
+                saveItineraryAndDestinations(user, title, destinationsList.get(i), i + 1, itinerary);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -582,14 +582,14 @@ public class Playground {
         return itineraryList;
     }
 
-    public List<ItineraryDestination>loadItineraryDestinations() throws SQLException{
-        List<ItineraryDestination> itinerary_destinationList = new ArrayList<ItineraryDestination>();
+    public List<ItineraryAndDestinations>loadItineraryAndDestinationss() throws SQLException{
+        List<ItineraryAndDestinations> itinerary_destinationList = new ArrayList<ItineraryAndDestinations>();
         List<Itinerary> itineraryList = loadEveryItinerary();
         
         for (Itinerary itinerary : itineraryList) {
             List<Destination> destinationList = new ArrayList<Destination>();
             destinationList = loadDestinationsOnItinerary(itinerary);
-            ItineraryDestination itinerary_destination = new ItineraryDestination(itinerary, destinationList);
+            ItineraryAndDestinations itinerary_destination = new ItineraryAndDestinations(itinerary, destinationList);
             itinerary_destinationList.add(itinerary_destination);
         }
         return itinerary_destinationList;
@@ -614,10 +614,10 @@ public class Playground {
         // System.out.println(destinationsList);
 
         //System.out.println(        t.loadItineraryByInput("cool trip3", "tobbtest1@test.com").toString());
-        List<ItineraryDestination> itineraryDestinations = t.loadItineraryDestinations();
+        List<ItineraryAndDestinations> itineraryAndDestinations = t.loadItineraryAndDestinationss();
         
-        for (ItineraryDestination itineraryDestination : itineraryDestinations) {
-            itineraryDestination.print();
+        for (ItineraryAndDestinations itineraryAndDestinationsInList : itineraryAndDestinations) {
+            itineraryAndDestinationsInList.print();
         }
 
         
