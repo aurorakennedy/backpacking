@@ -74,6 +74,7 @@ public class BackPackingController {
         userRep.deleteUser(user);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/users/{id}")
     public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
         return userRep.loadUser(user.getEmail());
@@ -85,7 +86,7 @@ public class BackPackingController {
     @GetMapping("/itinerary/{id}")
     public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
-        //return itineraryRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
+        // return itineraryRep.loadItineraryByID(id);
         return null;
     }
 
@@ -99,14 +100,14 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) {
-
+        // itineraryRep.saveItinerary(itinerary);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerarydestinations/{id}")
     public List<ItineraryDestination>
          getItineraryDestinations(@PathVariable int itineraryID) {
-            //return UserRep.loadDestinationsOnItinerary(itineraryID);
+            // return itineraryRep.loadItineraryDestinations(itineraryID);
             return null;
     }
 
@@ -114,6 +115,7 @@ public class BackPackingController {
     @PostMapping("/itinerarydestinations")
     public void addItineraryDestinations(@RequestBody 
         List<ItineraryDestination> itineraryDestinations) {
+            // itineraryRep.saveItineraryDestinations(itineraryDestionations);
     }
 
 }
