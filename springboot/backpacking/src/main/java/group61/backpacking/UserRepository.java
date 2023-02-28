@@ -22,18 +22,15 @@ import java.time.LocalTime;
 public class UserRepository {
 
     @Autowired
-    private JdbcTemplate db;  
+    private JdbcTemplate db;
 
     // public BackPackingRepository(JdbcTemplate jdbcTemplate) {
-    //     this.jdbcTemplate = jdbcTemplate;
+    // this.jdbcTemplate = jdbcTemplate;
     // }
-
-    
 
     public static Connection connectToDB() {
         Connection conn = null;
         String url = "jdbc:sqlite:database.db";
-        
 
         try {
             conn = DriverManager.getConnection(url);
@@ -64,50 +61,51 @@ public class UserRepository {
 
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?);";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             preparedStatement.close();
-            conn.close();   
+            conn.close();
         } catch (RuntimeException e) {
             // do nothing
-            }
-            
+        }
+
         try {
             return loadUser(user.getEmail());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
 
-        
     }
+
     public User loadUser(String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        User user = new User(null,null,null);
+        User user = new User(null, null, null);
 
-        try  {
+        try {
             conn = connectToDB();
             String sqlQuery = "SELECT * FROM User WHERE email = ?;";
             statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, email);
             resultSet = statement.executeQuery();
 
-            
             while (resultSet.next()) {
                 user.mapUserFromResultSet(resultSet);
             }
-              
+
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
@@ -122,30 +120,29 @@ public class UserRepository {
         return user;
     }
 
-    public void deleteUser(User user) throws RuntimeException, SQLException{
+    public void deleteUser(User user) throws RuntimeException, SQLException {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-    
+
         try {
             conn = connectToDB();
             String sqlQuery = "DELETE FROM User WHERE email = ?;";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            
+
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");  
+            throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
 
         try {
             preparedStatement.close();
-            conn.close();   
+            conn.close();
         } catch (RuntimeException e) {
             // do nothing
-            }
+        }
 
     }
-
 
     public User login(User user) throws RuntimeException, SQLException {
 
@@ -153,22 +150,21 @@ public class UserRepository {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         String password = "";
-        try  {
+        try {
             conn = connectToDB();
             String sqlQuery = "SELECT password FROM User WHERE email = ?;";
             statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
             resultSet = statement.executeQuery();
 
-            
             while (resultSet.next()) {
                 password = (resultSet.getString("password"));
             }
-              
+
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
-            }
+        }
 
         if (password.equals(user.getPassword())) {
             try {
@@ -176,7 +172,7 @@ public class UserRepository {
             } catch (RuntimeException e) {
                 throw new RuntimeException("User with email " + user.getEmail() + " did not match the password");
             }
-        } 
+        }
 
         return null;
 
@@ -187,20 +183,17 @@ public class UserRepository {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        User moderator = new User(null,null,null);
-
-        
+        User moderator = new User(null, null, null);
 
         try {
             conn = connectToDB();
-            
-            String sqlQuery = "SELECT User.email, User.password, User.username " +
-            "FROM User " +
-            "JOIN Moderator " + 
-            "ON User.email = Moderator.email "+
-            "WHERE Moderator.email = ?";
 
-            
+            String sqlQuery = "SELECT User.email, User.password, User.username " +
+                    "FROM User " +
+                    "JOIN Moderator " +
+                    "ON User.email = Moderator.email " +
+                    "WHERE Moderator.email = ?";
+
             preparedStatement = conn.prepareStatement(sqlQuery);
             preparedStatement.setString(1, user.getEmail());
             resultSet = preparedStatement.executeQuery();
@@ -210,69 +203,70 @@ public class UserRepository {
             }
         } catch (SQLException e) {
             throw new SQLException(e);
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             resultSet.close();
             preparedStatement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
+        }
 
         if (moderator != null) {
             if (moderator.getPassword().equals(user.getPassword())) {
-                return true;        
+                return true;
             }
         }
-     
+
         return false;
-        
+
     }
 
-
-    public Date getDate(){
+    public Date getDate() {
         // find out how to get current date
 
         return new Date(2020, 12, 12);
 
     }
 
-//Travel Route/ Itinerary//
-    public void saveItineraryDestination(User user, String title, String destination, Integer order, Itinerary itinerary ) throws SQLException{
+    // Travel Route/ Itinerary//
+    public void saveItineraryDestination(User user, String title, String destination, Integer order,
+            Itinerary itinerary) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        
 
         try {
-            
+
             conn = connectToDB();
             String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number) VALUES (?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
             preparedStatement.setInt(1, itinerary.getId());
             preparedStatement.setString(2, destination);
             preparedStatement.setInt(3, order);
-            
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             resultSet.close();
             statement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
-
+        }
 
     }
 
@@ -281,9 +275,9 @@ public class UserRepository {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
 
-        try  {
+        try {
             conn = connectToDB();
             String sqlQuery = "SELECT * FROM Itinerary WHERE title == ? AND writer_email == ?";
             statement = conn.prepareStatement(sqlQuery);
@@ -293,19 +287,18 @@ public class UserRepository {
 
             System.out.println("loadItinerary 1");
 
-            
             while (resultSet.next()) {
 
                 itinerary.mapItineraryFromResultSet(resultSet);
-                
+
             }
-            
+
         } catch (SQLException e) {
             System.out.println("Error in loadItinerary   1");
             throw new SQLException(e);
-            
+
             // throw new UserNotFoundException("User with email " + email + " not found");
-            
+
         }
         try {
             conn.close();
@@ -315,23 +308,21 @@ public class UserRepository {
             // do nothing
         }
 
-        if(itinerary.getId() == -1){
+        if (itinerary.getId() == -1) {
             return null;
         }
 
-        
         return itinerary;
     }
-
 
     public boolean validateItinerary(String title, String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
 
-        try  {
+        try {
             conn = connectToDB();
             String sqlQuery = "SELECT * FROM Itinerary WHERE title = ? AND writer_email = ?";
             statement = conn.prepareStatement(sqlQuery);
@@ -339,14 +330,10 @@ public class UserRepository {
             statement.setString(2, email);
             resultSet = statement.executeQuery();
 
-            
-
-            
             while (resultSet.next()) {
                 itinerary.mapItineraryFromResultSet(resultSet);
             }
-            
-            
+
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
@@ -358,89 +345,85 @@ public class UserRepository {
         } catch (Exception e) {
             // do nothing
         }
-        if(itinerary.getId() == -1){
+        if (itinerary.getId() == -1) {
             return true;
         }
         return false;
     }
 
-
-
-
-
     // time to apropriate dataType
-    public void saveItinerary(User user, String estimatedTime, String description, InputStream image, String title, List<String> destinationsList) throws SQLException{
+    public void saveItinerary(User user, String estimatedTime, String description, InputStream image, String title,
+            List<String> destinationsList) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            if (validateItinerary(title, user.getEmail()) == false){
+            if (validateItinerary(title, user.getEmail()) == false) {
                 throw new SQLException("Itinerary with this title already exists");
-                
+
             }
-            
+
             conn = connectToDB();
             String sqlQuery = "INSERT INTO Itinerary ( writer_email, written_date, estimated_time, itinerary_description, image, title ) VALUES (?,?,?,?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setDate(2, getDate());
             preparedStatement.setString(3, estimatedTime);
             preparedStatement.setString(4, description);
             preparedStatement.setBinaryStream(5, image);
             preparedStatement.setString(6, title);
-            
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             resultSet.close();
             statement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
+        }
 
         Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
 
         try {
             itinerary = loadItineraryByInput(title, user.getEmail());
         } catch (Exception e) {
-                // do nothing
+            // do nothing
         }
         System.out.println(itinerary.toString());
 
         try {
 
             for (int i = 0; i < destinationsList.size(); i++) {
-                saveItineraryDestination(user, title, destinationsList.get(i), i+1, itinerary);
+                saveItineraryDestination(user, title, destinationsList.get(i), i + 1, itinerary);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-            
-
 
     }
 
-
     // sletting basert på tittel og email
-    public void deleteItinerary_byEmail(User user, String title) throws SQLException{
+    public void deleteItinerary_byEmail(User user, String title) throws SQLException {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
-            
+
             conn = connectToDB();
             String sqlQuery = "DELETE FROM Itinerary WHERE title = ? AND writer_email = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, title);
-            
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -449,35 +432,35 @@ public class UserRepository {
         try {
             preparedStatement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
-
+        }
 
     }
 
-    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
+    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = connectToDB();
             String sqlQuery = "DELETE FROM Itinerary WHERE itinerary_description = ?;";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            
+
             preparedStatement.setString(1, itinerary.getTitle());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
+            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");
         }
 
         try {
             preparedStatement.close();
-            conn.close();   
-        } catch (RuntimeException e) {}
+            conn.close();
+        } catch (RuntimeException e) {
+        }
     }
 
-    public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException{
+    public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException {
         List<Itinerary> itineraries = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -492,7 +475,8 @@ public class UserRepository {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);  // TODO: kostruktør i Itinerary
+                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null); // TODO: kostruktør i
+                                                                                           // Itinerary
                 itinerary.mapItineraryFromResultSet(resultSet);
                 // TODO: Legge til destinations
                 itineraries.add(itinerary);
@@ -502,9 +486,12 @@ public class UserRepository {
             // TODO: handle exception
         } finally {
             try {
-                if (resultSet != null) resultSet.close();
-                if (preparedStatement != null) preparedStatement.close();
-                if (conn != null) conn.close();
+                if (resultSet != null)
+                    resultSet.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (conn != null)
+                    conn.close();
             } catch (SQLException ex) {
                 // handle exception
             }
@@ -512,7 +499,7 @@ public class UserRepository {
         return itineraries;
     }
 
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id){
+    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id) {
         return null;
     }
 
