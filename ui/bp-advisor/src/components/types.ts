@@ -11,34 +11,29 @@ export interface User {
 
 export interface Itinerary {
     id: number,
-    name: string,
+    userEmail: string, // Foreign key
+    lastChanged: Date,
+    title: string,
     cost: number,
     distance: number,
     duration: number,
     description: string;
 }
 
-export interface ItineraryDestination {
-    itineraryID: number, // Foreign key
-    destinationID: number, // Foreign key
-    order: number,
-}
-
 export interface ItineraryDestinationJoined {
     itineraryID: number, // Foreign key
-    destinationID: number, // Foreign key
-    name: string,
-    area: string,
+    destinationName: string, // Foreign key
     country: string,
-    continent: string,
-    order: number,
+    order: number, 
+    description: string,
 }
 
+// Maybe unused
+
 export interface Destination {
-    id: number,
     name: string,
-    area: string,
     country: string, // Foreign key
+    description: string,
 }
 
 export interface Country {

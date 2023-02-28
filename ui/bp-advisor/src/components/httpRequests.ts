@@ -80,7 +80,7 @@ async function deleteUser(userId: number): Promise<void> {
     }
 }
 
-async function getItinerary(itineraryId: number): Promise<Itinerary> {
+async function getItineraryById(itineraryId: number): Promise<Itinerary> {
     const response: Response = await fetch(`http://localhost:8080/itinerary/${itineraryId}`);
     if (!response.ok) {
         throw new Error('Failed to fetch itinerary');
@@ -98,16 +98,6 @@ async function getItinerariesByUserEmail(userEmail: string): Promise<Itinerary[]
     return itineraries;
 }
 
-async function getItineraryDestinationsJoined(itineraryID: number):
-    Promise<ItineraryDestinationJoined[]> {
-    const response: Response = await
-        fetch(`http://localhost:8080/itinerarydestinations/${itineraryID}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch itinerary destinations');
-    }
-    const itineraryDestinations: ItineraryDestinationJoined[] = await response.json();
-    return itineraryDestinations;
-}
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
     const response: Response = await fetch('http://localhost:8080/itinerary', {
@@ -120,6 +110,17 @@ async function addItinerary(itinerary: Itinerary): Promise<void> {
     if (!response.ok) {
         throw new Error('Failed to add itinerary');
     }
+}
+
+async function getItineraryDestinationsJoined(itineraryID: number):
+    Promise<ItineraryDestinationJoined[]> {
+    const response: Response = await
+        fetch(`http://localhost:8080/itinerarydestinations/${itineraryID}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch itinerary destinations');
+    }
+    const itineraryDestinations: ItineraryDestinationJoined[] = await response.json();
+    return itineraryDestinations;
 }
 
 async function addItineraryDestinationsJoined(itineraryDestinations:
@@ -144,9 +145,9 @@ const httpRequests = {
     deleteUser,
     addItinerary,
     addItineraryDestinationsJoined,
-    getItinerary,
+    getItineraryById,
     getItinerariesByUserEmail,
-    getItineraryDestinationsJoined
+    getItineraryDestinationsJoined,
 }
 
 export default httpRequests;
