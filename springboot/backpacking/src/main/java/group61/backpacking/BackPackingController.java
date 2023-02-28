@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class BackPackingController {
 
     @Autowired
-    private UserRepository UserRep;
+    private UserRepository userRep;
+    private ItineraryRepository itineraryRep;
 
     // @CrossOrigin(origins = "*")
     // @PostMapping("/save")
@@ -37,7 +38,7 @@ public class BackPackingController {
     @GetMapping("/load")
     public User loadUser(String email) {
         try {
-            return UserRep.loadUser(email);
+            return userRep.loadUser(email);
         } catch (Exception e) {
             return null;
         }
@@ -55,7 +56,7 @@ public class BackPackingController {
     public User login(@RequestBody User user) {
         System.out.println("Login request recieved on backend.");
         try {
-            return UserRep.login(user);
+            return userRep.login(user);
         } catch (Exception e) {
             System.out.println(e.toString());
             // TODO: handle exception
@@ -70,9 +71,9 @@ public class BackPackingController {
     @PostMapping("/register")
     public User register(@RequestBody User user) throws SQLException, RuntimeException {
         try {
-            User savedUser = UserRep.saveUser(user);
-            System.out.println("controller output savedUser:  " + savedUser.toString());
-            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+
+            User savedUser = userRep.saveUser(user);
+            
             return savedUser;
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -109,7 +110,7 @@ public class BackPackingController {
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id, @RequestBody User user) throws RuntimeException, SQLException {
         // rep.deleteAllByIdInBatch(Iterable<ID> ids)
-        UserRep.deleteUser(user);
+        userRep.deleteUser(user);
     }
 
     // @PostMapping("/users/{id}")
@@ -133,7 +134,7 @@ public class BackPackingController {
 
     @GetMapping("/users/{id}")
     public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
-        return UserRep.loadUser(user.getEmail());
+        return userRep.loadUser(user.getEmail());
 
         // return new User("test@test.no", "123", "Jarl");
     }
@@ -159,34 +160,37 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerary/{id}")
-    public Itinerary getItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
+    public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
-        return UserRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
-    }
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/deleteItinerary")
-    public void deleteItinerary(@PathVariable int id, @RequestBody Itinerary itinerary)
-            throws RuntimeException, SQLException {
-        UserRep.deleteItinerary(itinerary);
+        //return itineraryRep.loadItineraryByInput(itinerary.getTitle(), itinerary.getWriterEmail());
+        return null;
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
-            throws RuntimeException, SQLException {
-        return UserRep.getItinerariesByUserEmail(userEmail);
+        throws RuntimeException, SQLException {
+            return itineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/itineraries/{id}")
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(@PathVariable int itineraryID) {
-        return UserRep.GetItineraryDestiationJoined(itineraryID);
+    @PostMapping("/itinerary")
+    public void addItinerary(@RequestBody Itinerary itinerary) {
+
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/itinerarydestinations/{id}")
+    public List<ItineraryDestinationsJoined>
+         getItineraryDestinationsJoined(@PathVariable int itineraryID) {
+            //return UserRep.loadDestinationsOnItinerary(itineraryID);
+            return null;
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/itinerarydestinations")
-    public void addItineraryDesitationsJoined(@RequestBody List<ItineraryDestinationJoined> destination) {
+    public void addItineraryDestinationsJoined(@RequestBody 
+        List<ItineraryDestinationsJoined> itineraryDestinations) {
     }
 
 }

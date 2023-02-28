@@ -506,6 +506,100 @@ public class Playground {
 
     }
 
+    public List<Destination> loadDestinationsOnItinerary(Itinerary itinerary) throws SQLException{
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Destination> destinationList = new ArrayList<Destination>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT Itinerary_destination.destination_name, Destinations.country, Destinations.destination_description " +
+            "FROM Itinerary_destination "+
+            "JOIN Destinations "+
+            "ON Itinerary_destination.destination_name = Destinations.destination_name "+
+            "WHERE Itinerary_destination.itinerary_id = ? "+
+            "ORDER BY Itinerary_destination.order_number ASC;";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itinerary.getId());
+            resultSet = statement.executeQuery();
+        
+
+            while (resultSet.next()) {
+    
+                Destination destination = new Destination(null, null, null);
+                destination.mapDestinationFromResultSet(resultSet);
+                destinationList.add(destination);
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+        }
+        System.out.println(destinationList.size());
+        return destinationList;
+
+
+    }
+
+    public List<Itinerary> loadEveryItinerary() throws SQLException{
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> itineraryList = new ArrayList<Itinerary>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, -1, null, null, null);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("Error in loadItinerary   1");
+            throw new SQLException(e);
+            
+            // throw new UserNotFoundException("User with email " + email + " not found");
+            
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+
+        return itineraryList;
+    }
+
+    public List<ItineraryDestination>loadItineraryDestinations() throws SQLException{
+        List<ItineraryDestination> itinerary_destinationList = new ArrayList<ItineraryDestination>();
+        List<Itinerary> itineraryList = loadEveryItinerary();
+        
+        for (Itinerary itinerary : itineraryList) {
+            List<Destination> destinationList = new ArrayList<Destination>();
+            destinationList = loadDestinationsOnItinerary(itinerary);
+            ItineraryDestination itinerary_destination = new ItineraryDestination(itinerary, destinationList);
+            itinerary_destinationList.add(itinerary_destination);
+        }
+        return itinerary_destinationList;
+    }
+
+
+
+
+
+
     public static void main(String[] args) throws SQLException, RuntimeException {
         Playground t = new Playground();
         // t.doStuff();
@@ -513,10 +607,25 @@ public class Playground {
 
         // test itinerarystuff below: //////////////////////////////////////
         List<String> destinationsList = Arrays.asList("Oslo", "Bergen", "Trondheim");
-        t.saveItinerary(user, "11.2", "a cool trip", null, "t2", destinationsList);
+        //t.saveItinerary(user, "11.2", "a cool trip", null, "t2", destinationsList);
 
-        // System.out.println( t.loadItineraryByInput("cool trip3",
-        // "tobbtest1@test.com").toString());
+        destinationsList = Arrays.asList("Oslo", "Spiterstulen", "Gjendebu", "Bergen");
+        //t.saveItinerary(user, "11.2", "a cool trip", null, "t3", destinationsList);
+        // System.out.println(destinationsList);
+
+        //System.out.println(        t.loadItineraryByInput("cool trip3", "tobbtest1@test.com").toString());
+        List<ItineraryDestination> itineraryDestinations = t.loadItineraryDestinations();
+        
+        for (ItineraryDestination itineraryDestination : itineraryDestinations) {
+            itineraryDestination.print();
+        }
+
+        
+        
+
+        
+
+
 
         // t.saveContinent("Europe");
         // t.saveContinent("Asia");
@@ -527,119 +636,7 @@ public class Playground {
         // t.saveContinent("Oceania");
         // t.saveContinent("Antarctica");
 
-        // t.saveCountry("Afghanistan", "Asia");
-        // t.saveCountry("Bahrain", "Asia");
-        // t.saveCountry("Bangladesh", "Asia");
-        // t.saveCountry("Bhutan", "Asia");
-        // t.saveCountry("Brunei", "Asia");
-        // t.saveCountry("Cambodia", "Asia");
-        // t.saveCountry("China", "Asia");
-        // t.saveCountry("Georgia", "Asia");
-        // t.saveCountry("India", "Asia");
-        // t.saveCountry("Indonesia", "Asia");
-        // t.saveCountry("Iran", "Asia");
-        // t.saveCountry("Iraq", "Asia");
-        // t.saveCountry("Israel", "Asia");
-        // t.saveCountry("Japan", "Asia");
-        // t.saveCountry("Jordan", "Asia");
-        // t.saveCountry("Kazakhstan", "Asia");
-        // t.saveCountry("Kuwait", "Asia");
-        // t.saveCountry("Kyrgyzstan", "Asia");
-        // t.saveCountry("Laos", "Asia");
-        // t.saveCountry("Lebanon", "Asia");
-        // t.saveCountry("Malaysia", "Asia");
-        // t.saveCountry("Maldives", "Asia");
-        // t.saveCountry("Mongolia", "Asia");
-        // t.saveCountry("Myanmar", "Asia");
-        // t.saveCountry("Nepal", "Asia");
-        // t.saveCountry("North Korea", "Asia");
-        // t.saveCountry("Oman", "Asia");
-        // t.saveCountry("Pakistan", "Asia");
-        // t.saveCountry("Palestine", "Asia");
-        // t.saveCountry("Philippines", "Asia");
-        // t.saveCountry("Qatar", "Asia");
-        // t.saveCountry("Saudi Arabia", "Asia");
-        // t.saveCountry("Singapore", "Asia");
-        // t.saveCountry("South Korea", "Asia");
-        // t.saveCountry("Sri Lanka", "Asia");
-        // t.saveCountry("Syria", "Asia");
-        // t.saveCountry("Taiwan", "Asia");
-        // t.saveCountry("Tajikistan", "Asia");
-        // t.saveCountry("Thailand", "Asia");
-        // t.saveCountry("Timor-Leste", "Asia");
-        // t.saveCountry("Turkey", "Asia");
-        // t.saveCountry("Turkmenistan", "Asia");
-        // t.saveCountry("United Arab Emirates", "Asia");
-        // t.saveCountry("Uzbekistan", "Asia");
-        // t.saveCountry("Vietnam", "Asia");
-        // t.saveCountry("Yemen", "Asia");
 
-        // t.saveCountry("Algeria", "Africa");
-        // t.saveCountry("Angola", "Africa");
-        // t.saveCountry("Benin", "Africa");
-        // t.saveCountry("Botswana", "Africa");
-        // t.saveCountry("Burkina Faso", "Africa");
-        // t.saveCountry("Burundi", "Africa");
-        // t.saveCountry("Cabo Verde", "Africa");
-        // t.saveCountry("Cameroon", "Africa");
-        // t.saveCountry("Central African Republic", "Africa");
-        // t.saveCountry("Chad", "Africa");
-        // t.saveCountry("Comoros", "Africa");
-        // t.saveCountry("Congo", "Africa");
-        // t.saveCountry("Cote d'Ivoire", "Africa");
-        // t.saveCountry("Djibouti", "Africa");
-        // t.saveCountry("Egypt", "Africa");
-        // t.saveCountry("Equatorial Guinea", "Africa");
-        // t.saveCountry("Eritrea", "Africa");
-        // t.saveCountry("Eswatini", "Africa");
-        // t.saveCountry("Ethiopia", "Africa");
-        // t.saveCountry("Gabon", "Africa");
-        // t.saveCountry("Gambia", "Africa");
-        // t.saveCountry("Ghana", "Africa");
-        // t.saveCountry("Guinea", "Africa");
-        // t.saveCountry("Guinea-Bissau", "Africa");
-        // t.saveCountry("Kenya", "Africa");
-        // t.saveCountry("Lesotho", "Africa");
-        // t.saveCountry("Liberia", "Africa");
-        // t.saveCountry("Libya", "Africa");
-        // t.saveCountry("Madagascar", "Africa");
-        // t.saveCountry("Malawi", "Africa");
-        // t.saveCountry("Mali", "Africa");
-        // t.saveCountry("Mauritania", "Africa");
-        // t.saveCountry("Mauritius", "Africa");
-        // t.saveCountry("Morocco", "Africa");
-        // t.saveCountry("Mozambique", "Africa");
-        // t.saveCountry("Namibia", "Africa");
-        // t.saveCountry("Niger", "Africa");
-        // t.saveCountry("Nigeria", "Africa");
-        // t.saveCountry("Rwanda", "Africa");
-        // t.saveCountry("Sao Tome and Principe", "Africa");
-        // t.saveCountry("Senegal", "Africa");
-        // t.saveCountry("Seychelles", "Africa");
-        // t.saveCountry("Sierra Leone", "Africa");
-        // t.saveCountry("Somalia", "Africa");
-        // t.saveCountry("South Africa", "Africa");
-        // t.saveCountry("South Sudan", "Africa");
-        // t.saveCountry("Sudan", "Africa");
-        // t.saveCountry("Tanzania", "Africa");
-        // t.saveCountry("Togo", "Africa");
-        // t.saveCountry("Tunisia", "Africa");
-        // t.saveCountry("Uganda", "Africa");
-        // t.saveCountry("Zambia", "Africa");
-        // t.saveCountry("Zimbabwe", "Africa");
-
-        // t.saveCountry("Albania", "Europe");
-        // t.saveCountry("Andorra", "Europe");
-        // t.saveCountry("Austria", "Europe");
-        // t.saveCountry("Belarus", "Europe");
-        // t.saveCountry("Belgium", "Europe");
-        // t.saveCountry("Bosnia and Herzegovina", "Europe");
-        // t.saveCountry("Bulgaria", "Europe");
-        // t.saveCountry("Croatia", "Europe");
-        // t.saveCountry("Cyprus", "Europe");
-        // t.saveCountry("Czech Republic", "Europe");
-        // t.saveCountry("Denmark", "Europe");
-        // t.saveCountry("Estonia", "Europe");
 
         // t.saveCountry("Afghanistan", "Asia");
         // t.saveCountry("Bahrain", "Asia");
@@ -761,24 +758,7 @@ public class Playground {
         // t.saveCountry("Hungary", "Europe");
         // t.saveCountry("Iceland", "Europe");
         // t.saveCountry("Ireland", "Europe");
-        // t.saveCountry("Greece", "Europe");
-        // t.saveCountry("Hungary", "Europe");
-        // t.saveCountry("Iceland", "Europe");
-        // t.saveCountry("Ireland", "Europe");
         // t.saveCountry("Italy", "Europe");
-        // t.saveCountry("Kosovo", "Europe");
-        // t.saveCountry("Latvia", "Europe");
-        // t.saveCountry("Liechtenstein", "Europe");
-        // t.saveCountry("Lithuania", "Europe");
-        // t.saveCountry("Luxembourg", "Europe");
-        // t.saveCountry("Malta", "Europe");
-        // t.saveCountry("Moldova", "Europe");
-        // t.saveCountry("Monaco", "Europe");
-        // t.saveCountry("Montenegro", "Europe");
-        // t.saveCountry("Netherlands", "Europe");
-        // t.saveCountry("North Macedonia", "Europe");
-        // t.saveCountry("Norway", "Europe");
-        // t.saveCountry("Poland", "Europe");
         // t.saveCountry("Kosovo", "Europe");
         // t.saveCountry("Latvia", "Europe");
         // t.saveCountry("Liechtenstein", "Europe");
@@ -794,12 +774,11 @@ public class Playground {
         // t.saveCountry("Poland", "Europe");
         // t.saveCountry("Portugal", "Europe");
         // t.saveCountry("Romania", "Europe");
-        // t.saveCountry("Romania", "Europe");
         // t.saveCountry("Russia", "Europe");
         // t.saveCountry("San Marino", "Europe");
         // t.saveCountry("Serbia", "Europe");
-        // t.saveCountry("San Marino", "Europe");
-        // t.saveCountry("Serbia", "Europe");
+        
+        
         // t.saveCountry("Slovakia", "Europe");
         // t.saveCountry("Slovenia", "Europe");
         // t.saveCountry("Spain", "Europe");
@@ -809,33 +788,38 @@ public class Playground {
         // t.saveCountry("United Kingdom", "Europe");
         // t.saveCountry("Vatican City", "Europe");
 
-        // t.saveCountry("Slovenia", "Europe");
-        // t.saveCountry("Spain", "Europe");
-        // t.saveCountry("Sweden", "Europe");
-        // t.saveCountry("Switzerland", "Europe");
-        // t.saveCountry("Ukraine", "Europe");
-        // t.saveCountry("United Kingdom", "Europe");
-        // t.saveCountry("Vatican City", "Europe");
+      
 
         // t.saveCountry("Argentina", "South America");
-        // t.saveCountry("Bolivia", "South America");
-        // t.saveCountry("Brazil", "South America");
-        // t.saveCountry("Chile", "South America");
         // t.saveCountry("Bolivia", "South America");
         // t.saveCountry("Brazil", "South America");
         // t.saveCountry("Chile", "South America");
         // t.saveCountry("Colombia", "South America");
         // t.saveCountry("Ecuador", "South America");
         // t.saveCountry("Guyana", "South America");
-        // t.saveCountry("Guyana", "South America");
         // t.saveCountry("Paraguay", "South America");
-        // t.saveCountry("Peru", "South America");
-        // t.saveCountry("Suriname", "South America");
         // t.saveCountry("Peru", "South America");
         // t.saveCountry("Suriname", "South America");
         // t.saveCountry("Uruguay", "South America");
         // t.saveCountry("Venezuela", "South America");
 
+        
+
+        // t.saveCountry("Australia", "Oceania");
+        // t.saveCountry("Fiji", "Oceania");
+        // t.saveCountry("Kiribati", "Oceania");
+        // t.saveCountry("Marshall Islands", "Oceania");
+        // t.saveCountry("Micronesia", "Oceania");
+        // t.saveCountry("Nauru", "Oceania");
+        // t.saveCountry("New Zealand", "Oceania");
+        // t.saveCountry("Palau", "Oceania");
+        // t.saveCountry("Papua New Guinea", "Oceania");
+        // t.saveCountry("Samoa", "Oceania");
+        // t.saveCountry("Solomon Islands", "Oceania");
+        // t.saveCountry("Tonga", "Oceania");
+        // t.saveCountry("Tuvalu", "Oceania");
+        // t.saveCountry("Vanuatu", "Oceania");
+
         // t.saveCountry("Antigua and Barbuda", "North America");
         // t.saveCountry("Bahamas", "North America");
         // t.saveCountry("Barbados", "North America");
@@ -860,219 +844,17 @@ public class Playground {
         // t.saveCountry("Trinidad and Tobago", "North America");
         // t.saveCountry("United States of America", "North America");
 
-        // t.saveCountry("Australia", "Oceania");
-        // t.saveCountry("Fiji", "Oceania");
-        // t.saveCountry("Kiribati", "Oceania");
-        // t.saveCountry("Marshall Islands", "Oceania");
-        // t.saveCountry("Micronesia", "Oceania");
-        // t.saveCountry("Nauru", "Oceania");
-        // t.saveCountry("New Zealand", "Oceania");
-        // t.saveCountry("Palau", "Oceania");
-        // t.saveCountry("Papua New Guinea", "Oceania");
-        // t.saveCountry("Samoa", "Oceania");
-        // t.saveCountry("Solomon Islands", "Oceania");
-        // t.saveCountry("Tonga", "Oceania");
-        // t.saveCountry("Tuvalu", "Oceania");
-        // t.saveCountry("Vanuatu", "Oceania");
+       
 
-        // t.saveCountry("Venezuela", "South America");
-
-        // t.saveCountry("Antigua and Barbuda", "North America");
-        // t.saveCountry("Bahamas", "North America");
-        // t.saveCountry("Barbados", "North America");
-        // t.saveCountry("Belize", "North America");
-        // t.saveCountry("Canada", "North America");
-        // t.saveCountry("Costa Rica", "North America");
-        // t.saveCountry("Cuba", "North America");
-        // t.saveCountry("Dominica", "North America");
-        // t.saveCountry("Dominican Republic", "North America");
-        // t.saveCountry("El Salvador", "North America");
-        // t.saveCountry("Grenada", "North America");
-        // t.saveCountry("Guatemala", "North America");
-        // t.saveCountry("Haiti", "North America");
-        // t.saveCountry("Honduras", "North America");
-        // t.saveCountry("Jamaica", "North America");
-        // t.saveCountry("Mexico", "North America");
-        // t.saveCountry("Nicaragua", "North America");
-        // t.saveCountry("Panama", "North America");
-        // t.saveCountry("Saint Kitts and Nevis", "North America");
-        // t.saveCountry("Saint Lucia", "North America");
-        // t.saveCountry("Saint Vincent and the Grenadines", "North America");
-        // t.saveCountry("Trinidad and Tobago", "North America");
-        // t.saveCountry("United States of America", "North America");
-
-        // t.saveCountry("Australia", "Oceania");
-        // t.saveCountry("Fiji", "Oceania");
-        // t.saveCountry("Kiribati", "Oceania");
-        // t.saveCountry("Marshall Islands", "Oceania");
-        // t.saveCountry("Micronesia", "Oceania");
-        // t.saveCountry("Nauru", "Oceania");
-        // t.saveCountry("New Zealand", "Oceania");
-        // t.saveCountry("Palau", "Oceania");
-        // t.saveCountry("Papua New Guinea", "Oceania");
-        // t.saveCountry("Samoa", "Oceania");
-        // t.saveCountry("Solomon Islands", "Oceania");
-        // t.saveCountry("Tonga", "Oceania");
-        // t.saveCountry("Tuvalu", "Oceania");
-        // t.saveCountry("Vanuatu", "Oceania");
-
-        // t.saveDestination("Oslo", "Norway", "The capital of Norway. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest");
-        // t.saveDestination("Bergen", "Norway", "Bergen is a city and municipality in
-        // Hordaland on the west coast of Norway. Bergen is the second-largest city in
-        // Norway, the municipality covers 465 square kilometres (180 sq mi) and is home
-        // to 278,121 inhabitants. Bergen is the administrative centre of Hordaland and
-        // consists of eight boroughs: Arna, Bergenhus, Fana, Fyllingsdalen, Laksevåg,
-        // Ytrebygda, Årstad and Åsane. The city centre and northern neighbourhoods are
-        // on Byfjorden, the city's southern neighbourhoods are on the island of
-        // Bergenøya, and the western neighbourhoods are on the peninsula of
-        // Bergenshalvøyen. The city is an international centre for aquaculture,
-        // shipping, offshore petroleum industry and subsea technology, and a national
-        // centre for higher education, media, tourism and finance. Bergen Port is the
-        // busiest in Norway and one of the largest in Northern Europe. The city is an
-        // important centre for industries and maritime trade in Europe. ");
-        // t.saveDestination("Trondheim", "Norway", "Trondheim is a city and
-        // municipality in Sør-Trøndelag county, Norway. It has a population of 187,353
-        // (as of 1 January 2018) and is the third most populous municipality in Norway.
-        // The city functions as the administrative centre of Sør-Trøndelag county. The
-        // municipality is the third largest by population in Norway and the fourth
-        // largest municipal area. Trondheim lies on the south shore of the Trondheim
-        // Fjord at the mouth of the river Nidelva. The settlement was founded in 997 as
-        // a trading post and became the capital of Norway in 1130. The city was named
-        // Strindheim in the early 12th century after the farm Strinda, which was the
-        // residence of the bishop. The name Trondheim was used first in 1217 and is
-        // derived from the Old Norse words trönd and heimr. The city's name therefore
-        // translates to crossing place(s) of the fjord(s).");
-        // t.saveDestination("Stavanger", "Norway", "Stavanger is a city and
-        // municipality in Norway. It is the fourth-largest city in the country, with a
-        // population of 122,388 as of 1 January 2018. The municipality is the third
-        // largest by population in Norway and the fourth largest municipal area. The
-        // city is the administrative centre of Rogaland county. Stavanger is the centre
-        // of the Stavanger metropolitan region, which has a population of 279,000. The
-        // city is an international centre for the oil industry and shipping, and a
-        // national centre for aquaculture, higher education, tourism and finance.
-        // Stavanger is the administrative centre of Rogaland county. The city is the
-        // centre of the Stavanger metropolitan region, which has a population of
-        // 279,000. The city is an international centre for the oil industry and
-        // shipping, and a national centre for aquaculture, higher education, tourism
-        // and finance. Stavanger is the administrative centre of Rogaland county. The
-        // city is the centre of the Stavanger metropolitan region, which has a
-        // population of 279,000. The city is an international centre for the oil
-        // industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national");
-        // t.saveDestination("Tromsø", "Norway", "Tromsø is a city and municipality in
-        // Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway. Tromsø is also a popular tourist
-        // destination, and is known for its northern lights, midnight sun, and the
-        // annual Tromsø International Film Festival. Tromsø is a city and municipality
-        // in Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway. Tromsø is also a popular tourist
-        // destination, and is known for its northern lights, midnight sun, and the
-        // annual Tromsø International Film Festival. Tromsø is a city and municipality
-        // in Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway.");
-        // t.saveDestination("spiterstulen", "Norway", "Spiterstulen is located 1111
-        // meters above sea level in the lush Visdalen in Jotunheimen, and is a natural
-        // starting point for trips to Norway's highest mountain - Galdhøpiggen. Here
-        // you can also reach 17 of the 26 peaks in Norway at over 2,300 meters above
-        // sea level on a day trip. Big brother Galdhøpiggen reigns in the west with
-        // little brother Glittertind in the east. When the cabin opens in the spring,
-        // the area is an eldorado for top ski tours.");
-        // t.saveDestination("Gjendebu", "Norway", "Gjendebu is a mountain cabin in the
-        // Jotunheimen National Park, Norway. It is located at 1,200 metres (3,900 ft)
-        // above sea level, on the south side of the Gjende lake, in the Gjende valley.
-        // The cabin is open from May to October. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road,");
-        // t.saveDestination("Finse", "Norway", "Finse is a mountain village area on the
-        // shore of the lake Finsevatnet in Ulvik municipality in Vestland county,
-        // Norway. The village is centered on Finse Station, a railway station on the
-        // Bergen Line. The village sits at an elevation of 1,222 metres (4,009 ft)
-        // above sea level, making it the highest station on the entire Norwegian
-        // railway system. ");
-        // t.saveDestination("Oslo", "Norway", "The capital of Norway. Oslo is a city of
+        // t.saveDestination("Oslo", "Norway", "The capital of Norway. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest and parkland. Oslo is a city of contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a city of green spaces, with more than 50 percent of the city covered by forest");
+        // t.saveDestination("Bergen", "Norway", "Bergen is a city and municipality in Hordaland on the west coast of Norway. Bergen is the second-largest city in Norway, the municipality covers 465 square kilometres (180 sq mi) and is home to 278,121 inhabitants. Bergen is the administrative centre of Hordaland and consists of eight boroughs: Arna, Bergenhus, Fana, Fyllingsdalen, Laksevåg, Ytrebygda, Årstad and Åsane. The city centre and northern neighbourhoods are on Byfjorden, the city's southern neighbourhoods are on the island of Bergenøya, and the western neighbourhoods are on the peninsula of Bergenshalvøyen. The city is an international centre for aquaculture, shipping, offshore petroleum industry and subsea technology, and a national centre for higher education, media, tourism and finance. Bergen Port is the busiest in Norway and one of the largest in Northern Europe. The city is an important centre for industries and maritime trade in Europe. ");
+        // t.saveDestination("Trondheim", "Norway", "Trondheim is a city and municipality in Sør-Trøndelag county, Norway. It has a population of 187,353 (as of 1 January 2018) and is the third most populous municipality in Norway. The city functions as the administrative centre of Sør-Trøndelag county. The municipality is the third largest by population in Norway and the fourth largest municipal area. Trondheim lies on the south shore of the Trondheim Fjord at the mouth of the river Nidelva. The settlement was founded in 997 as a trading post and became the capital of Norway in 1130. The city was named Strindheim in the early 12th century after the farm Strinda, which was the residence of the bishop. The name Trondheim was used first in 1217 and is derived from the Old Norse words trönd and heimr. The city's name therefore translates to crossing place(s) of the fjord(s).");
+        // t.saveDestination("Stavanger", "Norway", "Stavanger is a city and municipality in Norway. It is the fourth-largest city in the country, with a population of 122,388 as of 1 January 2018. The municipality is the third largest by population in Norway and the fourth largest municipal area. The city is the administrative centre of Rogaland county. Stavanger is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national centre for aquaculture, higher education, tourism and finance. Stavanger is the administrative centre of Rogaland county. The city is the centre of the Stavanger metropolitan region, which has a population of 279,000. The city is an international centre for the oil industry and shipping, and a national");
+        // t.saveDestination("Tromsø", "Norway", "Tromsø is a city and municipality in Troms county, Norway. It is the most populous city in Northern Norway. The administrative centre of Troms county, Tromsø lies on the northern coast of the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic Circle. The city is the largest settlement in the county, and the 11th most populous urban area in Norway. Tromsø has a population of 69,515 (as of 1 January 2018), and is the fourth most populous urban area in the country. The city is a major centre for maritime industries and shipping, and is the location of the Arctic University of Norway. Tromsø is also a popular tourist destination, and is known for its northern lights, midnight sun, and the annual Tromsø International Film Festival. Tromsø is a city and municipality in Troms county, Norway. It is the most populous city in Northern Norway. The administrative centre of Troms county, Tromsø lies on the northern coast of the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic Circle. The city is the largest settlement in the county, and the 11th most populous urban area in Norway. Tromsø has a population of 69,515 (as of 1 January 2018), and is the fourth most populous urban area in the country. The city is a major centre for maritime industries and shipping, and is the location of the Arctic University of Norway. Tromsø is also a popular tourist destination, and is known for its northern lights, midnight sun, and the annual Tromsø International Film Festival. Tromsø is a city and municipality in Troms county, Norway. It is the most populous city in Northern Norway. The administrative centre of Troms county, Tromsø lies on the northern coast of the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic Circle. The city is the largest settlement in the county, and the 11th most populous urban area in Norway. Tromsø has a population of 69,515 (as of 1 January 2018), and is the fourth most populous urban area in the country. The city is a major centre for maritime industries and shipping, and is the location of the Arctic University of Norway.");
+        // t.saveDestination("spiterstulen", "Norway", "Spiterstulen is located 1111 meters above sea level in the lush Visdalen in Jotunheimen, and is a natural starting point for trips to Norway's highest mountain - Galdhøpiggen. Here you can also reach 17 of the 26 peaks in Norway at over 2,300 meters above sea level on a day trip. Big brother Galdhøpiggen reigns in the west with little brother Glittertind in the east. When the cabin opens in the spring, the area is an eldorado for top ski tours.");
+        // t.saveDestination("Gjendebu", "Norway", "Gjendebu is a mountain cabin in the Jotunheimen National Park, Norway. It is located at 1,200 metres (3,900 ft) above sea level, on the south side of the Gjende lake, in the Gjende valley. The cabin is open from May to October. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road,");
+        // t.saveDestination("Finse", "Norway", "Finse is a mountain village area on the shore of the lake Finsevatnet in Ulvik municipality in Vestland county, Norway. The village is centered on Finse Station, a railway station on the Bergen Line. The village sits at an elevation of 1,222 metres (4,009 ft) above sea level, making it the highest station on the entire Norwegian railway system. ");
+        // // t.saveDestination("Oslo", "Norway", "The capital of Norway. Oslo is a city of
         // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
         // city of green spaces, with more than 50 percent of the city covered by forest
         // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
