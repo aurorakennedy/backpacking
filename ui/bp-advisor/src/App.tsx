@@ -22,14 +22,7 @@ function App() {
         localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
     }, [loggedInUser]);
 
-    /**
-     * Deletes the info about the logged in user in the browser when the user logges out.
-     */
-    const logOut: React.MouseEventHandler<HTMLParagraphElement> | undefined = () => {
-        localStorage.setItem('loggedInUser', 'null');
-        window.location.reload();
-        window.location.replace('/logIn');
-    }
+
 
     return (
         <Router>
@@ -38,13 +31,12 @@ function App() {
                 {loggedInUser ? (
                     <>
                         <Routes>
-                            <Route path='/' element={<HomePage />} />
-                            <Route path='/logIn' element={<HomePage />} />
-                            <Route path='/signUp' element={<HomePage />} />
-                            <Route path='/homePage' element={<HomePage />} />
-                            <Route path='/createItinerary' element={<CreateNewItineraryForm />} />
+                            <Route path='/' element={<HomePage setLoggedInUser={setLoggedInUser} />} />
+                            <Route path='/logIn' element={<HomePage setLoggedInUser={setLoggedInUser} />} />
+                            <Route path='/signUp' element={<HomePage setLoggedInUser={setLoggedInUser} />} />
+                            <Route path='/homePage' element={<HomePage setLoggedInUser={setLoggedInUser} />} />
+                            <Route path='/createItinerary' element={<CreateNewItineraryForm setLoggedInUser={setLoggedInUser} />} />
                         </Routes>
-                        <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
                     </>
                 ) : (
                     <Routes>
