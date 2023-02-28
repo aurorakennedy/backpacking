@@ -20,8 +20,7 @@ public class Itinerary {
     private String description;
     private String image;
     private String title;
-    
-
+    private int cost;
 
     public Itinerary(int id, String writerEmail, Date writtenDate, int estimatedTime, String description, String image, String title) {
         this.id = id;
