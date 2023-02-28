@@ -500,7 +500,7 @@ public class UserRepository {
         return itineraries;
     }
 
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id) {
+    public ItineraryDestinationsJoined GetItineraryDestiationJoined(int id) {
         return null;
     }
 
