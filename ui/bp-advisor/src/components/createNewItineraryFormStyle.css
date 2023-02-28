@@ -59,7 +59,8 @@
     width: 40%;
 }
 
-#destinationNameInputLabel {
+#destinationNameInputLabel,
+#countryInputLabel {
     font-size: 12px;
 }
 

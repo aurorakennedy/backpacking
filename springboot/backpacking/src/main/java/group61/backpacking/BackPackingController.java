@@ -141,20 +141,22 @@ public class BackPackingController {
 
     // Travel Routes/ Itinerary
 
-
-
-    // argumentene må endres
-    // @CrossOrigin(origins = "*")
-    // @PostMapping("/itinerary")
-    // public void saveItinerary(@RequestBody Itinerary itinerary) throws SQLException {
-    //     // Does not exist yet:
-    //     List<String> destinationList = UserRep.loadDestinationList(itinerary);
-
-    //     User itineraryUser = UserRep.loadUser(itinerary.getWriterEmail());
-    //     UserRep.saveItinerary(itineraryUser, itinerary.getEstimatedTime(), itinerary.getDescription(),
-    //             itinerary.getImage(), itinerary.getTitle(), destinationList);
-    // } // If there's a problem, it's here^: saveItinerary takes in User object,
-    //   // itinerary only gets userID
+    /*
+     * @CrossOrigin(origins = "*")
+     * 
+     * @PostMapping("/itinerary")
+     * public void saveItinerary(@RequestBody Itinerary itinerary) throws
+     * SQLException {
+     * // Does not exist yet:
+     * List<String> destinationList = UserRep.loadDestinationList(itinerary);
+     * 
+     * User itineraryUser = UserRep.loadUser(itinerary.getWriterEmail());
+     * UserRep.saveItinerary(itineraryUser, itinerary.getEstimatedTime(),
+     * itinerary.getDescription(),
+     * itinerary.getImage(), itinerary.getTitle(), destinationList);
+     * } // If there's a problem, it's here^: saveItinerary takes in User object,
+     * // itinerary only gets userID
+     */
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerary/{id}")

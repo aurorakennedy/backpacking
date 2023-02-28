@@ -202,8 +202,9 @@ public class Playground {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
@@ -222,7 +223,7 @@ public class Playground {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
 
         try {
             conn = connectToDB();
@@ -255,11 +256,10 @@ public class Playground {
             // do nothing
         }
 
-        if(itinerary.getId() == -1){
+        if (itinerary.getId() == -1) {
             return null;
         }
 
-        
         return itinerary;
     }
 
@@ -268,7 +268,7 @@ public class Playground {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
 
         try {
             conn = connectToDB();
@@ -281,8 +281,7 @@ public class Playground {
             while (resultSet.next()) {
                 itinerary.mapItineraryFromResultSet(resultSet);
             }
-            
-              
+
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
@@ -342,7 +341,7 @@ public class Playground {
             // do nothing
         }
 
-        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
 
         try {
             itinerary = loadItineraryByInput(title, user.getEmail());

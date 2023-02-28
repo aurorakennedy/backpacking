@@ -1,9 +1,14 @@
 import './createNewItineraryFormStyle.css'
-import { Destination, ItineraryDestinationJoined } from './types';
+import { Destination, ItineraryDestinationJoined, LoggedInUser } from './types';
 import httpRequests from './httpRequests';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Nav from './NavBar';
+
+
+type CreateNewItineraryFormProps = {
+    setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>
+}
 
 
 /**
@@ -12,7 +17,7 @@ import Nav from './NavBar';
  * 
  * @returns HTML-code for a BP-Advisor login box and functions to support login.
  */
-const CreateNewItineraryForm = () => {
+const CreateNewItineraryForm = ({ setLoggedInUser }: CreateNewItineraryFormProps) => {
 
     // Saves a list of the destinations added
     const [destinations] = useState<Destination[]>([]);
@@ -107,7 +112,7 @@ const CreateNewItineraryForm = () => {
 
     return (
         <>
-            <Nav />
+            <Nav setLoggedInUser={setLoggedInUser} />
             <div id='newRouteBox'>
                 <form>
                     <h2> Add a backpacking itinerary</h2>
