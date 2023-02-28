@@ -500,8 +500,4 @@ public class UserRepository {
         return itineraries;
     }
 
-    public ItineraryDestinationJoined GetItineraryDestiationJoined(int id) {
-        return null;
-    }
-
 }
