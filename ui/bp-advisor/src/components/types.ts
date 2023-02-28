@@ -1,46 +1,44 @@
 export interface LoggedInUser {
-    username: string;
-    email: string;
+  username: string;
+  email: string;
 }
 
 export interface User {
-    username: string;
-    email: string;
-    password: string;
+  username: string;
+  email: string;
+  password: string;
 }
 
 export interface Itinerary {
-    id: number,
-    userEmail: string, // Foreign key
-    lastChanged: Date,
-    title: string,
-    cost: number,
-    distance: number,
-    duration: number,
-    description: string;
+  id: number;
+  writerEmail: string; // Foreign key
+  writtenDate: Date;
+  title: string;
+  cost: number;
+  estimatedTime: number;
+  description: string;
+  image: string;
 }
 
-export interface ItineraryDestinationJoined {
-    itineraryID: number, // Foreign key
-    destinationName: string, // Foreign key
-    country: string,
-    order: number, 
-    description: string,
+export interface ItineraryDestination {
+  itineraryID: number; // Foreign key
+  order: number;
+  destinationName: string; // Foreign key
+  country: string;
 }
 
-// Maybe unused
-
+//Possibly used for top lists
 export interface Destination {
-    name: string,
-    country: string, // Foreign key
-    description: string,
+  name: string;
+  country: string; // Foreign key
+  description: string;
 }
 
 export interface Country {
-    name: string,
-    continent: string, // Foreign key
+  name: string;
+  continent: string; // Foreign key
 }
 
 export interface Continent {
-    name: string,
+  name: string;
 }
