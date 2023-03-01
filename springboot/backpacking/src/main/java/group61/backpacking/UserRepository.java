@@ -1,35 +1,16 @@
 package group61.backpacking;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.io.InputStream;
+
 import java.sql.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 @Repository
 public class UserRepository {
 
-    @Autowired
-    private JdbcTemplate db;  
-
-    // public BackPackingRepository(JdbcTemplate jdbcTemplate) {
-    //     this.jdbcTemplate = jdbcTemplate;
-    // }
-
-    
 
     public static Connection connectToDB() {
         Connection conn = null;
@@ -45,6 +26,9 @@ public class UserRepository {
 
         return conn;
     }
+
+    //////////////////////////////////////////////////////
+    // save functions
 
     public User saveUser(User user) throws SQLException, RuntimeException {
 
@@ -87,9 +71,12 @@ public class UserRepository {
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
-
-        
     }
+
+
+    //////////////////////////////////////////////////////
+    // load functions
+
     public User loadUser(String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
@@ -123,6 +110,10 @@ public class UserRepository {
         return user;
     }
 
+
+    //////////////////////////////////////////////////////
+    // update functions
+
     public void deleteUser(User user) throws RuntimeException, SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -146,6 +137,9 @@ public class UserRepository {
             }
 
     }
+
+    //////////////////////////////////////////////////////
+    // other functionalities
 
 
     public User login(User user) throws RuntimeException, SQLException {

@@ -2,17 +2,12 @@ package group61.backpacking;
 
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.io.InputStream;
 import java.sql.*;
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Repository
 public class ItineraryRepository {
