@@ -27,22 +27,3 @@
 #searchBar::placeholder {
     text-align: center;
 }
-
-#travelRouteDiv {
-    width: 1000px;
-    margin-top: 30px;
-    margin-left: 50px;
-    margin-right: 50px;
-    padding: 20px;
-    overflow: auto;
-    white-space: nowrap;
-
-
-}
-
-#travelRouteDiv a {
-    display: inline-block;
-    text-align: center;
-    padding: 14px;
-    text-decoration: none;
-}

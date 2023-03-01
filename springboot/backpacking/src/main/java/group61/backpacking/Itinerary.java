@@ -20,8 +20,7 @@ public class Itinerary {
     private String description;
     private String image;
     private String title;
-    
-
+    private int cost;
 
     public Itinerary(int id, String writerEmail, Date writtenDate, int estimatedTime, String description, String image, String title) {
         this.id = id;
@@ -103,8 +102,11 @@ public class Itinerary {
         this.title = title;
     }
 
+    @Override
     public String toString() {
-        return "Itinerary [description=" + description + ", estimatedTime=" + estimatedTime + ", id=" + id + ", image="
-                + image + ", title=" + title + ", writerEmail=" + writerEmail + ", writtenDate=" + writtenDate + "]";
+        return "Itinerary [id=" + id + ", writerEmail=" + writerEmail + ", writtenDate=" + writtenDate
+                + ", estimatedTime=" + estimatedTime + ", description=" + description + ", image=" + image + ", title="
+                + title + ", cost=" + cost + "]";
     }
+
 }
