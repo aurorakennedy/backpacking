@@ -1,4 +1,7 @@
 import React, { FC } from 'react';
+import clockIcon from '../img/clockIcon.png';
+import moneyIcon from '../img/moneyIcon.png';
+
 import './travelRouteStyle.css'
 
 interface TravelRouteProps {
@@ -15,8 +18,12 @@ interface TravelRouteProps {
         {/* <img src={image} alt={title} /> */}
         <h2 id='routeName'>{title}</h2>
         <p id='routeDescription'>{description}</p>
-        <p id='routeDuration'>{duration}</p>
-        <p id='routePrice'>{price}</p>
+        <p id='routeDuration'>
+        <img src={clockIcon} id='clockIcon' />
+        {duration}</p>
+        <p id='routePrice'>
+        <img src={moneyIcon} id='moneyIcon' />
+          {price}</p>
 
       </div>
     );

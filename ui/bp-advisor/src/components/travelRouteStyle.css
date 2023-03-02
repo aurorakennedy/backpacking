@@ -19,6 +19,7 @@
 
 #routeName {
     letter-spacing: 0.05em;
+    font-family: 'Bubbler One';
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -34,12 +35,22 @@
     padding: 15px;
     height: 80px;
 
-
-
-
-
 }
 
+#clockIcon{
+    height: 18px;
+    width: auto;
+    margin-right: 20px;
+  }
+
+
+  #moneyIcon{
+        
+    height: 18px;
+    width: auto;
+    margin-right: 20px;
+    
+  }
 /*   #routeImage {
     
   }
@@ -55,3 +66,4 @@
     margin-right: 10px;
     font-weight: bold;
 }
+
