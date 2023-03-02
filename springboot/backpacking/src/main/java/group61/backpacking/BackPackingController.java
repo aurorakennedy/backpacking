@@ -16,11 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackPackingController {
 
-    @Autowired
-    private UserRepository userRep;
-
-    @Autowired
-    private ItineraryRepository itineraryRep;
+    private UserRepository userRep = new UserRepository();
+    private ItineraryRepository itineraryRep = new ItineraryRepository();
 
     @CrossOrigin(origins = "*")
     @GetMapping("/load")

@@ -607,7 +607,7 @@ public class ItineraryRepository {
             resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
