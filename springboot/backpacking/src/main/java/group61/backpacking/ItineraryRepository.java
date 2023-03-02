@@ -19,7 +19,7 @@ public class ItineraryRepository {
 
     public static Connection connectToDB() {
         Connection conn = null;
-        String url = "jdbc:sqlite:database.db";
+        String url = "jdbc:sqlite:bpDatabase.db";
         
 
         try {
