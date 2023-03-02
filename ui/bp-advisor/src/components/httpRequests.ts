@@ -1,4 +1,9 @@
-import { Itinerary, ItineraryDestination, User } from "./types";
+import {
+    Itinerary,
+    ItineraryAndDestinations,
+    ItineraryDestination,
+    User,
+} from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(
@@ -159,6 +164,24 @@ async function addItineraryDestinations(
     }
 }
 
+async function addItineraryAndDestinations(
+    itineraryAndDestinations: ItineraryAndDestinations
+): Promise<void> {
+    const response: Response = await fetch(
+        "http://localhost:8080/additineraryanddestinations",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(itineraryAndDestinations),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to add itinerary and destinations");
+    }
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -170,6 +193,7 @@ const httpRequests = {
     getItineraryById,
     getItinerariesByUserEmail,
     getItineraryDestinations,
+    addItineraryAndDestinations,
 };
 
 export default httpRequests;
