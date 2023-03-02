@@ -126,7 +126,7 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
-    ItineraryAndDestinations itineraryAndDestinations) {
-        //itineraryRep.loadItineraryDestinations(itineraryID);
+    ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+        itineraryRep.saveItinerary(itineraryAndDestinations);
     }
 }
