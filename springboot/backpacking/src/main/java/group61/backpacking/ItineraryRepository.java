@@ -621,6 +621,101 @@ public class ItineraryRepository {
         return itineraryList;
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Liked Itineraries
+
+    public void updateLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+        if (likedItinerary(itinerary, user)) {
+            deleteLikedItinerary(itinerary, user);
+        } else {
+            saveLikedItinerary(itinerary, user);
+        }
+    }
+
+    private void deleteLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE * FROM Liked_Itineraries WHERE user_email = ? AND itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            statement.setInt(2, itinerary.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        try {
+            conn.close();
+            statement.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+    }
+
+    private void saveLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Liked_Itineraries (user_email, itinerary_id) VALUES (?, ?)";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            statement.setInt(2, itinerary.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } 
+
+        try {
+            conn.close();
+            statement.close();
+        } catch (SQLException e) {
+            // do nothing
+        }
+
+    }
+
+    private boolean likedItinerary(Itinerary itinerary, User user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean result = true;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Liked_Itineraries WHERE "
+            + "user_email = ? AND itinerary_id = ?";
+
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            statement.setInt(2, itinerary.getId());
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                result = false;
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        return result;
+    }
+
 }
 
 
