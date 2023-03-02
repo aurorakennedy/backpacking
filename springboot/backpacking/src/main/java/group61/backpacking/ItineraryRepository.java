@@ -2,6 +2,7 @@ package group61.backpacking;
 
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.io.InputStream;
 import java.sql.*;
@@ -33,11 +34,8 @@ public class ItineraryRepository {
     }
 
     // not really helpful yet
-    public Date getDate(){
-        // find out how to get current date
-
-        return new Date(2020, 12, 12);
-
+    public Calendar getDate(){
+        return Calendar.getInstance();
     }
 
 
@@ -99,7 +97,7 @@ public class ItineraryRepository {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
             preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setDate(2, getDate());
+            // preparedStatement.setDate(2, getDate());
             preparedStatement.setString(3, estimatedTime);
             preparedStatement.setString(4, description);
             preparedStatement.setBinaryStream(5, image);
