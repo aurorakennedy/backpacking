@@ -30,4 +30,10 @@ public class ItineraryDestination {
     public int getOrder() {
         return order;
     }
+
+    @Override
+    public String toString() {
+        return "ItineraryDestination [itineraryId=" + itineraryId + ", destinationName=" + destinationName
+                + ", country=" + country + ", order=" + order + "]";
+    }
 }
