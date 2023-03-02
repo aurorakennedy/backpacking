@@ -234,7 +234,7 @@ public class UserRepository {
     }
 
     // Travel Route/ Itinerary//
-    public void saveItineraryDestination(User user, String title, String destination, Integer order,
+   /*  public void saveItineraryDestination(User user, String title, String destination, Integer order,
             Itinerary itinerary) throws SQLException {
         Connection conn = null;
         Statement statement = null;
@@ -268,9 +268,9 @@ public class UserRepository {
             // do nothing
         }
 
-    }
+    } */
 
-    public Itinerary loadItineraryByInput(String title, String email) throws RuntimeException, SQLException {
+    /* public Itinerary loadItineraryByInput(String title, String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
@@ -313,9 +313,9 @@ public class UserRepository {
         }
 
         return itinerary;
-    }
+    } */
 
-    public boolean validateItinerary(String title, String email) throws RuntimeException, SQLException {
+    /* public boolean validateItinerary(String title, String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
@@ -349,10 +349,10 @@ public class UserRepository {
             return true;
         }
         return false;
-    }
+    } */
 
     // time to apropriate dataType
-    public void saveItinerary(User user, String estimatedTime, String description, String image, String title,
+   /*  public void saveItinerary(User user, String estimatedTime, String description, String image, String title,
         List<String> destinationsList) throws SQLException {
         Connection conn = null;
         Statement statement = null;
@@ -390,7 +390,7 @@ public class UserRepository {
 
         } catch (RuntimeException e) {
             // do nothing
-        }
+        } */
 
         Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null,0);
 
@@ -437,9 +437,9 @@ public class UserRepository {
             // do nothing
         }
 
-    }
+    } */
 
-    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException {
+    /* public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -458,9 +458,9 @@ public class UserRepository {
             conn.close();
         } catch (RuntimeException e) {
         }
-    }
+    } */
 
-    public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException {
+    /* public List<Itinerary> getItinerariesByUserEmail(String userEmail) throws RuntimeException, SQLException {
         List<Itinerary> itineraries = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -497,6 +497,6 @@ public class UserRepository {
             }
         }
         return itineraries;
-    }
+    } */
 
 }
