@@ -226,11 +226,6 @@ public class UserRepository {
 
     }
 
-    public Date getDate() {
-        // find out how to get current date
-
-        return new Date(2020, 12, 12);
-
-    }
+    
 
 }
