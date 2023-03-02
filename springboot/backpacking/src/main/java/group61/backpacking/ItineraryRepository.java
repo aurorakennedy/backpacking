@@ -592,7 +592,7 @@ public class ItineraryRepository {
     }
 
 
-    public void saveStuff() throws SQLException{
+    public void saveInitialContintentsCountriesAndDestinations() throws SQLException{
         
 
         saveContinent("Europe");
@@ -600,7 +600,6 @@ public class ItineraryRepository {
         saveContinent("North America");
         saveContinent("South America");
         saveContinent("Africa");
-        saveContinent("Oceania");
         saveContinent("Oceania");
         saveContinent("Antarctica");
 
