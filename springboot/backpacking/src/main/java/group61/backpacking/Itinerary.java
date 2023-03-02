@@ -15,14 +15,14 @@ public class Itinerary {
     
     private int id;
     private String writerEmail;
-    private Date writtenDate;
+    private String writtenDate;
     private int estimatedTime;
     private String description;
     private String image;
     private String title;
     private int cost;
 
-    public Itinerary(int id, String writerEmail, Date writtenDate, int estimatedTime, String description, String image, String title) {
+    public Itinerary(int id, String writerEmail, String writtenDate, int estimatedTime, String description, String image, String title) {
         this.id = id;
         this.writerEmail = writerEmail;
         this.writtenDate = writtenDate;
@@ -37,7 +37,7 @@ public class Itinerary {
 
         setId(resultSet.getInt("id"));
         setWriterEmail(resultSet.getString("writer_email"));
-        setWrittenDate(resultSet.getDate("written_date"));
+        setWrittenDate(resultSet.getString("written_date"));
         setEstimatedTime(resultSet.getInt("estimated_time"));
         setDescription(resultSet.getString("itinerary_description"));
         setImage(resultSet.getString("image"));
@@ -54,7 +54,7 @@ public class Itinerary {
         return writerEmail;
     }
 
-    public Date getWrittenDate() {
+    public String getWrittenDate() {
         return writtenDate;
     }
 
@@ -82,7 +82,7 @@ public class Itinerary {
         this.writerEmail = writerEmail;
     }
 
-    public void setWrittenDate(Date writtenDate) {
+    public void setWrittenDate(String writtenDate) {
         this.writtenDate = writtenDate;
     }
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import TravelRoute from "./TravelRoute"
 import "./itineraryListBoxStyle.css"
+import { Itinerary } from "./types";
+import httpRequests from "./httpRequests";
 
 
 interface itinerarySummaryInfo {
@@ -51,6 +53,18 @@ const ItineraryListBox = () => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] = useState<Boolean>(false);
 
     const handleExpantion = () => {
+        try {
+            const promise: Promise<Itinerary> = httpRequests.getItineraryById(3);
+            promise.then((itinerary: Itinerary) => {
+                console.log(itinerary);
+            })
+            const promise2: Promise<Itinerary[]> = httpRequests.getItinerariesByUserEmail("hello@hello.com");
+            promise2.then((itineraries: Itinerary[]) => {
+                console.log(itineraries);
+            })
+        } catch (error) {
+            alert('Error!!!');
+        }
         setitineraryBoxExpanded(!itineraryBoxExpanded);
     };
 

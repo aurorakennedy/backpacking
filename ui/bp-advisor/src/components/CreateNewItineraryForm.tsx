@@ -118,7 +118,7 @@ const CreateNewItineraryForm = ({
             httpRequests.addItinerary({
                 id: -1,
                 writerEmail: loggedInUser?.email,
-                writtenDate: new Date(),
+                writtenDate: "new date",
                 title: titleInputValue,
                 cost: +priceInputValue,
                 estimatedTime: +timeInputValue,

@@ -1,6 +1,8 @@
 package group61.backpacking;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,14 +89,24 @@ public class BackPackingController {
     public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
         // return itineraryRep.loadItineraryByID(id);
-        return null;
+        return new Itinerary(id, "test@test.com", "date", 
+            100, "desc", "img", "title");
+        // return null;
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            return itineraryRep.loadItinerariesByUserEmail(userEmail);
+            Itinerary itinerary1 = new Itinerary(0, userEmail, "date", 0, 
+                "desc", "img", "itinerary1");
+            Itinerary itinerary2 = new Itinerary(0, userEmail, "date", 0, 
+                "desc", "img", "itinerary2");
+            List<Itinerary> itineraryList = new ArrayList<>();
+            itineraryList.add(itinerary1);
+            itineraryList.add(itinerary2);
+            return itineraryList;
+            // return itineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     @CrossOrigin(origins = "*")

@@ -12,7 +12,7 @@ export interface User {
 export interface Itinerary {
     id: number;
     writerEmail: string; // Foreign key
-    writtenDate: Date;
+    writtenDate: string;
     title: string;
     cost: number;
     estimatedTime: number;
