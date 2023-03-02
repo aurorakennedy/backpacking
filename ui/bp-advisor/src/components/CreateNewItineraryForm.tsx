@@ -113,10 +113,9 @@ const CreateNewItineraryForm = ({
                 },
                 destinations: destinations,
             });
-
-            console.log(loggedInUser.email);
-            // window.location.reload();
-            // window.location.replace("/homePage");
+            alert("Your itinerary was added successfully!");
+            window.location.reload();
+            window.location.replace("/homePage");
         } catch (error) {
             alert(
                 "There was an error when trying to add the route, please try again."
