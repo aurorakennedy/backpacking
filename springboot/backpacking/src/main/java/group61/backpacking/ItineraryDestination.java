@@ -7,8 +7,7 @@ public class ItineraryDestination {
     private String country;
     private int order;
     
-    public ItineraryDestination(int itineraryId, String destinationName, String country, int order,
-            String description) {
+    public ItineraryDestination(int itineraryId, String destinationName, String country, int order,String description) {
         this.itineraryId = itineraryId;
         this.destinationName = destinationName;
         this.country = country;

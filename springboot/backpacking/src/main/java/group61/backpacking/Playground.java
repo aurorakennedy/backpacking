@@ -170,25 +170,29 @@ public class Playground {
 
     }
 
-    public void saveItineraryAndDestinations(User user, String title, String destination, Integer order,
+    public void saveItineraryAndDestinations(User user, String title, String destination, String country, Integer order,
             Itinerary itinerary) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
         try {
+            saveDestination(destination, country, null);
+        } catch (Exception e) {
+            // Do nothing
+        }
+
+        try {
 
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number) VALUES (?,?,?)";
+            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number, country) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
             preparedStatement.setInt(1, itinerary.getId());
             preparedStatement.setString(2, destination);
             preparedStatement.setInt(3, order);
-            preparedStatement.setInt(1, itinerary.getId());
-            preparedStatement.setString(2, destination);
-            preparedStatement.setInt(3, order);
+            preparedStatement.setString(4, country);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -214,7 +218,7 @@ public class Playground {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null,0);
 
         try {
             conn = connectToDB();
@@ -254,12 +258,48 @@ public class Playground {
         return itinerary;
     }
 
+
+    public boolean validateDestination(Destination destination) throws RuntimeException, SQLException {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Destination destination2 = new Destination(null, null, null);
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM destination WHERE destination_name = ? AND country = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, destination.getDestinationName());
+            statement.setString(2, destination.getCountry());
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                destination2.mapDestinationFromResultSet(resultSet);
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        if (destination2.getDestinationName() == null) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean validateItinerary(String title, String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null,0);
 
         try {
             conn = connectToDB();
@@ -291,8 +331,8 @@ public class Playground {
     }
 
     // time to apropriate dataType
-    public void saveItinerary(User user, String estimatedTime, String description, InputStream image, String title,
-            List<String> destinationsList) throws SQLException {
+    public void saveItinerary(User user, String estimatedTime, String description, String image, String title,
+            List<String> destinationsList, List<String> countryList, double cost) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -303,18 +343,16 @@ public class Playground {
             }
 
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO Itinerary ( writer_email, written_date, estimated_time, itinerary_description, image, title ) VALUES (?,?,?,?,?,?)";
+            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, image, title, cost ) VALUES (?,?,?,?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
             preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setDate(2, getDate());
-            preparedStatement.setString(3, estimatedTime);
-            preparedStatement.setString(4, description);
-            preparedStatement.setBinaryStream(5, image);
-            preparedStatement.setString(6, title);
-            preparedStatement.setBinaryStream(5, image);
-            preparedStatement.setString(6, title);
+            preparedStatement.setString(2, estimatedTime);
+            preparedStatement.setString(3, description);
+            preparedStatement.setString(4, image);
+            preparedStatement.setString(5, title);
+            preparedStatement.setDouble(6, cost);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -332,7 +370,7 @@ public class Playground {
             // do nothing
         }
 
-        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null,0);
 
         try {
             itinerary = loadItineraryByInput(title, user.getEmail());
@@ -344,7 +382,7 @@ public class Playground {
         try {
 
             for (int i = 0; i < destinationsList.size(); i++) {
-                saveItineraryAndDestinations(user, title, destinationsList.get(i), i + 1, itinerary);
+                saveItineraryAndDestinations(user, title, destinationsList.get(i), countryList.get(i), i + 1, itinerary);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -549,7 +587,7 @@ public class Playground {
             
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, -1, null, null, null);
+                Itinerary itinerary = new Itinerary(0, null, null, -1, null, null, null, 0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
@@ -594,22 +632,25 @@ public class Playground {
     public static void main(String[] args) throws SQLException, RuntimeException {
         Playground t = new Playground();
         // t.doStuff();
-        User user = new User("tobbtest1@test.com", "test", "tet3979w4");
+        User user = new User("tobbtest1@test.com", "test111", "tet3979w4");
+        //t.saveUser(user);
 
         // test itinerarystuff below: //////////////////////////////////////
-        List<String> destinationsList = Arrays.asList("Oslo", "Bergen", "Trondheim");
-        //t.saveItinerary(user, "11.2", "a cool trip", null, "t2", destinationsList);
+        List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
+        List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
+        
+        t.saveItinerary(user, "11.2", "a cool trip", null, "t6", destinationsList, countryList, 200.0);
 
-        destinationsList = Arrays.asList("Oslo", "Spiterstulen", "Gjendebu", "Bergen");
+        //destinationsList = Arrays.asList("Oslo", "Spiterstulen", "Gjendebu", "Bergen");
         //t.saveItinerary(user, "11.2", "a cool trip", null, "t3", destinationsList);
         // System.out.println(destinationsList);
 
         //System.out.println(        t.loadItineraryByInput("cool trip3", "tobbtest1@test.com").toString());
-        List<ItineraryAndDestinations> itineraryAndDestinations = t.loadItineraryAndDestinationss();
+        //List<ItineraryAndDestinations> itineraryAndDestinations = t.loadItineraryAndDestinationss();
         
-        for (ItineraryAndDestinations itineraryAndDestinationsInList : itineraryAndDestinations) {
-            itineraryAndDestinationsInList.print();
-        }
+        // for (ItineraryAndDestinations itineraryAndDestinationsInList : itineraryAndDestinations) {
+        //     itineraryAndDestinationsInList.print();
+        // }
 
         
         
@@ -845,162 +886,8 @@ public class Playground {
         // t.saveDestination("spiterstulen", "Norway", "Spiterstulen is located 1111 meters above sea level in the lush Visdalen in Jotunheimen, and is a natural starting point for trips to Norway's highest mountain - Galdhøpiggen. Here you can also reach 17 of the 26 peaks in Norway at over 2,300 meters above sea level on a day trip. Big brother Galdhøpiggen reigns in the west with little brother Glittertind in the east. When the cabin opens in the spring, the area is an eldorado for top ski tours.");
         // t.saveDestination("Gjendebu", "Norway", "Gjendebu is a mountain cabin in the Jotunheimen National Park, Norway. It is located at 1,200 metres (3,900 ft) above sea level, on the south side of the Gjende lake, in the Gjende valley. The cabin is open from May to October. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road, which is open to cars from the end of May to the end of September. The cabin is located at the end of the Gjendebu road,");
         // t.saveDestination("Finse", "Norway", "Finse is a mountain village area on the shore of the lake Finsevatnet in Ulvik municipality in Vestland county, Norway. The village is centered on Finse Station, a railway station on the Bergen Line. The village sits at an elevation of 1,222 metres (4,009 ft) above sea level, making it the highest station on the entire Norwegian railway system. ");
-        // // t.saveDestination("Oslo", "Norway", "The capital of Norway. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest and parkland. Oslo is a city of
-        // contrasts, with a rich cultural life and a vibrant nightlife. Oslo is also a
-        // city of green spaces, with more than 50 percent of the city covered by forest
-        // and parkland. Oslo is a city of contrasts, with a rich cultural life and a
-        // vibrant nightlife. Oslo is also a city of green spaces, with more than 50
-        // percent of the city covered by forest");
-        // t.saveDestination("Bergen", "Norway", "Bergen is a city and municipality in
-        // Hordaland on the west coast of Norway. Bergen is the second-largest city in
-        // Norway, the municipality covers 465 square kilometres (180 sq mi) and is home
-        // to 278,121 inhabitants. Bergen is the administrative centre of Hordaland and
-        // consists of eight boroughs: Arna, Bergenhus, Fana, Fyllingsdalen, Laksevåg,
-        // Ytrebygda, Årstad and Åsane. The city centre and northern neighbourhoods are
-        // on Byfjorden, the city's southern neighbourhoods are on the island of
-        // Bergenøya, and the western neighbourhoods are on the peninsula of
-        // Bergenshalvøyen. The city is an international centre for aquaculture,
-        // shipping, offshore petroleum industry and subsea technology, and a national
-        // centre for higher education, media, tourism and finance. Bergen Port is the
-        // busiest in Norway and one of the largest in Northern Europe. The city is an
-        // important centre for industries and maritime trade in Europe. ");
-        // t.saveDestination("Trondheim", "Norway", "Trondheim is a city and
-        // municipality in Sør-Trøndelag county, Norway. It has a population of 187,353
-        // (as of 1 January 2018) and is the third most populous municipality in Norway.
-        // The city functions as the administrative centre of Sør-Trøndelag county. The
-        // municipality is the third largest by population in Norway and the fourth
-        // largest municipal area. Trondheim lies on the south shore of the Trondheim
-        // Fjord at the mouth of the river Nidelva. The settlement was founded in 997 as
-        // a trading post and became the capital of Norway in 1130. The city was named
-        // Strindheim in the early 12th century after the farm Strinda, which was the
-        // residence of the bishop. The name Trondheim was used first in 1217 and is
-        // derived from the Old Norse words trönd and heimr. The city's name therefore
-        // translates to crossing place(s) of the fjord(s).");
-        // t.saveDestination("Stavanger", "Norway", "Stavanger is a city and
-        // municipality in Norway. It is the fourth-largest city in the country, with a
-        // population of 122,388 as of 1 January 2018. The municipality is the third
-        // largest by population in Norway and the fourth largest municipal area. The
-        // city is the administrative centre of Rogaland county. Stavanger is the centre
-        // of the Stavanger metropolitan region, which has a population of 279,000. The
-        // city is an international centre for the oil industry and shipping, and a
-        // national centre for aquaculture, higher education, tourism and finance.
-        // Stavanger is the administrative centre of Rogaland county. The city is the
-        // centre of the Stavanger metropolitan region, which has a population of
-        // 279,000. The city is an international centre for the oil industry and
-        // shipping, and a national centre for aquaculture, higher education, tourism
-        // and finance. Stavanger is the administrative centre of Rogaland county. The
-        // city is the centre of the Stavanger metropolitan region, which has a
-        // population of 279,000. The city is an international centre for the oil
-        // industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national centre for aquaculture, higher
-        // education, tourism and finance. Stavanger is the administrative centre of
-        // Rogaland county. The city is the centre of the Stavanger metropolitan region,
-        // which has a population of 279,000. The city is an international centre for
-        // the oil industry and shipping, and a national");
-        // t.saveDestination("Tromsø", "Norway", "Tromsø is a city and municipality in
-        // Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway. Tromsø is also a popular tourist
-        // destination, and is known for its northern lights, midnight sun, and the
-        // annual Tromsø International Film Festival. Tromsø is a city and municipality
-        // in Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway. Tromsø is also a popular tourist
-        // destination, and is known for its northern lights, midnight sun, and the
-        // annual Tromsø International Film Festival. Tromsø is a city and municipality
-        // in Troms county, Norway. It is the most populous city in Northern Norway. The
-        // administrative centre of Troms county, Tromsø lies on the northern coast of
-        // the island of Tromsøya, about 350 kilometres (220 mi) north of the Arctic
-        // Circle. The city is the largest settlement in the county, and the 11th most
-        // populous urban area in Norway. Tromsø has a population of 69,515 (as of 1
-        // January 2018), and is the fourth most populous urban area in the country. The
-        // city is a major centre for maritime industries and shipping, and is the
-        // location of the Arctic University of Norway.");
-        // t.saveDestination("spiterstulen", "Norway", "Spiterstulen is located 1111
-        // meters above sea level in the lush Visdalen in Jotunheimen, and is a natural
-        // starting point for trips to Norway's highest mountain - Galdhøpiggen. Here
-        // you can also reach 17 of the 26 peaks in Norway at over 2,300 meters above
-        // sea level on a day trip. Big brother Galdhøpiggen reigns in the west with
-        // little brother Glittertind in the east. When the cabin opens in the spring,
-        // the area is an eldorado for top ski tours.");
-        // t.saveDestination("Gjendebu", "Norway", "Gjendebu is a mountain cabin in the
-        // Jotunheimen National Park, Norway. It is located at 1,200 metres (3,900 ft)
-        // above sea level, on the south side of the Gjende lake, in the Gjende valley.
-        // The cabin is open from May to October. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road, which is
-        // open to cars from the end of May to the end of September. The cabin is
-        // located at the end of the Gjendebu road, which is open to cars from the end
-        // of May to the end of September. The cabin is located at the end of the
-        // Gjendebu road, which is open to cars from the end of May to the end of
-        // September. The cabin is located at the end of the Gjendebu road,");
-        // t.saveDestination("Finse", "Norway", "Finse is a mountain village area on the
-        // shore of the lake Finsevatnet in Ulvik municipality in Vestland county,
-        // Norway. The village is centered on Finse Station, a railway station on the
-        // Bergen Line. The village sits at an elevation of 1,222 metres (4,009 ft)
-        // above sea level, making it the highest station on the entire Norwegian
-        // railway system. ");
+        
+    
         // t.saveDestination("Mount Everest", "Nepal", "Mount Everest, also known in
         // Nepal as Sagarmatha and in China as Chomolungma/珠穆朗玛峰, is Earth's highest
         // mountain above sea level, located in the Mahalangur Himal sub-range of the
