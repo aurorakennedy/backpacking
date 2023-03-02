@@ -1,11 +1,10 @@
---created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
 
 CREATE TABLE User (
   email VARCHAR(50) PRIMARY KEY,
   password VARCHAR(20) NOT NULL,
   username VARCHAR(20) NOT NULL,
-  CONSTRAINT password_length CHECK (LENGTH(password) >= 8),
+  CONSTRAINT password_length CHECK (LENGTH(password) >= 18),
   CONSTRAINT email_format CHECK (email LIKE '%@%.%')
 )
 
