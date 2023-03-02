@@ -1,0 +1,102 @@
+#newRouteBox {
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 170px;
+    margin-bottom: 50px;
+    width: 50%;
+    max-width: 800px;
+    background-color: rgb(212, 234, 201, 0.8);
+    border-radius: 10%;
+    padding: 50px;
+    padding-right: 70px;
+    position: relative;
+}
+
+.newRouteLabel {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.newRouteInput {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#cancelButton {
+    position: absolute;
+    right: 60px;
+    top: 60px;
+    text-decoration: underline;
+    color: dodgerblue;
+}
+
+#titleInput {
+    width: 70%;
+}
+
+#estimatedTimeInput,
+#estimatedPriceInput {
+    width: 30%;
+}
+
+#descriptionInput {
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 200px;
+}
+
+#destinationNameInput,
+#countryInput {
+    width: 40%;
+}
+
+#destinationNameInputLabel,
+#countryInputLabel {
+    font-size: 12px;
+}
+
+
+#addDestinationButton {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+}
+
+#destinationsAsHTMLTitle {
+    font-weight: bold;
+    float: left;
+}
+
+#destinationsAsHTML {
+    float: left;
+}
+
+#submitItineraryButton {
+    margin-top: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #D65745;
+    color: white;
+    cursor: pointer;
+    float: right;
+}
