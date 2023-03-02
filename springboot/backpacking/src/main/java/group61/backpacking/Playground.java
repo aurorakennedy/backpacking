@@ -634,7 +634,7 @@ public class Playground {
     }
 
 
-
+    
 
 
 
@@ -648,8 +648,10 @@ public class Playground {
         List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
         List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
         
-        t.saveItinerary(user, "11.2", "a cool trip", null, "t6", destinationsList, countryList, 200.0);
+        t.saveUser(user);
 
+        //t.saveItinerary(user, "11.2", "a cool trip", null, "t6", destinationsList, countryList, 200.0);
+        
         //destinationsList = Arrays.asList("Oslo", "Spiterstulen", "Gjendebu", "Bergen");
         //t.saveItinerary(user, "11.2", "a cool trip", null, "t3", destinationsList);
         // System.out.println(destinationsList);

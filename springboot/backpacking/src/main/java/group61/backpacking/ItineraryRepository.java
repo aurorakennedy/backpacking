@@ -601,7 +601,6 @@ public class ItineraryRepository {
         saveContinent("South America");
         saveContinent("Africa");
         saveContinent("Oceania");
-        saveContinent("Oceania");
         saveContinent("Antarctica");
 
         saveCountry("Afghanistan", "Asia");

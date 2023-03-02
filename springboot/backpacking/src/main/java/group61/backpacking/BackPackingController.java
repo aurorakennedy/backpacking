@@ -100,7 +100,7 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/additinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) {
-        // itineraryRep.saveItinerary(itinerary);
+        //itineraryRep.saveItinerary(itinerary);
         System.out.println(itinerary);
     }
 
