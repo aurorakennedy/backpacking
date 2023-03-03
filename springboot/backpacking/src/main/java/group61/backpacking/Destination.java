@@ -40,6 +40,8 @@ public class Destination {
         return description;
     }
 
+    
+
     public void setDestinationName(String destinationName) {
         this.destinationName = destinationName;
     }
