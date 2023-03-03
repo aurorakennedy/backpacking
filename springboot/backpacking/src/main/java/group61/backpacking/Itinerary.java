@@ -20,9 +20,9 @@ public class Itinerary {
     private String description;
     private String image;
     private String title;
-    private int cost;
+    private double cost;
 
-    public Itinerary(int id, String writerEmail, String writtenDate, int estimatedTime, String description, String image, String title) {
+    public Itinerary(int id, String writerEmail, String writtenDate, int estimatedTime, String description, String image, String title, double cost) {
         this.id = id;
         this.writerEmail = writerEmail;
         this.writtenDate = writtenDate;
@@ -30,6 +30,7 @@ public class Itinerary {
         this.description = description;
         this.image = image;
         this.title = title;
+        this.cost = cost;
     }
 
     public void mapItineraryFromResultSet(ResultSet resultSet) throws SQLException {
@@ -42,6 +43,7 @@ public class Itinerary {
         setDescription(resultSet.getString("itinerary_description"));
         setImage(resultSet.getString("image"));
         setTitle(resultSet.getString("title"));
+        setCost(resultSet.getDouble("cost"));
         
         
     }
@@ -74,6 +76,12 @@ public class Itinerary {
         return title;
     }
 
+    public double getCost() {
+        return cost;
+    }
+
+    
+
     public void setId(int id) {
         this.id = id;
     }
@@ -100,6 +108,10 @@ public class Itinerary {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     @Override

@@ -2,6 +2,7 @@ package group61.backpacking;
 
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.io.InputStream;
 import java.sql.*;
@@ -33,11 +34,8 @@ public class ItineraryRepository {
     }
 
     // not really helpful yet
-    public Date getDate(){
-        // find out how to get current date
-
-        return new Date(2020, 12, 12);
-
+    public Calendar getDate(){
+        return Calendar.getInstance();
     }
 
 
@@ -46,101 +44,110 @@ public class ItineraryRepository {
     ///////////////////////////////////////////////////////////////////////////
     // save functions
 
-    
-    public void saveItineraryAndDestinations(User user, String title, String destination, Integer order, Itinerary itinerary ) throws SQLException{
+
+    public void saveItineraryAndDestinations(User user, String title, String destination, String country, Integer order,
+            Itinerary itinerary) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        
 
         try {
-            
+            saveDestination(destination, country, null);
+        } catch (Exception e) {
+            // Do nothing
+        }
+
+        try {
+
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number) VALUES (?,?,?)";
+            String sqlQuery = "INSERT INTO itinerary_destination (itinerary_id, destination_name, order_number, country) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
             preparedStatement.setInt(1, itinerary.getId());
             preparedStatement.setString(2, destination);
             preparedStatement.setInt(3, order);
-            
+            preparedStatement.setString(4, country);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             resultSet.close();
             statement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
+        }
 
     }
 
 
-    // Todo: time to apropriate dataType
-    public void saveItinerary(User user, String estimatedTime, String description, InputStream image, String title, List<String> destinationsList) throws SQLException{
+    public void saveItinerary(User user, String estimatedTime, String description, String image, String title,
+            List<String> destinationsList, List<String> countryList, double cost) throws SQLException {
         Connection conn = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            if (validateItinerary(title, user.getEmail()) == false){
-                throw new SQLException("Itinerary with this title already exists");
-                
+            if (validateItinerary(title, user.getEmail()) == false) {
+                throw new SQLException("Itinerary with title " + title + " already exists");
             }
-            
+
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO Itinerary ( writer_email, written_date, estimated_time, itinerary_description, image, title ) VALUES (?,?,?,?,?,?)";
+            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, image, title, cost ) VALUES (?,?,?,?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            //db.update(preparedStatement, user.getUserName(), user.getPassword(), user.getEmail());
+            // db.update(preparedStatement, user.getUserName(), user.getPassword(),
+            // user.getEmail());
             preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setDate(2, getDate());
-            preparedStatement.setString(3, estimatedTime);
-            preparedStatement.setString(4, description);
-            preparedStatement.setBinaryStream(5, image);
-            preparedStatement.setString(6, title);
-            
+            preparedStatement.setString(2, estimatedTime);
+            preparedStatement.setString(3, description);
+            preparedStatement.setString(4, image);
+            preparedStatement.setString(5, title);
+            preparedStatement.setDouble(6, cost);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
-            //throw new DuplicateUserException("User with email " + user.getEmail() + " already exists");   
+            // throw new DuplicateUserException("User with email " + user.getEmail() + "
+            // already exists");
         }
 
         try {
             resultSet.close();
             statement.close();
             conn.close();
-                
+
         } catch (RuntimeException e) {
             // do nothing
-            }
+        }
 
-        Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);
+        Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null,0);
 
         try {
             itinerary = loadItineraryByInput(title, user.getEmail());
         } catch (Exception e) {
-                // do nothing
+            // do nothing
         }
         System.out.println(itinerary.toString());
 
         try {
 
             for (int i = 0; i < destinationsList.size(); i++) {
-                saveItineraryAndDestinations(user, title, destinationsList.get(i), i+1, itinerary);
+                saveItineraryAndDestinations(user, title, destinationsList.get(i), countryList.get(i), i + 1, itinerary);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-            
-
 
     }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // validate functions
@@ -150,7 +157,7 @@ public class ItineraryRepository {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null,0);
 
         try  {
             conn = connectToDB();
@@ -185,6 +192,41 @@ public class ItineraryRepository {
         return false;
     }
 
+    public boolean validateDestination(Destination destination) throws RuntimeException, SQLException {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Destination destination2 = new Destination(null, null, null);
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM destination WHERE destination_name = ? AND country = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, destination.getDestinationName());
+            statement.setString(2, destination.getCountry());
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                destination2.mapDestinationFromResultSet(resultSet);
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+            // throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        if (destination2.getDestinationName() == null) {
+            return true;
+        }
+        return false;
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // load functions
@@ -196,7 +238,7 @@ public class ItineraryRepository {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null);
+        Itinerary itinerary = new Itinerary(-1, null,null,-1,null,null,null,0);
 
         try  {
             conn = connectToDB();
@@ -255,7 +297,7 @@ public class ItineraryRepository {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null);  // TODO: kostruktør i Itinerary
+                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null,0);  // TODO: kostruktør i Itinerary
                 itinerary.mapItineraryFromResultSet(resultSet);
                 // TODO: Legge til destinations
                 itineraries.add(itinerary);
@@ -296,7 +338,7 @@ public class ItineraryRepository {
             
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
@@ -542,6 +584,42 @@ public class ItineraryRepository {
     }
 
 
+    //Search bar: Search for relevant itineraries
+
+    //There's probably a better way to do this...
+    // Write a SQL query with many ORs and LIKE % :searchString %
+
+    //Right now it only searches title and destination column in Itinerary table
+
+    public List<Itinerary> search(String keyword){
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> itineraryList = new ArrayList<Itinerary>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary WHERE "
+            + "title LIKE '%' || :keyword || '%' "
+            + "OR description LIKE '%' || :keyword || '%'";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error in search");   
+        }
+        try {
+            conn.close();
+        } catch (Exception e) {}
+        return itineraryList;
+    }
 
 }
 
