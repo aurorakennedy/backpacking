@@ -591,6 +591,13 @@ public class ItineraryRepository {
 
     //Right now it only searches title and destination column in Itinerary table
 
+    //Search bar: Search for relevant itineraries
+
+    //There's probably a better way to do this...
+    // Write a SQL query with many ORs and LIKE % :searchString %
+
+    //Right now it only searches title and destination column in Itinerary table
+
     public List<Itinerary> search(String keyword){
 
         Connection conn = null;
@@ -613,7 +620,26 @@ public class ItineraryRepository {
             }
             
         } catch (SQLException e) {
-            System.out.println("Error in search");   
+            System.out.println("Error in search");  
+        
+        try {
+            conn = connectToDB();
+            String sqlQuery ="SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
+            + "WHERE destination_name LIKE '%' || :keyword || '%' "
+            + "OR country LIKE '%' || :keyword || '%'";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Errorin search");  
+        }
+            
         }
         try {
             conn.close();
