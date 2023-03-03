@@ -1,5 +1,5 @@
 import "./createNewItineraryFormStyle.css";
-import { Destination, ItineraryDestination, LoggedInUser } from "./types";
+import { Destination, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -29,7 +29,7 @@ const CreateNewItineraryForm = ({
         countryName: string
     ): void {
         destinations.push({
-            name: destinationName,
+            destinationName: destinationName,
             country: countryName,
             description: "",
         });
@@ -99,35 +99,23 @@ const CreateNewItineraryForm = ({
             return;
         }
 
-        const itineraryDestinations: ItineraryDestination[] = [];
-
-        let orderOfDestination = 1;
-
-        destinations.forEach((destination) => {
-            itineraryDestinations.push({
-                itineraryId: -1,
-                order: orderOfDestination,
-                destinationName: destination.name,
-                country: destination.country,
-            });
-            orderOfDestination++;
-        });
-
         try {
-            console.log(loggedInUser.email);
-            httpRequests.addItinerary({
-                id: -1,
-                writerEmail: loggedInUser?.email,
-                writtenDate: "new date",
-                title: titleInputValue,
-                cost: +priceInputValue,
-                estimatedTime: +timeInputValue,
-                description: descriptionInputValue,
-                image: "",
+            httpRequests.addItineraryAndDestinations({
+                itinerary: {
+                    id: -1,
+                    writerEmail: loggedInUser?.email,
+                    writtenDate: "",
+                    title: titleInputValue,
+                    cost: +priceInputValue,
+                    estimatedTime: +timeInputValue,
+                    description: descriptionInputValue,
+                    image: "",
+                },
+                destinations: destinations,
             });
-            httpRequests.addItineraryDestinations(itineraryDestinations);
-            // window.location.reload();
-            // window.location.replace("/homePage");
+            alert("Your itinerary was added successfully!");
+            window.location.reload();
+            window.location.replace("/homePage");
         } catch (error) {
             alert(
                 "There was an error when trying to add the route, please try again."

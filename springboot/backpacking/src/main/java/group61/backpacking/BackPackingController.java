@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackPackingController {
 
-    @Autowired
-    private UserRepository userRep;
-
-    @Autowired
-    private ItineraryRepository itineraryRep;
+    private UserRepository userRep = new UserRepository();
+    private ItineraryRepository itineraryRep = new ItineraryRepository();
 
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
@@ -89,6 +86,7 @@ public class BackPackingController {
     public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
         // return itineraryRep.loadItineraryByID(id);
+        
         return null;
     }
 
@@ -96,7 +94,15 @@ public class BackPackingController {
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            return itineraryRep.loadItinerariesByUserEmail(userEmail);
+            Itinerary itinerary1 = new Itinerary(0, userEmail, "date", 0, 
+                "desc", "img", "itinerary1", 0);
+            Itinerary itinerary2 = new Itinerary(0, userEmail, "date", 0, 
+                "desc", "img", "itinerary2", 0);
+            List<Itinerary> itineraryList = new ArrayList<>();
+            itineraryList.add(itinerary1);
+            itineraryList.add(itinerary2);
+            return itineraryList;
+            // return itineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     @CrossOrigin(origins = "*")
@@ -117,23 +123,28 @@ public class BackPackingController {
         return outputList.get(0);
             
     }
-
-    @CrossOrigin(origins = "*")
-    @PostMapping("/additinerarydestinations")
-    public void addItineraryDestinations(@RequestBody 
-        List<ItineraryDestination> itineraryDestinations) {
-            // itineraryRep.saveItineraryDestinations(itineraryDestionations);
-            for (ItineraryDestination itineraryDestination : itineraryDestinations) {
-                System.out.println(itineraryDestination.toString());
-            }
-    }
-
-
+    
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
     ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
         itineraryRep.saveItinerary(itineraryAndDestinations);
     }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/likeditineraries/{id}")
+    public List<Itinerary>
+         getItineraryDestinations(@PathVariable User user) throws SQLException {
+            return itineraryRep.loadLikedItineraries(user);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/updatelikeitinerary")
+    public void updateLikeOnItinerary(@RequestBody Itinerary itinerary, User user) throws SQLException {
+        itineraryRep.updateLikedItinerary(itinerary, user);
+    }
+
+
+
 
 }

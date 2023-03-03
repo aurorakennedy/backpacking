@@ -17,7 +17,7 @@ public class UserRepository {
 
     public static Connection connectToDB() {
         Connection conn = null;
-        String url = "jdbc:sqlite:database.db";
+        String url = "jdbc:sqlite:bpDatabase.db";
 
         try {
             conn = DriverManager.getConnection(url);
@@ -227,8 +227,6 @@ public class UserRepository {
 
     }
 
-    public Calendar getDate() {
-        return Calendar.getInstance();
-    }
+    
 
 }

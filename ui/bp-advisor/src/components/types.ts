@@ -29,7 +29,7 @@ export interface ItineraryDestination {
 
 //Possibly used for top lists
 export interface Destination {
-    name: string;
+    destinationName: string;
     country: string; // Foreign key
     description: string;
 }
@@ -41,4 +41,9 @@ export interface Country {
 
 export interface Continent {
     name: string;
+}
+
+export interface ItineraryAndDestinations {
+    itinerary: Itinerary;
+    destinations: Destination[];
 }
