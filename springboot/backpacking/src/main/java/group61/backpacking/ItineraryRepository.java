@@ -682,7 +682,7 @@ public class ItineraryRepository {
 
     }
 
-    private boolean likedItinerary(Itinerary itinerary, User user) throws SQLException {
+    public boolean likedItinerary(Itinerary itinerary, User user) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -715,6 +715,42 @@ public class ItineraryRepository {
         }
         return result;
     }
+
+    public List<Itinerary> loadLikedItineraries(User user) throws SQLException {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> itineraryList = new ArrayList<Itinerary>();
+
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary INNER JOIN Liked_Itineraries ON (id = itinerary_id) WHERE user_email = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        try {
+            conn.close();
+            statement.close();
+            resultSet.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+
+        return itineraryList;
+    }
+
 
 }
 
