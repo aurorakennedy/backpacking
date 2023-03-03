@@ -1,4 +1,4 @@
-#travelRouteDiv {
+#expandableItineraryContainer {
     width: 1000px;
     margin-top: 30px;
     margin-left: 50px;
@@ -26,7 +26,7 @@
     width: 70%;
     max-width: 1200px;
     background-color: white;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 12%;
     z-index: 200;
@@ -44,7 +44,6 @@
     flex-direction: column;
     max-width: 65%;
     align-items: flex-start;
-
 }
 
 #itineraryDetailsFlexBox {
@@ -60,7 +59,7 @@
 
 #itineraryDestinationBox {
     width: 25%;
-    background-color: #ECECEC;
+    background-color: #ececec;
     height: 600px;
     border-radius: 25px;
     margin-right: 50px;
@@ -68,7 +67,7 @@
 
 #itineraryBoxTitle {
     font-family: "Knewave";
-    color: #D65745;
+    color: #d65745;
     font-size: 40px;
     margin-top: 0px;
 }
