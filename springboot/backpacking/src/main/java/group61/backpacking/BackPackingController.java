@@ -91,18 +91,11 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/itineraries/{userEmail}")
-    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
+    @GetMapping("/getitineraries/{userEmail}")
+    public List<ItineraryAndDestinations> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            Itinerary itinerary1 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary1", 0);
-            Itinerary itinerary2 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary2", 0);
-            List<Itinerary> itineraryList = new ArrayList<>();
-            itineraryList.add(itinerary1);
-            itineraryList.add(itinerary2);
-            return itineraryList;
-            // return itineraryRep.loadItinerariesByUserEmail(userEmail);
+            List<Itinerary> itineraries = itineraryRep.loadItinerariesByUserEmail(userEmail);
+            return itineraryRep.loadItineraryAndDestinations(itineraries);
     }
 
     @CrossOrigin(origins = "*")
@@ -114,9 +107,9 @@ public class BackPackingController {
 
     // takes in an id input and returns the itinerary and destinations as a ItineraryAndDestinations object
     @CrossOrigin(origins = "*")
-    @GetMapping("/itinerarydestinations/{id}")
-    public ItineraryAndDestinations getItineraryDestinations(@PathVariable int itineraryID) throws RuntimeException, SQLException {
-        Itinerary itinerary = itineraryRep.loadItineraryById(itineraryID);
+    @GetMapping("/itineraryanddestinations/{id}")
+    public ItineraryAndDestinations getItineraryDestinations(@PathVariable int id) throws RuntimeException, SQLException {
+        Itinerary itinerary = itineraryRep.loadItineraryById(id);
         List<Itinerary> list = new ArrayList<>();
         list.add(itinerary);
         List<ItineraryAndDestinations> outputList = itineraryRep.loadItineraryAndDestinations(list);
