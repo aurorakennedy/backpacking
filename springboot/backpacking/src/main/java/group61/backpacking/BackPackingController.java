@@ -87,7 +87,7 @@ public class BackPackingController {
             throws SQLException, RuntimeException {
         // return itineraryRep.loadItineraryByID(id);
         return new Itinerary(id, "test@test.com", "date", 
-            100, "desc", "img", "title");
+            100, "desc", "img", "title", 0);
         // return null;
     }
 
@@ -96,9 +96,9 @@ public class BackPackingController {
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
             Itinerary itinerary1 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary1");
+                "desc", "img", "itinerary1", 0);
             Itinerary itinerary2 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary2");
+                "desc", "img", "itinerary2", 0);
             List<Itinerary> itineraryList = new ArrayList<>();
             itineraryList.add(itinerary1);
             itineraryList.add(itinerary2);
