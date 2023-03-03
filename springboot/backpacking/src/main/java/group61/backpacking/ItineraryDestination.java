@@ -7,7 +7,8 @@ public class ItineraryDestination {
     private String country;
     private int order;
     
-    public ItineraryDestination(int itineraryId, String destinationName, String country, int order,String description) {
+    public ItineraryDestination(int itineraryId, String destinationName, String country, int order,
+            String description) {
         this.itineraryId = itineraryId;
         this.destinationName = destinationName;
         this.country = country;
@@ -28,11 +29,5 @@ public class ItineraryDestination {
 
     public int getOrder() {
         return order;
-    }
-
-    @Override
-    public String toString() {
-        return "ItineraryDestination [itineraryId=" + itineraryId + ", destinationName=" + destinationName
-                + ", country=" + country + ", order=" + order + "]";
     }
 }
