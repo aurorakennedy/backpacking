@@ -119,4 +119,17 @@ public class BackPackingController {
             // itineraryRep.saveItineraryDestinations(itineraryDestionations);
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/likeditineraries/{id}")
+    public List<Itinerary>
+         getItineraryDestinations(@PathVariable User user) throws SQLException {
+            return itineraryRep.loadLikedItineraries(user);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/updatelikeitinerary")
+    public void updateLikeOnItinerary(@RequestBody Itinerary itinerary, User user) throws SQLException {
+        itineraryRep.updateLikedItinerary(itinerary, user);
+    }
+
 }
