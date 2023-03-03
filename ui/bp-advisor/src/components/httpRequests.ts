@@ -1,4 +1,9 @@
-import { Itinerary, ItineraryDestination, User } from "./types";
+import {
+    Itinerary,
+    ItineraryAndDestinations,
+    ItineraryDestination,
+    User,
+} from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(
@@ -141,23 +146,38 @@ async function getItineraryDestinations(
     return itineraryDestinations;
 }
 
-async function addItineraryDestinations(
-    itineraryDestinations: ItineraryDestination[]
+
+
+async function addItineraryAndDestinations(
+    itineraryAndDestinations: ItineraryAndDestinations
 ): Promise<void> {
     const response: Response = await fetch(
-        "http://localhost:8080/additinerarydestinations",
+        "http://localhost:8080/additineraryanddestinations",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(itineraryDestinations),
+            body: JSON.stringify(itineraryAndDestinations),
         }
     );
     if (!response.ok) {
-        throw new Error("Failed to add itinerary destinations");
+        throw new Error("Failed to add itinerary and destinations");
     }
 }
+ //Search - not done
+ async function search(keyword: string):
+ Promise<Itinerary[]> {
+ const response: Response = await
+   //This is probably wrong:
+     fetch('http://localhost:8080/itineraries/');
+     if (!response.ok) {
+       throw new Error('Failed to search through itinerary or itinerary destinations');
+   }
+   const itineraries: Itinerary[] = await response.json();
+   return itineraries;
+ }
+//
 
 const httpRequests = {
     getUser,
@@ -166,10 +186,12 @@ const httpRequests = {
     updateUser,
     deleteUser,
     addItinerary,
-    addItineraryDestinations,
     getItineraryById,
     getItinerariesByUserEmail,
     getItineraryDestinations,
+
+    search,
+    addItineraryAndDestinations,
 };
 
 export default httpRequests;

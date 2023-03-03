@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackPackingController {
 
-    @Autowired
-    private UserRepository userRep;
-
-    @Autowired
-    private ItineraryRepository itineraryRep;
+    private UserRepository userRep = new UserRepository();
+    private ItineraryRepository itineraryRep = new ItineraryRepository();
 
     @CrossOrigin(origins = "*")
     @GetMapping("/load")
@@ -112,7 +109,7 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/additinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) {
-        // itineraryRep.saveItinerary(itinerary);
+        //itineraryRep.saveItinerary(itinerary);
         System.out.println(itinerary);
     }
 
@@ -123,15 +120,28 @@ public class BackPackingController {
             // return itineraryRep.loadItineraryDestinations(itineraryID);
             return null;
     }
+    
+    @CrossOrigin(origins = "*")
+    @PostMapping("/additineraryanddestinations")
+    public void addItineraryAndDestinations(@RequestBody 
+    ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+        itineraryRep.saveItinerary(itineraryAndDestinations);
+    }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("/additinerarydestinations")
-    public void addItineraryDestinations(@RequestBody 
-        List<ItineraryDestination> itineraryDestinations) {
-            // itineraryRep.saveItineraryDestinations(itineraryDestionations);
-            for (ItineraryDestination itineraryDestination : itineraryDestinations) {
-                System.out.println(itineraryDestination.toString());
-            }
+    @GetMapping("/likeditineraries/{id}")
+    public List<Itinerary>
+         getItineraryDestinations(@PathVariable User user) throws SQLException {
+            return itineraryRep.loadLikedItineraries(user);
     }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/updatelikeitinerary")
+    public void updateLikeOnItinerary(@RequestBody Itinerary itinerary, User user) throws SQLException {
+        itineraryRep.updateLikedItinerary(itinerary, user);
+    }
+
+
+
 
 }
