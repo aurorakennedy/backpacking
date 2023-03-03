@@ -137,6 +137,22 @@ CREATE TABLE ads (
 );
 
 
+CREATE TABLE Itinerary_Comment(
+id INTEGER PRIMARY KEY NOT NULL,
+user_email VARCHAR(50) NOT NULL,
+itinerary_id INTEGER NOT NULL, 
+comment VARCHAR(255) NOT NULL,
+written_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+CONSTRAINT user_email_fk 
+FOREIGN KEY (user_email) REFERENCES User(email)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+CONSTRAINT itinerary_id_fk
+FOREIGN KEY (itinerary_id) REFERENCES Itinerary(id)
+);
+
+
+
 INSERT INTO User (email, password, username)
 VALUES ('mod1@backpacking.com', 'password', 'moderator1');
 
