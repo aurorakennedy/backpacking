@@ -3,6 +3,9 @@ package group61.backpacking;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //@Entity
 public class User {
 
@@ -12,11 +15,13 @@ public class User {
     private String password;
     private String username;
 
-
-    public User(String email, String password, String userName) {
+    @JsonCreator
+    public User(@JsonProperty("email") String email,
+                @JsonProperty("password") String password,
+                @JsonProperty("username") String username) {
         this.email = email;
         this.password = password;
-        this.username = userName;
+        this.username = username;
     }
 
     public void mapUserFromResultSet(ResultSet resultSet) throws SQLException {
