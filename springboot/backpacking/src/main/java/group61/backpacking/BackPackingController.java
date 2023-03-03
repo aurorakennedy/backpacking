@@ -1,9 +1,9 @@
 package group61.backpacking;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntToDoubleFunction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -89,39 +89,33 @@ public class BackPackingController {
     public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
         // return itineraryRep.loadItineraryByID(id);
-        return new Itinerary(id, "test@test.com", "date", 
-            100, "desc", "img", "title");
-        // return null;
+        return null;
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/itineraries/{userEmail}")
     public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            Itinerary itinerary1 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary1");
-            Itinerary itinerary2 = new Itinerary(0, userEmail, "date", 0, 
-                "desc", "img", "itinerary2");
-            List<Itinerary> itineraryList = new ArrayList<>();
-            itineraryList.add(itinerary1);
-            itineraryList.add(itinerary2);
-            return itineraryList;
-            // return itineraryRep.loadItinerariesByUserEmail(userEmail);
+            return itineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/additinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) {
-        // itineraryRep.saveItinerary(itinerary);
+        //itineraryRep.saveItinerary(itinerary);
         System.out.println(itinerary);
     }
 
+    // takes in an id input and returns the itinerary and destinations as a ItineraryAndDestinations object
     @CrossOrigin(origins = "*")
     @GetMapping("/itinerarydestinations/{id}")
-    public List<ItineraryDestination>
-         getItineraryDestinations(@PathVariable int itineraryID) {
-            // return itineraryRep.loadItineraryDestinations(itineraryID);
-            return null;
+    public ItineraryAndDestinations getItineraryDestinations(@PathVariable int itineraryID) throws RuntimeException, SQLException {
+        Itinerary itinerary = itineraryRep.loadItineraryById(itineraryID);
+        List<Itinerary> list = new ArrayList<>();
+        list.add(itinerary);
+        List<ItineraryAndDestinations> outputList = itineraryRep.loadItineraryAndDestinations(list);
+        return outputList.get(0);
+            
     }
 
     @CrossOrigin(origins = "*")
@@ -132,6 +126,14 @@ public class BackPackingController {
             for (ItineraryDestination itineraryDestination : itineraryDestinations) {
                 System.out.println(itineraryDestination.toString());
             }
+    }
+
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/additineraryanddestinations")
+    public void addItineraryAndDestinations(@RequestBody 
+    ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+        itineraryRep.saveItinerary(itineraryAndDestinations);
     }
 
 }
