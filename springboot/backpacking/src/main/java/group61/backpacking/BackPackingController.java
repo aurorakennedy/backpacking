@@ -98,9 +98,9 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("/itinerary")
+    @PostMapping("/additinerary")
     public void addItinerary(@RequestBody Itinerary itinerary) {
-        // itineraryRep.saveItinerary(itinerary);
+        //itineraryRep.saveItinerary(itinerary);
         System.out.println(itinerary);
     }
 
@@ -113,10 +113,20 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("/itinerarydestinations")
+    @PostMapping("/additinerarydestinations")
     public void addItineraryDestinations(@RequestBody 
         List<ItineraryDestination> itineraryDestinations) {
             // itineraryRep.saveItineraryDestinations(itineraryDestionations);
+            for (ItineraryDestination itineraryDestination : itineraryDestinations) {
+                System.out.println(itineraryDestination.toString());
+            }
     }
 
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/additineraryanddestinations")
+    public void addItineraryAndDestinations(@RequestBody 
+    ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+        itineraryRep.saveItinerary(itineraryAndDestinations);
+    }
 }
