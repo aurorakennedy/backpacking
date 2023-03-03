@@ -37,6 +37,12 @@ public class ItineraryRepository {
         return Calendar.getInstance();
     }
 
+
+    public String formatInput(String input) {
+        String formattedInput = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+        return formattedInput;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // ITINERARY STUFF
     ///////////////////////////////////////////////////////////////////////////
