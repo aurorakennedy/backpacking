@@ -150,6 +150,19 @@ async function addItineraryDestinations(itineraryDestinations:
     }
 }
 
+async function searchByKeyword(
+    keyword: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/itineraries/`
+    );
+  if (!response.ok) {
+      throw new Error("Failed to fetch itineraries by keyword");
+  }
+    const itineraries: Itinerary[] = await response.json();
+    return itineraries;
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -161,6 +174,8 @@ const httpRequests = {
     getItineraryById,
     getItinerariesByUserEmail,
     getItineraryDestinations,
+
+    searchByKeyword,
 }
 
 export default httpRequests;

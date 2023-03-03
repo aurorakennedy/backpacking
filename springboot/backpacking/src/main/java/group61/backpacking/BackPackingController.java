@@ -119,4 +119,9 @@ public class BackPackingController {
             // itineraryRep.saveItineraryDestinations(itineraryDestionations);
     }
 
+    @GetMapping("/itineraries") 
+    public List<Itinerary> search(@PathVariable String keyword) {
+            return itineraryRep.search(keyword);
+    }
+
 }
