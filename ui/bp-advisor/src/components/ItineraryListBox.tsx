@@ -54,7 +54,7 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
                                         ".itinerarySummaryDiv"
                                     ) as HTMLDivElement;
                                     if (itinerarySummaryDiv) {
-                                        handleExpantionOpen(
+                                        handleExpansionOpen(
                                             event,
                                             itinerarySummaryDiv.id
                                         );
@@ -107,7 +107,7 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
         }
     }
 
-    async function handleExpantionOpen(
+    async function handleExpansionOpen(
         event: MouseEvent,
         itineraryId: string
     ): Promise<React.MouseEventHandler<HTMLElement> | any> {
@@ -149,14 +149,15 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
 
                     duration.innerHTML =
                         "Duration: " +
-                        itineraryAndDestinations.itinerary.estimatedTime;
+                        itineraryAndDestinations.itinerary.estimatedTime +
+                        " days";
 
                     let cost: HTMLElement = document.getElementById(
                         "itineraryDetailsCost"
                     ) as HTMLElement;
 
                     cost.innerHTML =
-                        "Cost: " + itineraryAndDestinations.itinerary.cost;
+                        "Cost: $ " + itineraryAndDestinations.itinerary.cost;
 
                     let itineraryBoxDescription: HTMLElement =
                         document.getElementById(
@@ -165,6 +166,57 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
 
                     itineraryBoxDescription.innerHTML =
                         itineraryAndDestinations.itinerary.description;
+
+                    let itineraryDestinationBox: HTMLDivElement =
+                        document.getElementById(
+                            "itineraryDestinationBox"
+                        ) as HTMLDivElement;
+
+                    let counterOfDestinations: number = 0;
+                    itineraryAndDestinations.destinations.forEach(
+                        (destination) => {
+                            let p = document.createElement("p");
+                            p.innerHTML = destination.destinationName;
+                            itineraryDestinationBox.appendChild(p);
+
+                            counterOfDestinations++;
+
+                            if (
+                                counterOfDestinations !==
+                                itineraryAndDestinations.destinations.length
+                            ) {
+                                let div1 = document.createElement("div");
+                                div1.style.width = "4px";
+                                div1.style.height = "4px";
+                                div1.style.backgroundColor = "#d65745";
+                                div1.style.borderRadius = "50%";
+                                div1.style.margin = "auto";
+                                div1.style.marginTop = "4px";
+                                div1.style.marginBottom = "4px";
+                                itineraryDestinationBox.appendChild(div1);
+
+                                let div2 = document.createElement("div");
+                                div2.style.width = "7px";
+                                div2.style.height = "7px";
+                                div2.style.backgroundColor = "#d65745";
+                                div2.style.borderRadius = "50%";
+                                div2.style.margin = "auto";
+                                div2.style.marginTop = "4px";
+                                div2.style.marginBottom = "4px";
+                                itineraryDestinationBox.appendChild(div2);
+
+                                let div3 = document.createElement("div");
+                                div3.style.width = "4px";
+                                div3.style.height = "4px";
+                                div3.style.backgroundColor = "#d65745";
+                                div3.style.borderRadius = "50%";
+                                div3.style.margin = "auto";
+                                div3.style.marginTop = "4px";
+                                div3.style.marginBottom = "4px";
+                                itineraryDestinationBox.appendChild(div3);
+                            }
+                        }
+                    );
                 }
             );
         } catch (error) {}
@@ -172,7 +224,7 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
         setitineraryBoxExpanded(true);
     }
 
-    const handleExpantionClose = () => {
+    const handleExpansionClose = () => {
         setitineraryBoxExpanded(false);
     };
 
@@ -202,9 +254,6 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
                             <p id="itineraryDestinationBoxTitle">
                                 Destinations:
                             </p>
-                            <p>Chile</p>
-                            <p>Argentina</p>
-                            <p>Peru</p>
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
@@ -226,7 +275,7 @@ const ItineraryListBox = ({ loggedInUser }: CreateNewItineraryFormProps) => {
                         </div>
                         <p
                             id="itineraryBoxCloseButton"
-                            onClick={handleExpantionClose}
+                            onClick={handleExpansionClose}
                         >
                             Close
                         </p>
