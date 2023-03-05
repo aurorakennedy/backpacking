@@ -25,7 +25,10 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
 
                 <h2>Your routes</h2>
 
-                <ItineraryListBox loggedInUser={loggedInUser} />
+                <ItineraryListBox
+                    itinerariesBasedOn={"loggedInUser"}
+                    loggedInUser={loggedInUser}
+                />
             </div>
         </>
     );
