@@ -2,13 +2,19 @@ import React, { useState } from "react";
 
 const LikeButton: React.FC = () => {
   const [liked, setLiked] = useState(false);
+  const [bgColor, setBgColor] = useState("white");
 
   const handleClick = () => {
     setLiked(!liked);
+    setBgColor(liked ? "lightgray" : "pink");
+
+    setTimeout(() => {
+      setBgColor("white");
+    }, 500);
   };
 
   const buttonStyle = {
-    backgroundColor: 'white',
+    backgroundColor: bgColor,
     border: "1px solid grey",
     borderRadius: "5px",
     padding: "5px 10px",
@@ -21,7 +27,10 @@ const LikeButton: React.FC = () => {
   };
 
   return (
-    <button onClick={handleClick} style={buttonStyle}>
+    <button 
+      onClick={handleClick} 
+      style={buttonStyle}
+    >
       {liked ? "❤️Liked" : "🤍Like"}
     </button>
   );
