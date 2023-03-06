@@ -116,7 +116,7 @@ public class BackPackingController {
 
     @GetMapping("/itineraries") 
     public List<Itinerary> search(@PathVariable String keyword) {
-            return itineraryRep.search(keyword);
+            return itineraryRep.searchByKeyword(keyword);
     }
 
 
