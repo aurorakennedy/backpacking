@@ -132,7 +132,23 @@ public class BackPackingController {
         itineraryRep.updateLikedItinerary(itinerary, user);
     }
 
+    @CrossOrigin(origins = "*")
+    @PostMapping("/addrating")
+    public void addRating(@RequestBody int itineraryID, String user_email, int rating) throws SQLException {
+        itineraryRep.saveRating(user_email, itineraryID, rating);
+    }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/averagerating/{id}")
+    public double getItineraryAverageRating(@RequestBody int itineraryID) throws SQLException {
+        return itineraryRep.getItineraryAverageRating(itineraryID);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/userRatingOnItinerary/{userEmail, ItineraryId}")
+    public double getItineraryAverageRating(@RequestBody String userEmail, int itineraryID) throws SQLException {
+        return itineraryRep.getUserRatingOnItinerary(userEmail, itineraryID);
+    }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
