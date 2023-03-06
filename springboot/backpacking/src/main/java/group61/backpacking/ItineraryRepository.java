@@ -3,6 +3,7 @@ package group61.backpacking;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.sql.*;
 import java.sql.Connection;
@@ -1068,7 +1069,136 @@ public class ItineraryRepository {
          //   + "OR country LIKE '%' || :keyword || '%'"
          // + "OR title LIKE '%' || :keyword || '%' "
           //  + "OR description LIKE '%' || :keyword || '%'";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Recommended itineraries
+
+public List<Integer> getLikedOrRatedItineraries(String userEmail) throws SQLException {
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Integer> itineraryIDs = new ArrayList<>();
+
+    try{ 
+        conn = connectToDB();
+        String sqlQuery = "SELECT itinerary_id FROM Rating WHERE user_email = ? AND rating > 3" +
+        "UNION SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?";
+        statement = conn.prepareStatement(sqlQuery);
+
+        statement.setString(1, userEmail);
+        statement.setString(2, userEmail);
+
+        resultset = statement.executeQuery();
+        while (resultset.next()) {
+            int itineraryID = resultset.getInt("itinerary_id");
+            itineraryIDs.add(itineraryID);
+        }
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    }
+    try {
+        conn.close();
+        statement.close();
+        resultset.close();
+    } catch (Exception e) {
+        // do nothing
+    }
+
+    return itineraryIDs;
+}
+
+public List<Itinerary> getRandomItineraries(int numberOfItineraries) throws SQLException {
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Itinerary> itineraries = new ArrayList<>();
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "SELECT * FROM Itinerary ORDER BY RANDOM() LIMIT " + numberOfItineraries;
+        statement = conn.prepareStatement(sqlQuery);
+        resultset = statement.executeQuery(sqlQuery);
+
+        while (resultset.next()) {
+            Itinerary itinerary = new Itinerary(-1, null, null, (Integer) null, null, null, null, 0);
+            itinerary.mapItineraryFromResultSet(resultset);
+            itineraries.add(itinerary);
+        }
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    }
+    return itineraries;
 }
 
 
+public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLException {
+    
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Integer> likedOrRatedItineraryIDs = getLikedOrRatedItineraries(userEmail); // get liked/rated itineraries by user
+    List<Itinerary> recommendedItineraries = new ArrayList<>();
 
+    
+    if (likedOrRatedItineraryIDs.isEmpty()) {
+        // if user has not liked or rated any itineraries, return ten random itineraries
+        return getRandomItineraries(10);
+    }
+
+    String sqlQuery = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.duration, i.img_url, COUNT(*) AS num_common_destinations "
+                + "FROM Itinerary_Destination id1 "
+                + "JOIN Itinerary_Destination id2 ON id1.destination_name = id2.destination_name AND id1.country = id2.country "
+                + "JOIN Itinerary i ON id2.itinerary_id = i.id "
+                + "WHERE id1.itinerary_id IN (" + String.join(",", Collections.nCopies(likedOrRatedItineraryIDs.size(), "?")) + ") "
+                + "AND id2.itinerary_id NOT IN (" + String.join(",", Collections.nCopies(likedOrRatedItineraryIDs.size(), "?")) + ") "
+                + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Rating WHERE user_email = ?) "
+                + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?) "
+                + "GROUP BY i.id "
+                + "HAVING COUNT(*) >= 1 "
+                + "ORDER BY num_common_destinations DESC "
+                + "LIMIT 10";
+
+    try {
+        conn = connectToDB();
+        statement = conn.prepareStatement(sqlQuery);
+
+        // set parameters for liked/rated itinerary IDs
+        for (int i = 0; i < likedOrRatedItineraryIDs.size(); i++) {
+            statement.setInt(i + 1, likedOrRatedItineraryIDs.get(i));
+        }
+        // set parameters for exclusion of liked/rated itinerary IDs
+        for (int i = 0; i < likedOrRatedItineraryIDs.size(); i++) {
+            statement.setInt(i + likedOrRatedItineraryIDs.size() + 1, likedOrRatedItineraryIDs.get(i));
+        }
+        // set user email parameter for exclusion of rated itineraries
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 1, userEmail);
+        // set user email parameter for exclusion of liked itineraries
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 2, userEmail);
+
+        resultset = statement.executeQuery();
+
+        while (resultset.next()) {
+            Itinerary itinerary = new Itinerary(-1, null, null, (Integer) null, null, null, null, 0);
+            itinerary.mapItineraryFromResultSet(resultset);
+            recommendedItineraries.add(itinerary);
+        }
+
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } 
+
+    try {
+        conn.close();
+        statement.close();
+        resultset.close();
+    } catch (Exception e) {
+        // do nothing
+    }
+
+    return recommendedItineraries;
+
+}
+
+
+}
