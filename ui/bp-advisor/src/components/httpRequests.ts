@@ -93,28 +93,32 @@ async function deleteUser(userId: number): Promise<void> {
     }
 }
 
-async function getItineraryById(itineraryId: number): Promise<Itinerary> {
+async function getItineraryAndDestinationsById(
+    itineraryId: number
+): Promise<ItineraryAndDestinations> {
     const response: Response = await fetch(
-        `http://localhost:8080/itinerary/${itineraryId}`
+        `http://localhost:8080/itineraryanddestinations/${itineraryId}`
     );
     if (!response.ok) {
         throw new Error("Failed to fetch itinerary");
     }
-    const itinerary: Itinerary = await response.json();
-    return itinerary;
+    const itineraryAndDestinations: ItineraryAndDestinations =
+        await response.json();
+    return itineraryAndDestinations;
 }
 
 async function getItinerariesByUserEmail(
     userEmail: string
-): Promise<Itinerary[]> {
+): Promise<ItineraryAndDestinations[]> {
     const response: Response = await fetch(
-        `http://localhost:8080/itineraries/${userEmail}`
+        `http://localhost:8080/getitineraries/${userEmail}`
     );
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries");
     }
-    const itineraries: Itinerary[] = await response.json();
-    return itineraries;
+    const itinerariesAndDestinations: ItineraryAndDestinations[] =
+        await response.json();
+    return itinerariesAndDestinations;
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
@@ -145,8 +149,6 @@ async function getItineraryDestinations(
     const itineraryDestinations: ItineraryDestination[] = await response.json();
     return itineraryDestinations;
 }
-
-
 
 async function addItineraryAndDestinations(
     itineraryAndDestinations: ItineraryAndDestinations
@@ -186,7 +188,7 @@ const httpRequests = {
     updateUser,
     deleteUser,
     addItinerary,
-    getItineraryById,
+    getItineraryAndDestinationsById,
     getItinerariesByUserEmail,
     getItineraryDestinations,
 

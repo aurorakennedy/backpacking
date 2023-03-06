@@ -94,6 +94,16 @@ const CreateNewItineraryForm = ({
             return;
         }
 
+        if (!/^\d+$/.test(timeInputValue) || parseInt(timeInputValue) < 1) {
+            alert("Estimated duration must be a number greater than 0");
+            return;
+        }
+
+        if (!/^\d+$/.test(priceInputValue) || parseInt(priceInputValue) < 1) {
+            alert("Estimated cost must be a number greater than 0");
+            return;
+        }
+
         if (destinations.length < 1) {
             alert("You must have added at least one destination");
             return;
@@ -147,7 +157,7 @@ const CreateNewItineraryForm = ({
                         className="newRouteLabel"
                         id="estimatedTimeInputLabel"
                     >
-                        Estimated time (in days)
+                        Estimated duration (in days)
                     </label>
                     <input
                         className="newRouteInput"
@@ -160,7 +170,7 @@ const CreateNewItineraryForm = ({
                         className="newRouteLabel"
                         id="estimatedPriceInputLabel"
                     >
-                        Estimated price (in dollars)
+                        Estimated cost (in dollars)
                     </label>
                     <input
                         className="newRouteInput"
