@@ -624,7 +624,11 @@ public class Playground {
         return itinerary_destinationList;
     }
 
-
+    public String formatInput(String input) {
+        // every input should have capital letter at the beginning and the rest lower case
+        String formattedInput = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+        return formattedInput;
+    }
     
 
 
@@ -636,10 +640,10 @@ public class Playground {
         //t.saveUser(user);
 
         // test itinerarystuff below: //////////////////////////////////////
-        List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
-        List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
+        //List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
+        //List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
         
-        t.saveUser(user);
+        
 
         //t.saveItinerary(user, "11.2", "a cool trip", null, "t6", destinationsList, countryList, 200.0);
         
