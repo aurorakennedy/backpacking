@@ -1,9 +1,8 @@
 package group61.backpacking;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,14 +83,16 @@ public class BackPackingController {
     public Itinerary getItineraryById(@PathVariable int id)
             throws SQLException, RuntimeException {
         // return itineraryRep.loadItineraryByID(id);
+        
         return null;
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/itineraries/{userEmail}")
-    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
+    @GetMapping("/getitineraries/{userEmail}")
+    public List<ItineraryAndDestinations> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            return itineraryRep.loadItinerariesByUserEmail(userEmail);
+            List<Itinerary> itineraries = itineraryRep.loadItinerariesByUserEmail(userEmail);
+            return itineraryRep.loadItineraryAndDestinations(itineraries);
     }
 
     @CrossOrigin(origins = "*")
@@ -101,12 +102,16 @@ public class BackPackingController {
         System.out.println(itinerary);
     }
 
+    // takes in an id input and returns the itinerary and destinations as a ItineraryAndDestinations object
     @CrossOrigin(origins = "*")
-    @GetMapping("/itinerarydestinations/{id}")
-    public List<ItineraryDestination>
-         getItineraryDestinations(@PathVariable int itineraryID) {
-            // return itineraryRep.loadItineraryDestinations(itineraryID);
-            return null;
+    @GetMapping("/itineraryanddestinations/{id}")
+    public ItineraryAndDestinations getItineraryDestinations(@PathVariable int id) throws RuntimeException, SQLException {
+        Itinerary itinerary = itineraryRep.loadItineraryById(id);
+        List<Itinerary> list = new ArrayList<>();
+        list.add(itinerary);
+        List<ItineraryAndDestinations> outputList = itineraryRep.loadItineraryAndDestinations(list);
+        return outputList.get(0);
+            
     }
     
     @CrossOrigin(origins = "*")
