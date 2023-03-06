@@ -1060,15 +1060,60 @@ public class ItineraryRepository {
         saveDestination("Singapore", "Singapore", "Singapore, officially the Republic of Singapore, is a sovereign city-state and island country in Southeast Asia. It lies one degree of latitude (137 kilometres or 85 miles) north of the equator, at the southern tip of the Malay Peninsula, with Indonesia's Riau Islands to the south and Peninsular Malaysia to the north. Singapore's territory consists of one main island along with 62 other islets. Since independence, extensive land reclamation has increased its total size by 23% (130 km2 or 50 sq mi). ");
         saveDestination("Taipei", "Taiwan", "Taipei, officially known as TaipeiCity, is the capital and a special municipality of Taiwan (officially theRepublic of China). It is the political, economic, educational, and culturalcenter of Taiwan. The Taipei City Government is currently the largest citygovernment in the world, with a total population of 2.98 million. Taipei is amajor hub of transportation in the region, and is home to the Taipei SongshanAirport, Taiwan Taoyuan International Airport, and Taipei Port. ");
 
-
     }
 
+   
+
     
 
 
-    
+        try  {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary WHERE "
+            + "title LIKE '%' || :keyword || '%' "
+            + "OR description LIKE '%' || :keyword || '%'";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error in search");  
+        
+        try {
+            conn = connectToDB();
+            String sqlQuery ="SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
+            + "WHERE destination_name LIKE '%' || :keyword || '%' "
+            + "OR country LIKE '%' || :keyword || '%'";
+            statement = conn.prepareStatement(sqlQuery);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
 
-
+        } catch (SQLException exception) {
+            System.out.println("Errorin search");  
+        }
+            
+        }
+        try {
+            conn.close();
+        } catch (Exception e) {}
+        return itineraryList;
+    }
+    //Combined SQL
+       //     "SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
+        //   + "WHERE destination_name LIKE '%' || :keyword || '%' "
+         //   + "OR country LIKE '%' || :keyword || '%'"
+         // + "OR title LIKE '%' || :keyword || '%' "
+          //  + "OR description LIKE '%' || :keyword || '%'";
 }
 
 

@@ -167,19 +167,19 @@ async function addItineraryAndDestinations(
         throw new Error("Failed to add itinerary and destinations");
     }
 }
-//Search - not done
-async function search(keyword: string): Promise<Itinerary[]> {
-    const response: Response = await //This is probably wrong:
-    fetch("http://localhost:8080/itineraries/");
-    if (!response.ok) {
-        throw new Error(
-            "Failed to search through itinerary or itinerary destinations"
-        );
-    }
+
+async function searchByKeyword(
+    keyword: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/itineraries/`
+    );
+  if (!response.ok) {
+      throw new Error("Failed to fetch itineraries by keyword");
+  }
     const itineraries: Itinerary[] = await response.json();
     return itineraries;
 }
-//
 
 const httpRequests = {
     getUser,
@@ -192,7 +192,8 @@ const httpRequests = {
     getItinerariesByUserEmail,
     getItineraryDestinations,
 
-    search,
+    searchByKeyword,
+
     addItineraryAndDestinations,
 };
 

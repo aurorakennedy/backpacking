@@ -113,7 +113,13 @@ public class BackPackingController {
         return outputList.get(0);
             
     }
-    
+
+    @GetMapping("/itineraries") 
+    public List<Itinerary> search(@PathVariable String keyword) {
+            return itineraryRep.search(keyword);
+    }
+
+
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
