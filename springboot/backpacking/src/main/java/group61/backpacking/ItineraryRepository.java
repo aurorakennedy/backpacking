@@ -1108,7 +1108,7 @@ public List<Integer> getLikedOrRatedItineraries(String userEmail) throws SQLExce
     return itineraryIDs;
 }
 
-public List<Itinerary> getRandomItineraries(int numberOfItineraries) throws SQLException {
+public List<Itinerary> getRandomItineraries(int numberOfItineraries, String userEmail) throws SQLException {
     Connection conn = null;
     PreparedStatement statement = null;
     ResultSet resultset = null;
@@ -1116,8 +1116,9 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries) throws SQLE
 
     try {
         conn = connectToDB();
-        String sqlQuery = "SELECT * FROM Itinerary ORDER BY RANDOM() LIMIT " + numberOfItineraries;
+        String sqlQuery = "SELECT * FROM Itinerary WHERE id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) ORDER BY RANDOM() LIMIT " + numberOfItineraries;
         statement = conn.prepareStatement(sqlQuery);
+        statement.setString(1, userEmail);
         resultset = statement.executeQuery();
 
         while (resultset.next()) {
@@ -1143,7 +1144,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     
     if (likedOrRatedItineraryIDs.isEmpty()) {
         // if user has not liked or rated any itineraries, return ten random itineraries
-        return getRandomItineraries(10);
+        return getRandomItineraries(10, userEmail);
     }
 
     String sqlQuery = "SELECT DISTINCT i.id, i.title, i. writer_email, i.written_date, i.estimated_time, i.itinerary_description, i.image, i.price, COUNT(*) AS num_common_destinations "
