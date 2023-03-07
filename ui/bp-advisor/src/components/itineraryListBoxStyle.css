@@ -74,6 +74,8 @@
     color: #d65745;
     font-size: 40px;
     margin-top: 0px;
+    width: 650px;
+    text-align: left;
 }
 
 #itineraryBoxDescription {
@@ -99,4 +101,12 @@
     font-size: 18px;
     text-align: left;
     margin-right: 10px;
+}
+
+#itineraryLikeButton {
+    display: flex;
+    justify-content: center;
+    width: 30vh;
+    height: 5vh;
+    margin-top: 1vh;
 }

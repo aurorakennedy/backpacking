@@ -189,6 +189,31 @@ async function getRecommendedItineraries(
     }
     const recommendedItineraries: Itinerary[] = await response.json();
     return recommendedItineraries;
+
+async function updateLikeOnItinerary(email: String, itineraryId: number): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/likes/${email}/${itineraryId}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to update like");
+    }
+}
+
+async function itineraryIsLiked(email: String, itineraryId: number): Promise<boolean> {
+    const response: Response = await fetch(
+        `http://localhost:8080/likes/${email}/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to check if itinerary is liked");
+    }
+    const itineraryIsLiked: boolean = await response.json();
+    return itineraryIsLiked;
 }
 
 const httpRequests = {
@@ -204,6 +229,8 @@ const httpRequests = {
     searchByKeyword,
     addItineraryAndDestinations,
     getRecommendedItineraries,
+    updateLikeOnItinerary,
+    itineraryIsLiked,
 };
 
 export default httpRequests;

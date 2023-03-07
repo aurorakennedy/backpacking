@@ -4,6 +4,7 @@ import "./itineraryListBoxStyle.css";
 import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
+import LikeButton from "./LikeButton";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -29,6 +30,8 @@ const ItineraryListBox = ({
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] =
         useState<Boolean>(false);
+    const [buttonLiked, setButtonLiked] =
+        useState(false);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -140,6 +143,7 @@ const ItineraryListBox = ({
                 );
             promise.then(
                 (itineraryAndDestinations: ItineraryAndDestinations) => {
+                    console.log(itineraryAndDestinations);
                     let title: HTMLElement = document.getElementById(
                         "itineraryBoxTitle"
                     ) as HTMLElement;
@@ -181,6 +185,28 @@ const ItineraryListBox = ({
                         document.getElementById(
                             "itineraryDestinationBox"
                         ) as HTMLDivElement;
+                    
+                    let likeButton: HTMLButtonElement =
+                        document.getElementById("itineraryDetailsLike") as HTMLButtonElement;
+
+                    try {
+                        const getLikePromise: Promise<boolean> =
+                            httpRequests.itineraryIsLiked(loggedInUser.email, parseInt(itineraryId));
+                        getLikePromise.then((liked: boolean) => {
+                            setButtonLiked(liked);
+                        });
+                    } catch (error) {
+                        alert("Could not get like state");
+                    }
+
+                    likeButton.addEventListener("click", () => {
+                        try {
+                          httpRequests.updateLikeOnItinerary(loggedInUser.email, parseInt(itineraryId));
+                          setButtonLiked(!buttonLiked);
+                        } catch (error) {
+                          alert("Could not update like");
+                        }
+                      });
 
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
@@ -267,6 +293,9 @@ const ItineraryListBox = ({
                                 ></p>
                             </div>
                             <p id="itineraryBoxDescription"></p>
+                        </div>
+                        <div id="itineraryLikeButton">
+                            <LikeButton id={"itineraryDetailsLike"} initialLiked={buttonLiked} />
                         </div>
                         <p
                             id="itineraryBoxCloseButton"

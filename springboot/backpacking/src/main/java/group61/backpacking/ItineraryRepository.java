@@ -584,24 +584,24 @@ public class ItineraryRepository {
     ///////////////////////////////////////////////////////////////////////////////////
     // Liked Itineraries
 
-    public void updateLikedItinerary(Itinerary itinerary, User user) throws SQLException {
-        if (likedItinerary(itinerary, user)) {
-            deleteLikedItinerary(itinerary, user);
+    public void updateLikedItinerary(String email, int itineraryId) throws SQLException {
+        if (likedItinerary(email, itineraryId)) {
+            deleteLikedItinerary(email, itineraryId);
         } else {
-            saveLikedItinerary(itinerary, user);
+            saveLikedItinerary(email, itineraryId);
         }
     }
 
-    private void deleteLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+    private void deleteLikedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
         try {
             conn = connectToDB();
-            String sqlQuery = "DELETE * FROM Liked_Itineraries WHERE user_email = ? AND itinerary_id = ?";
+            String sqlQuery = "DELETE FROM Liked_Itineraries WHERE user_email = ? AND itinerary_id = ?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -616,7 +616,7 @@ public class ItineraryRepository {
         }
     }
 
-    private void saveLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+    private void saveLikedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
@@ -624,8 +624,8 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "INSERT INTO Liked_Itineraries (user_email, itinerary_id) VALUES (?, ?)";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -641,11 +641,11 @@ public class ItineraryRepository {
 
     }
 
-    public boolean likedItinerary(Itinerary itinerary, User user) throws SQLException {
+    public boolean likedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        boolean result = true;
+        boolean result = false;
 
         try {
             conn = connectToDB();
@@ -653,12 +653,12 @@ public class ItineraryRepository {
             + "user_email = ? AND itinerary_id = ?";
 
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             resultSet = statement.executeQuery();
 
-            if (resultSet.next() && resultSet.getInt(1) > 0) {
-                result = false;
+            if (resultSet.next()) {
+                result = true;
             }
 
         } catch (SQLException e) {
@@ -675,7 +675,7 @@ public class ItineraryRepository {
         return result;
     }
 
-    public List<Itinerary> loadLikedItineraries(User user) throws SQLException {
+    public List<Itinerary> loadLikedItineraries(String email) throws SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
@@ -686,7 +686,7 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "SELECT * FROM Itinerary INNER JOIN Liked_Itineraries ON (id = itinerary_id) WHERE user_email = ?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
+            statement.setString(1, email);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
