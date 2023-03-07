@@ -146,7 +146,7 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/userRatingOnItinerary/{userEmail, ItineraryId}")
-    public double getItineraryAverageRating(@RequestBody String userEmail, int itineraryID) throws SQLException {
+    public double getUserRatingOnItinerary(@RequestBody String userEmail, int itineraryID) throws SQLException {
         return itineraryRep.getUserRatingOnItinerary(userEmail, itineraryID);
     }
 
