@@ -109,16 +109,15 @@ async function getItineraryAndDestinationsById(
 
 async function getItinerariesByUserEmail(
     userEmail: string
-): Promise<ItineraryAndDestinations[]> {
+): Promise<Itinerary[]> {
     const response: Response = await fetch(
         `http://localhost:8080/getitineraries/${userEmail}`
     );
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries");
     }
-    const itinerariesAndDestinations: ItineraryAndDestinations[] =
-        await response.json();
-    return itinerariesAndDestinations;
+    const itineraries: Itinerary[] = await response.json();
+    return itineraries;
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
@@ -168,17 +167,28 @@ async function addItineraryAndDestinations(
     }
 }
 
-async function searchByKeyword(
-    keyword: string
-  ): Promise<Itinerary[]> {
-      const response: Response = await fetch(
-      `http://localhost:8080/itineraries/`
+async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/itineraries/`
     );
-  if (!response.ok) {
-      throw new Error("Failed to fetch itineraries by keyword");
-  }
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
     const itineraries: Itinerary[] = await response.json();
     return itineraries;
+}
+
+async function getRecommendedItineraries(
+    userEmail: string
+): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getrecommendeditineraries/${userEmail}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
+    const recommendedItineraries: Itinerary[] = await response.json();
+    return recommendedItineraries;
 }
 
 const httpRequests = {
@@ -191,10 +201,9 @@ const httpRequests = {
     getItineraryAndDestinationsById,
     getItinerariesByUserEmail,
     getItineraryDestinations,
-
     searchByKeyword,
-
     addItineraryAndDestinations,
+    getRecommendedItineraries,
 };
 
 export default httpRequests;

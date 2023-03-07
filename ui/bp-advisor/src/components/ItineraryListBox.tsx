@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import ItinerarySummaryBox from "./ItinerarySummaryBox";
 import "./itineraryListBoxStyle.css";
-import { ItineraryAndDestinations, LoggedInUser } from "./types";
+import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 
 type ItineraryListBoxProps = {
-    itinerariesBasedOn: string;
+    idOfWrappingDiv: string;
+    itinerariesBasedOn: "Your itineraries" | "Recommended itineraries";
     loggedInUser: LoggedInUser;
 };
 
@@ -24,105 +25,106 @@ type ItineraryListBoxProps = {
 const ItineraryListBox = ({
     itinerariesBasedOn,
     loggedInUser,
+    idOfWrappingDiv,
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] =
         useState<Boolean>(false);
 
+    // Updates the list when the component is loaded on a page.
+    useEffect(() => {
+        updateExpandableItineraryContainerDiv();
+    }, []);
+
     async function updateExpandableItineraryContainerDiv(): Promise<
         React.MouseEventHandler<HTMLButtonElement> | any
     > {
-        if (itinerariesBasedOn === "loggedInUser") {
+        if (itinerariesBasedOn === "Your itineraries") {
             // Checks whether the itineraries should be based on
             // the logged in user. Should check for more strings
             // in the future, for example "recentItineraries", or
             // "favorites".
             try {
-                const promise: Promise<ItineraryAndDestinations[]> =
+                const promise: Promise<Itinerary[]> =
                     httpRequests.getItinerariesByUserEmail(loggedInUser.email);
-                promise.then((itinerariesOfUser: ItineraryAndDestinations[]) =>
-                    itinerariesOfUser
-                        .reverse()
-                        .forEach((itineraryAndDestinations) => {
-                            if (
-                                !document.getElementById(
-                                    itineraryAndDestinations.itinerary.id.toString()
-                                    // Only creates the itinerary in the list
-                                    // if it isn't created before. Stops duplicates.
-                                )
-                            ) {
-                                let expandableItineraryContainerDiv: HTMLDivElement =
-                                    document.getElementById(
-                                        "expandableItineraryContainer"
-                                    ) as HTMLDivElement;
-                                let itinerarySummaryDiv: HTMLDivElement =
-                                    document.createElement("div");
-                                itinerarySummaryDiv.classList.add(
-                                    "itinerarySummaryDiv"
-                                );
-
-                                itinerarySummaryDiv.id =
-                                    itineraryAndDestinations.itinerary.id.toString();
-                                itinerarySummaryDiv.addEventListener(
-                                    "click",
-                                    function (event: MouseEvent) {
-                                        const itinerarySummaryDiv = (
-                                            event.target as HTMLElement
-                                        ).closest(
-                                            ".itinerarySummaryDiv"
-                                        ) as HTMLDivElement;
-                                        if (itinerarySummaryDiv) {
-                                            handleExpansionOpen(
-                                                itinerarySummaryDiv.id
-                                            );
-                                        }
-                                    }
-                                );
-
-                                let description: string = "";
-                                if (
-                                    itineraryAndDestinations.itinerary
-                                        .description.length > 150
-                                ) {
-                                    description =
-                                        itineraryAndDestinations.itinerary.description.substring(
-                                            0,
-                                            150
-                                        ) + " ...";
-                                } else {
-                                    description =
-                                        itineraryAndDestinations.itinerary
-                                            .description;
-                                }
-
-                                let itinerarySummaryBox = (
-                                    <ItinerarySummaryBox
-                                        title={
-                                            itineraryAndDestinations.itinerary
-                                                .title
-                                        }
-                                        description={description}
-                                        estimatedTime={itineraryAndDestinations.itinerary.estimatedTime.toString()}
-                                        cost={itineraryAndDestinations.itinerary.cost.toString()}
-                                    />
-                                );
-
-                                createRoot(itinerarySummaryDiv).render(
-                                    itinerarySummaryBox
-                                );
-                                expandableItineraryContainerDiv.appendChild(
-                                    itinerarySummaryDiv
-                                );
-
-                                console.log(
-                                    itineraryAndDestinations.itinerary.id.toString()
-                                );
-                            }
-                        })
-                );
+                promise.then((itinerariesOfUser: Itinerary[]) => {
+                    displayItineraries(itinerariesOfUser, itinerariesBasedOn);
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
+        } else if (itinerariesBasedOn === "Recommended itineraries") {
+            try {
+                const promise: Promise<Itinerary[]> =
+                    httpRequests.getRecommendedItineraries(loggedInUser.email);
+                promise.then((getRecommendedItineraries: Itinerary[]) => {
+                    displayItineraries(
+                        getRecommendedItineraries,
+                        itinerariesBasedOn
+                    );
+                });
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
         }
+    }
+
+    function displayItineraries(
+        itineraries: Itinerary[],
+        itinerariesBasedOn: string
+    ) {
+        let listContainerDiv: HTMLDivElement = document.getElementById(
+            idOfWrappingDiv
+        ) as HTMLDivElement;
+        if (itineraries.length > 0) {
+            let title: HTMLElement = document.createElement("h2");
+            title.classList.add("itineraryListTitles");
+            title.innerHTML = itinerariesBasedOn;
+            listContainerDiv.appendChild(title);
+        }
+        let expandableItineraryListDiv: HTMLDivElement =
+            document.createElement("div");
+        expandableItineraryListDiv.classList.add("expandableItineraryList");
+        itineraries.reverse().forEach((itinerary) => {
+            let itinerarySummaryDiv: HTMLDivElement =
+                document.createElement("div");
+            itinerarySummaryDiv.classList.add("itinerarySummaryDiv");
+
+            itinerarySummaryDiv.id = itinerary.id.toString();
+            itinerarySummaryDiv.addEventListener(
+                "click",
+                function (event: MouseEvent) {
+                    const itinerarySummaryDiv = (
+                        event.target as HTMLElement
+                    ).closest(".itinerarySummaryDiv") as HTMLDivElement;
+                    if (itinerarySummaryDiv) {
+                        handleExpansionOpen(itinerarySummaryDiv.id);
+                    }
+                }
+            );
+
+            let description: string = "";
+            if (itinerary.description.length > 150) {
+                description = itinerary.description.substring(0, 65) + " ...";
+            } else {
+                description = itinerary.description;
+            }
+
+            let itinerarySummaryBox = (
+                <ItinerarySummaryBox
+                    title={itinerary.title}
+                    description={description}
+                    estimatedTime={itinerary.estimatedTime.toString()}
+                    cost={itinerary.cost.toString()}
+                />
+            );
+
+            createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+            expandableItineraryListDiv.appendChild(itinerarySummaryDiv);
+
+            listContainerDiv.appendChild(expandableItineraryListDiv);
+
+            console.log(itinerary.id.toString());
+        });
     }
 
     /**
@@ -238,14 +240,8 @@ const ItineraryListBox = ({
         setitineraryBoxExpanded(false);
     };
 
-    // Updates the list when the component is loaded on a page.
-    useEffect(() => {
-        updateExpandableItineraryContainerDiv();
-    }, []);
-
     return (
         <>
-            <div id="expandableItineraryContainer"></div>
             {!itineraryBoxExpanded ? (
                 <></>
             ) : (
