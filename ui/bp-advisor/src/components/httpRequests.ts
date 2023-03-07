@@ -189,8 +189,12 @@ async function getRecommendedItineraries(
     }
     const recommendedItineraries: Itinerary[] = await response.json();
     return recommendedItineraries;
+}
 
-async function updateLikeOnItinerary(email: String, itineraryId: number): Promise<void> {
+async function updateLikeOnItinerary(
+    email: String,
+    itineraryId: number
+): Promise<void> {
     const response: Response = await fetch(
         `http://localhost:8080/likes/${email}/${itineraryId}`,
         {
@@ -205,7 +209,10 @@ async function updateLikeOnItinerary(email: String, itineraryId: number): Promis
     }
 }
 
-async function itineraryIsLiked(email: String, itineraryId: number): Promise<boolean> {
+async function itineraryIsLiked(
+    email: String,
+    itineraryId: number
+): Promise<boolean> {
     const response: Response = await fetch(
         `http://localhost:8080/likes/${email}/${itineraryId}`
     );
