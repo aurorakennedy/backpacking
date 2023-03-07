@@ -90,10 +90,11 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/getitineraries/{userEmail}")
-    public List<ItineraryAndDestinations> getItinerariesByUserEmail(@PathVariable String userEmail)
+    public List<Itinerary> getItinerariesByUserEmail(@PathVariable String userEmail)
         throws RuntimeException, SQLException {
-            List<Itinerary> itineraries = itineraryRep.loadItinerariesByUserEmail(userEmail);
-            return itineraryRep.loadItineraryAndDestinations(itineraries);
+            /* List<Itinerary> itineraries = itineraryRep.loadItinerariesByUserEmail(userEmail);
+            return itineraryRep.loadItineraryAndDestinations(itineraries); */
+            return itineraryRep.loadItinerariesByUserEmail(userEmail);
     }
 
     @CrossOrigin(origins = "*")
@@ -152,7 +153,11 @@ public class BackPackingController {
             return itineraryRep.likedItinerary(email, itineraryId);
     }
 
-
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getrecommendeditineraries/{email}")
+    public List<Itinerary> getRecommendedItineraries(@PathVariable String email) throws SQLException {
+        return itineraryRep.getRecommendedItineraries(email);
+    }
 
 
 }

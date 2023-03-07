@@ -109,16 +109,15 @@ async function getItineraryAndDestinationsById(
 
 async function getItinerariesByUserEmail(
     userEmail: string
-): Promise<ItineraryAndDestinations[]> {
+): Promise<Itinerary[]> {
     const response: Response = await fetch(
         `http://localhost:8080/getitineraries/${userEmail}`
     );
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries");
     }
-    const itinerariesAndDestinations: ItineraryAndDestinations[] =
-        await response.json();
-    return itinerariesAndDestinations;
+    const itineraries: Itinerary[] = await response.json();
+    return itineraries;
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
@@ -168,20 +167,34 @@ async function addItineraryAndDestinations(
     }
 }
 
-async function searchByKeyword(
-    keyword: string
-  ): Promise<Itinerary[]> {
-      const response: Response = await fetch(
-      `http://localhost:8080/itineraries/`
+async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/itineraries/`
     );
-  if (!response.ok) {
-      throw new Error("Failed to fetch itineraries by keyword");
-  }
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
     const itineraries: Itinerary[] = await response.json();
     return itineraries;
 }
 
-async function updateLikeOnItinerary(email: String, itineraryId: number): Promise<void> {
+async function getRecommendedItineraries(
+    userEmail: string
+): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getrecommendeditineraries/${userEmail}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
+    const recommendedItineraries: Itinerary[] = await response.json();
+    return recommendedItineraries;
+}
+
+async function updateLikeOnItinerary(
+    email: String,
+    itineraryId: number
+): Promise<void> {
     const response: Response = await fetch(
         `http://localhost:8080/likes/${email}/${itineraryId}`,
         {
@@ -196,7 +209,10 @@ async function updateLikeOnItinerary(email: String, itineraryId: number): Promis
     }
 }
 
-async function itineraryIsLiked(email: String, itineraryId: number): Promise<boolean> {
+async function itineraryIsLiked(
+    email: String,
+    itineraryId: number
+): Promise<boolean> {
     const response: Response = await fetch(
         `http://localhost:8080/likes/${email}/${itineraryId}`
     );
@@ -219,6 +235,7 @@ const httpRequests = {
     getItineraryDestinations,
     searchByKeyword,
     addItineraryAndDestinations,
+    getRecommendedItineraries,
     updateLikeOnItinerary,
     itineraryIsLiked,
 };
