@@ -1082,7 +1082,7 @@ public List<Integer> getLikedOrRatedItineraries(String userEmail) throws SQLExce
 
     try{ 
         conn = connectToDB();
-        String sqlQuery = "SELECT itinerary_id FROM Rating WHERE user_email = ? AND rating > 3" +
+        String sqlQuery = "SELECT itinerary_id FROM Rating WHERE user_email = ? AND rating > 3 " +
         "UNION SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?";
         statement = conn.prepareStatement(sqlQuery);
 
@@ -1118,10 +1118,10 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries) throws SQLE
         conn = connectToDB();
         String sqlQuery = "SELECT * FROM Itinerary ORDER BY RANDOM() LIMIT " + numberOfItineraries;
         statement = conn.prepareStatement(sqlQuery);
-        resultset = statement.executeQuery(sqlQuery);
+        resultset = statement.executeQuery();
 
         while (resultset.next()) {
-            Itinerary itinerary = new Itinerary(-1, null, null, (Integer) null, null, null, null, 0);
+            Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
             itinerary.mapItineraryFromResultSet(resultset);
             itineraries.add(itinerary);
         }
@@ -1179,7 +1179,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         resultset = statement.executeQuery();
 
         while (resultset.next()) {
-            Itinerary itinerary = new Itinerary(-1, null, null, (Integer) null, null, null, null, 0);
+            Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
             itinerary.mapItineraryFromResultSet(resultset);
             recommendedItineraries.add(itinerary);
         }
