@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -110,6 +111,7 @@ public class BackPackingController {
         List<Itinerary> list = new ArrayList<>();
         list.add(itinerary);
         List<ItineraryAndDestinations> outputList = itineraryRep.loadItineraryAndDestinations(list);
+        System.out.println(outputList.get(0).getDestinations());
         return outputList.get(0);
             
     }
@@ -125,19 +127,29 @@ public class BackPackingController {
     public void addItineraryAndDestinations(@RequestBody 
     ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
         itineraryRep.saveItinerary(itineraryAndDestinations);
+        System.out.println(itineraryAndDestinations.getItinerary());
+        System.out.println(itineraryAndDestinations.getDestinations());
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/likeditineraries/{id}")
     public List<Itinerary>
          getItineraryDestinations(@PathVariable User user) throws SQLException {
-            return itineraryRep.loadLikedItineraries(user);
+            return itineraryRep.loadLikedItineraries(user.getEmail());
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("/updatelikeitinerary")
-    public void updateLikeOnItinerary(@RequestBody Itinerary itinerary, User user) throws SQLException {
-        itineraryRep.updateLikedItinerary(itinerary, user);
+    @PatchMapping("/likes/{email}/{itineraryId}")
+    public void updateLikeOnItinerary(@PathVariable String email, 
+        @PathVariable int itineraryId) throws SQLException {
+            itineraryRep.updateLikedItinerary(email, itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/likes/{email}/{itineraryId}")
+    public boolean itineraryIsLiked(@PathVariable String email, 
+        @PathVariable int itineraryId) throws SQLException {
+            return itineraryRep.likedItinerary(email, itineraryId);
     }
 
 

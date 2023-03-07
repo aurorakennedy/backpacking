@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const LikeButton: React.FC = () => {
-  const [liked, setLiked] = useState(false);
+interface LikeButtonProps {
+  initialLiked: boolean;
+  id: string;
+}
+
+const LikeButton: React.FC<LikeButtonProps> = ({
+  initialLiked,
+  id,
+}) => {
+  const [liked, setLiked] = useState(initialLiked);
   const [bgColor, setBgColor] = useState("white");
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    setLiked(initialLiked);
+  }, [initialLiked]);
 
   const handleClick = () => {
-    setLiked(!liked);
+    const newLiked = !liked;
+    setLiked(newLiked);
     setBgColor(liked ? "lightgray" : "pink");
 
     setTimeout(() => {
@@ -15,7 +29,7 @@ const LikeButton: React.FC = () => {
 
   const buttonStyle = {
     backgroundColor: bgColor,
-    border: "1px solid grey",
+    border: hovered ? "2px solid black" : "1px solid gray",
     borderRadius: "5px",
     padding: "5px 10px",
     fontSize: "16px",
@@ -27,9 +41,12 @@ const LikeButton: React.FC = () => {
   };
 
   return (
-    <button 
-      onClick={handleClick} 
+    <button
+      id={id}
+      onClick={handleClick}
       style={buttonStyle}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       {liked ? "❤️Liked" : "🤍Like"}
     </button>
