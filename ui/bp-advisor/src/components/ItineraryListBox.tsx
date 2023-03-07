@@ -56,9 +56,9 @@ const ItineraryListBox = ({
             try {
                 const promise: Promise<Itinerary[]> =
                     httpRequests.getRecommendedItineraries(loggedInUser.email);
-                promise.then((getRecommendedItineraries: Itinerary[]) => {
+                promise.then((recommendedItineraries: Itinerary[]) => {
                     displayItineraries(
-                        getRecommendedItineraries,
+                        recommendedItineraries,
                         itinerariesBasedOn
                     );
                 });
@@ -122,8 +122,6 @@ const ItineraryListBox = ({
             expandableItineraryListDiv.appendChild(itinerarySummaryDiv);
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
-
-            console.log(itinerary.id.toString());
         });
     }
 
