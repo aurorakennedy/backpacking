@@ -1154,6 +1154,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
                 + "AND id2.itinerary_id NOT IN (" + String.join(",", Collections.nCopies(likedOrRatedItineraryIDs.size(), "?")) + ") "
                 + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Rating WHERE user_email = ?) "
                 + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?) "
+                + "AND id2.itinerary.id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) "
                 + "GROUP BY i.id "
                 + "HAVING COUNT(*) >= 1 "
                 + "ORDER BY num_common_destinations DESC "
@@ -1175,6 +1176,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         statement.setString(2 * likedOrRatedItineraryIDs.size() + 1, userEmail);
         // set user email parameter for exclusion of liked itineraries
         statement.setString(2 * likedOrRatedItineraryIDs.size() + 2, userEmail);
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 3, userEmail);
 
         resultset = statement.executeQuery();
 
