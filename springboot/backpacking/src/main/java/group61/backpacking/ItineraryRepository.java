@@ -3,8 +3,11 @@ package group61.backpacking;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -1206,6 +1209,16 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
 
         if(recommendedItineraries.isEmpty()) {
             recommendedItineraries = getRandomItineraries(10, userEmail);
+        } else if (recommendedItineraries.size() < 10) {
+            Set<Itinerary> holdingSet = new HashSet<>();
+            holdingSet.addAll(recommendedItineraries);
+            int i = 0;
+            while (holdingSet.size() < 10 || i != 5) {
+                holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+                i++;
+                recommendedItineraries.clear();
+                recommendedItineraries.addAll(holdingSet);
+            }
         }
 
     } catch (SQLException e) {
