@@ -1125,8 +1125,8 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries, String user
         conn = connectToDB();
         String sqlQuery = "SELECT * FROM Itinerary WHERE "
         + "id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) "
-        + "AND id NOT IN (SELECT itinerary_id FROM Rating WHERE writer_email = ?) "
-        + "AND id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE writer_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Rating WHERE user_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?) "
         + "ORDER BY RANDOM() LIMIT " + numberOfItineraries;
         statement = conn.prepareStatement(sqlQuery);
         statement.setString(1, userEmail);
