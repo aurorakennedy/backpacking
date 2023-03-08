@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 
 @Repository
@@ -110,12 +107,16 @@ public class UserRepository {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
         return user;
     }
@@ -139,11 +140,13 @@ public class UserRepository {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
 
-        try {
-            preparedStatement.close();
-            conn.close();
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
     }
@@ -172,6 +175,17 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if (password.equals(user.getPassword())) {
@@ -214,14 +228,16 @@ public class UserRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            preparedStatement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if (moderator != null) {
