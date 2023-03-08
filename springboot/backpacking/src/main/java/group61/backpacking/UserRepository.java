@@ -35,40 +35,47 @@ public class UserRepository {
     public User saveUser(User user) throws SQLException, RuntimeException {
 
         Connection conn = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement1 = null;
+        PreparedStatement preparedStatement2 = null;
         ResultSet resultSet = null;
 
         try {
             conn = connectToDB();
 
             String sqlQueryDupUsername = "SELECT COUNT(*) FROM User WHERE username = ?";
-            preparedStatement = conn.prepareStatement(sqlQueryDupUsername);
-            preparedStatement.setString(1, user.getUsername());
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement1 = conn.prepareStatement(sqlQueryDupUsername);
+            preparedStatement1.setString(1, user.getUsername());
+            resultSet = preparedStatement1.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
                 throw new DuplicateUserException("Username " + user.getUsername() + " is already taken");
             }
 
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?);";
-            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement2 = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.executeUpdate();
+            preparedStatement2.setString(1, user.getUsername());
+            preparedStatement2.setString(2, user.getPassword());
+            preparedStatement2.setString(3, user.getEmail());
+            preparedStatement2.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
-        }
-
-        try {
-            preparedStatement.close();
-            conn.close();
-        } catch (RuntimeException e) {
-            // do nothing
-        }
+        } finally {
+            if (preparedStatement1 != null) {
+                preparedStatement1.close();
+            } 
+            if (preparedStatement2 != null) {
+                preparedStatement2.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } 
 
         try {
             return loadUser(user.getEmail());
