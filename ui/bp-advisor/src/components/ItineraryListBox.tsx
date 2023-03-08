@@ -5,6 +5,7 @@ import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
+import RatingBar from "./RatingBar";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -225,6 +226,44 @@ const ItineraryListBox = ({
                         }
                     });
 
+                    let itineraryLikeAndRatingFlexBox: HTMLDivElement =
+                        document.getElementById(
+                            "itineraryLikeAndRatingFlexBox"
+                        ) as HTMLDivElement;
+
+                    let itineraryRatingBarDiv: HTMLDivElement =
+                        document.createElement("div");
+
+                    let ratingBar = (
+                        <RatingBar
+                            loggedInUser={loggedInUser}
+                            itineraryId={parseInt(itineraryId)}
+                        />
+                    );
+                    createRoot(itineraryRatingBarDiv).render(ratingBar);
+                    itineraryLikeAndRatingFlexBox.appendChild(
+                        itineraryRatingBarDiv
+                    );
+
+                    let averageRatingElement: HTMLParagraphElement =
+                        document.getElementById(
+                            "averageRating"
+                        ) as HTMLParagraphElement;
+                    try {
+                        const averageRatingOfItineraryPromise: Promise<number> =
+                            httpRequests.getAverageRatingOfItinerary(
+                                parseInt(itineraryId)
+                            );
+                        averageRatingOfItineraryPromise.then(
+                            (averageRating: number) => {
+                                averageRatingElement.innerHTML =
+                                    "Average rating by users: " + averageRating;
+                            }
+                        );
+                    } catch (error) {
+                        alert("Could not update average rating");
+                    }
+
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
                         (destination) => {
@@ -309,12 +348,15 @@ const ItineraryListBox = ({
                                     id="itineraryDetailsCost"
                                     className="itineraryDetailElement"
                                 ></p>
+                            </div>
+                            <div id="itineraryLikeAndRatingFlexBox">
                                 <div id="itineraryLikeButton">
                                     <LikeButton
                                         id={"itineraryDetailsLike"}
                                         initialLiked={buttonLiked}
                                     />
                                 </div>
+                                <p id="averageRating"></p>
                             </div>
                             <p id="itineraryBoxDescription"></p>
                         </div>
