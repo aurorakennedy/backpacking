@@ -31,7 +31,6 @@ async function register(user: User): Promise<User> {
         const loggedInUser: User = await response.json();
         return loggedInUser;
     } catch (error) {
-        //THIS SHOULD BE FIXED: UGLY!
         return {
             username: "failed",
             email: "failed",
@@ -56,7 +55,6 @@ async function login(user: User): Promise<User> {
         const loggedInUser: User = await response.json();
         return loggedInUser;
     } catch (error) {
-        //THIS SHOULD BE FIXED: UGLY!
         return {
             username: "failed",
             email: "failed",
@@ -228,10 +226,57 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
         `http://localhost:8080/getlikeditineraries/${userEmail}`
     );
     if (!response.ok) {
-        throw new Error("Failed to fetch itineraries by keyword");
+        throw new Error("Failed to get likes itineraries");
     }
     const likedItineraries: Itinerary[] = await response.json();
     return likedItineraries;
+}
+
+async function getAverageRatingOfItinerary(
+    itineraryId: number
+): Promise<number> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getaverageratingofitinerary/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get average rating of itinerary");
+    }
+    const averageRatingOfItinerary: number = await response.json();
+    return averageRatingOfItinerary;
+}
+
+async function getUserRatingOfItinerary(
+    email: string,
+    itineraryId: number
+): Promise<number> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getuserratingofitinerary/${email}/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get user rating of itinerary");
+    }
+    const userRatingOfItinerary: number = await response.json();
+    return userRatingOfItinerary;
+}
+
+async function addRatingOfItinerary(
+    userEmail: string,
+    itineraryId: number,
+    rating: number
+): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/addRatingOfItinerary/${userEmail}/${itineraryId}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(rating),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to add rating");
+    }
 }
 
 const httpRequests = {
@@ -250,6 +295,9 @@ const httpRequests = {
     updateLikeOnItinerary,
     itineraryIsLiked,
     getLikedItineraries,
+    getAverageRatingOfItinerary,
+    getUserRatingOfItinerary,
+    addRatingOfItinerary,
 };
 
 export default httpRequests;
