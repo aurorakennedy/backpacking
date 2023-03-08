@@ -223,6 +223,17 @@ async function itineraryIsLiked(
     return itineraryIsLiked;
 }
 
+async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getlikeditineraries/${userEmail}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
+    const likedItineraries: Itinerary[] = await response.json();
+    return likedItineraries;
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -238,6 +249,7 @@ const httpRequests = {
     getRecommendedItineraries,
     updateLikeOnItinerary,
     itineraryIsLiked,
+    getLikedItineraries,
 };
 
 export default httpRequests;
