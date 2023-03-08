@@ -1207,30 +1207,34 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             recommendedItineraries.add(itinerary);
         }
 
-        if(recommendedItineraries.isEmpty()) {
-            recommendedItineraries = getRandomItineraries(10, userEmail);
-        } else if (recommendedItineraries.size() < 10) {
-            Set<Itinerary> holdingSet = new HashSet<>();
-            holdingSet.addAll(recommendedItineraries);
-            int i = 0;
-            while (holdingSet.size() < 10 || i != 5) {
-                holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
-                i++;
-                recommendedItineraries.clear();
-                recommendedItineraries.addAll(holdingSet);
-            }
-        }
-
     } catch (SQLException e) {
         throw new SQLException(e);
     } 
 
-    try {
-        conn.close();
-        statement.close();
-        resultset.close();
-    } catch (Exception e) {
-        // do nothing
+    finally {
+        if (conn != null) {
+            conn.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
+    }
+
+    if(recommendedItineraries.isEmpty()) {
+        recommendedItineraries = getRandomItineraries(10, userEmail);
+    } else if (recommendedItineraries.size() < 10) {
+        Set<Itinerary> holdingSet = new HashSet<>();
+        holdingSet.addAll(recommendedItineraries);
+        int i = 0;
+        while (holdingSet.size() < 10 || i != 5) {
+            holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+            i++;
+            recommendedItineraries.clear();
+            recommendedItineraries.addAll(holdingSet);
+        }
     }
 
     return recommendedItineraries;
