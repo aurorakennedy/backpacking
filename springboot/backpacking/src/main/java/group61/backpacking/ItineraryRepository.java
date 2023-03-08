@@ -1116,9 +1116,16 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries, String user
 
     try {
         conn = connectToDB();
-        String sqlQuery = "SELECT * FROM Itinerary WHERE id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) ORDER BY RANDOM() LIMIT " + numberOfItineraries;
+        String sqlQuery = "SELECT * FROM Itinerary WHERE "
+        + "id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Rating WHERE writer_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE writer_email = ?) "
+        + "ORDER BY RANDOM() LIMIT " + numberOfItineraries;
         statement = conn.prepareStatement(sqlQuery);
         statement.setString(1, userEmail);
+        statement.setString(2, userEmail);
+        statement.setString(3, userEmail);
+
         resultset = statement.executeQuery();
 
         while (resultset.next()) {
@@ -1128,6 +1135,16 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries, String user
         }
     } catch (SQLException e) {
         throw new SQLException(e);
+    } finally {
+        if (conn != null) {
+            conn.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
     }
     return itineraries;
 }
@@ -1185,6 +1202,10 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
             itinerary.mapItineraryFromResultSet(resultset);
             recommendedItineraries.add(itinerary);
+        }
+
+        if(recommendedItineraries.isEmpty()) {
+            recommendedItineraries = getRandomItineraries(10, userEmail);
         }
 
     } catch (SQLException e) {
