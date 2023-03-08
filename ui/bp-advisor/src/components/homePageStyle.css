@@ -27,7 +27,8 @@
 }
 
 #userItineraries,
-#recommendedItineraries {
+#recommendedItineraries,
+#likedItineraries {
     display: flex;
     flex-direction: row;
 }
