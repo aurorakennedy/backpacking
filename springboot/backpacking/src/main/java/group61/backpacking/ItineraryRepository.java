@@ -1147,7 +1147,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         return getRandomItineraries(10, userEmail);
     }
 
-    String sqlQuery = "SELECT DISTINCT i.id, i.title, i. writer_email, i.written_date, i.estimated_time, i.itinerary_description, i.image, i.price, COUNT(*) AS num_common_destinations "
+    String sqlQuery = "SELECT DISTINCT i.id, i.title, i. writer_email, i.written_date, i.estimated_time, i.itinerary_description, i.image, i.cost, COUNT(*) AS num_common_destinations "
                 + "FROM Itinerary_Destination id1 "
                 + "JOIN Itinerary_Destination id2 ON id1.destination_name = id2.destination_name AND id1.country = id2.country "
                 + "JOIN Itinerary i ON id2.itinerary_id = i.id "
