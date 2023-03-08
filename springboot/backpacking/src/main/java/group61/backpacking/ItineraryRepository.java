@@ -1100,12 +1100,16 @@ public List<Integer> getLikedOrRatedItineraries(String userEmail) throws SQLExce
     } catch (SQLException e) {
         throw new SQLException(e);
     }
-    try {
-        conn.close();
-        statement.close();
-        resultset.close();
-    } catch (Exception e) {
-        // do nothing
+    finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
     return itineraryIDs;
@@ -1139,14 +1143,14 @@ public List<Itinerary> getRandomItineraries(int numberOfItineraries, String user
     } catch (SQLException e) {
         throw new SQLException(e);
     } finally {
-        if (conn != null) {
-            conn.close();
-        }
         if (statement != null) {
             statement.close();
         }
         if (resultset != null) {
             resultset.close();
+        }
+        if (conn != null) {
+            conn.close();
         }
     }
     return itineraries;
@@ -1164,6 +1168,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     
     if (likedOrRatedItineraryIDs.isEmpty()) {
         // if user has not liked or rated any itineraries, return ten random itineraries
+        System.out.println("her ja");
         return getRandomItineraries(10, userEmail);
     }
 
@@ -1212,28 +1217,30 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     } 
 
     finally {
-        if (conn != null) {
-            conn.close();
-        }
         if (statement != null) {
             statement.close();
         }
         if (resultset != null) {
             resultset.close();
         }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
     if(recommendedItineraries.isEmpty()) {
         recommendedItineraries = getRandomItineraries(10, userEmail);
+        System.out.println("her er vi");
     } else if (recommendedItineraries.size() < 10) {
         Set<Itinerary> holdingSet = new HashSet<>();
         holdingSet.addAll(recommendedItineraries);
         int i = 0;
-        while (holdingSet.size() < 10 || i != 5) {
+        while (holdingSet.size() < 10 && i != 5) {
             holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
             i++;
             recommendedItineraries.clear();
             recommendedItineraries.addAll(holdingSet);
+            System.out.println("her");
         }
     }
 
