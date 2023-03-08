@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import TravelRoute from "./TravelRoute"
 import "./itineraryListBoxStyle.css"
+import ItineraryDelete from "./DeleteItinerary";
+
 
 
 interface itinerarySummaryInfo {
@@ -68,6 +70,8 @@ const ItineraryListBox = () => {
         });
     } */
 
+    
+
     return (
         <>
             <div id='travelRouteDiv'>
@@ -127,8 +131,16 @@ const ItineraryListBox = () => {
 
                             Felis donec et odio pellentesque diam volutpat commodo sed. Dictum fusce ut placerat orci nulla pellentesque dignissim enim sit. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus. Cras adipiscing enim eu turpis egestas. Faucibus in ornare quam viverra orci sagittis eu volutpat. Cursus in hac habitasse platea. Odio pellentesque diam volutpat commodo sed egestas egestas fringilla. Mauris sit amet massa vitae tortor. Vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Suspendisse in est ante in nibh. Montes nascetur ridiculus mus mauris vitae ultricies. Morbi tincidunt augue interdum velit euismod in pellentesque. Eu lobortis elementum nibh tellus. Amet consectetur adipiscing elit pellentesque habitant morbi. Nunc sed augue lacus viverra vitae congue eu consequat ac. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus.
                         </p>
+                        
+                        
                     </div>
                     <p onClick={handleExpantion} id='itineraryBoxCloseButton'> Close </p>
+
+                    <ItineraryDelete itinerary={} onDelete={function (): void {
+                        throw new Error("Function not implemented.");
+                    } }/>
+                    
+                    
                 </div></>)}
         </>
     )

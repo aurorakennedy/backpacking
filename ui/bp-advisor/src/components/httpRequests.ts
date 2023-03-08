@@ -124,7 +124,21 @@ async function addItinerary(itinerary: Itinerary): Promise<void> {
     throw new Error("Failed to add itinerary");
   }
 }
+// AURORA: 
 
+async function deletItinerary(itinerary: Itinerary): Promise<void> {
+  const response: Response = await fetch("http://localhost:8080/itinerary", {
+    
+    method: "DELETE",
+    
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete itinerary");
+  }
+}
+
+
+// 
 async function getItineraryDestinations(itineraryID: number):
     Promise<ItineraryDestination[]> {
     const response: Response = await
@@ -157,6 +171,7 @@ const httpRequests = {
     updateUser,
     deleteUser,
     addItinerary,
+    deletItinerary,
     addItineraryDestinations,
     getItineraryById,
     getItinerariesByUserEmail,
