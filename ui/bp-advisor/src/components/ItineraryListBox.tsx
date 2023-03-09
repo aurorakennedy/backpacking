@@ -8,19 +8,20 @@ import LikeButton from "./LikeButton";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
-    itinerariesBasedOn: "Your itineraries" | "Recommended itineraries";
+    itinerariesBasedOn:
+        | "Your itineraries"
+        | "Recommended itineraries"
+        | "Liked itineraries";
     loggedInUser: LoggedInUser;
 };
 
 /**
  * Component for a BP-Advisor list of itineraries. Creates a list of itineraries as HTML based on the input.
- * Can as of now only create a list of the logged in users itineraries.
  *
- * @param itinerariesBasedOn String that defines what the itineraries in the list should be based on. Only
- * recognizes the string "loggedInUser" as of now, which creates a list of all the itineraries the logged
- * in user has created.
+ * @param itinerariesBasedOn String that defines what the itineraries in the list should be based on. Can be "Your itineraries",
+ * which returns a list of the logged in users itineraries, "Recommended itineraries", which returns a list of recommended
+ * itineraries for the logged in user, or "Liked itineraries", which returns a list of itineraries the user has liked.
  * @param loggedInUser A user object, the logged in user.
- *
  * @returns HTML-code for a BP-Advisor list of itineraries.
  */
 const ItineraryListBox = ({
@@ -30,8 +31,7 @@ const ItineraryListBox = ({
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] =
         useState<Boolean>(false);
-    const [buttonLiked, setButtonLiked] =
-        useState(false);
+    const [buttonLiked, setButtonLiked] = useState(false);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -64,6 +64,16 @@ const ItineraryListBox = ({
                         recommendedItineraries,
                         itinerariesBasedOn
                     );
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
+        } else if (itinerariesBasedOn === "Liked itineraries") {
+            try {
+                const promise: Promise<Itinerary[]> =
+                    httpRequests.getLikedItineraries(loggedInUser.email);
+                promise.then((likedItineraries: Itinerary[]) => {
+                    displayItineraries(likedItineraries, itinerariesBasedOn);
                 });
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
@@ -185,13 +195,17 @@ const ItineraryListBox = ({
                         document.getElementById(
                             "itineraryDestinationBox"
                         ) as HTMLDivElement;
-                    
-                    let likeButton: HTMLButtonElement =
-                        document.getElementById("itineraryDetailsLike") as HTMLButtonElement;
+
+                    let likeButton: HTMLButtonElement = document.getElementById(
+                        "itineraryDetailsLike"
+                    ) as HTMLButtonElement;
 
                     try {
                         const getLikePromise: Promise<boolean> =
-                            httpRequests.itineraryIsLiked(loggedInUser.email, parseInt(itineraryId));
+                            httpRequests.itineraryIsLiked(
+                                loggedInUser.email,
+                                parseInt(itineraryId)
+                            );
                         getLikePromise.then((liked: boolean) => {
                             setButtonLiked(liked);
                         });
@@ -201,12 +215,15 @@ const ItineraryListBox = ({
 
                     likeButton.addEventListener("click", () => {
                         try {
-                          httpRequests.updateLikeOnItinerary(loggedInUser.email, parseInt(itineraryId));
-                          setButtonLiked(!buttonLiked);
+                            httpRequests.updateLikeOnItinerary(
+                                loggedInUser.email,
+                                parseInt(itineraryId)
+                            );
+                            setButtonLiked(!buttonLiked);
                         } catch (error) {
-                          alert("Could not update like");
+                            alert("Could not update like");
                         }
-                      });
+                    });
 
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
@@ -262,6 +279,7 @@ const ItineraryListBox = ({
 
     const handleExpansionClose = () => {
         setitineraryBoxExpanded(false);
+        window.location.reload();
     };
 
     return (
@@ -291,11 +309,14 @@ const ItineraryListBox = ({
                                     id="itineraryDetailsCost"
                                     className="itineraryDetailElement"
                                 ></p>
+                                <div id="itineraryLikeButton">
+                                    <LikeButton
+                                        id={"itineraryDetailsLike"}
+                                        initialLiked={buttonLiked}
+                                    />
+                                </div>
                             </div>
                             <p id="itineraryBoxDescription"></p>
-                        </div>
-                        <div id="itineraryLikeButton">
-                            <LikeButton id={"itineraryDetailsLike"} initialLiked={buttonLiked} />
                         </div>
                         <p
                             id="itineraryBoxCloseButton"
