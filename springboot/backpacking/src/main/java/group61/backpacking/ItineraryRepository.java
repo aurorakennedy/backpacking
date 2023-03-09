@@ -1323,17 +1323,17 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             if (hasUserRatedItinerary(userEmail, itineraryID)) {
                 deleteRating(userEmail, itineraryID);
             }
-
             statement.executeUpdate();
+            System.out.println("SAVE RATING RECIEVED IN REPO");
 
         } catch (SQLException e) {
             throw new SQLException(e);
         } finally {
-            if (conn != null) {
-                conn.close();
-            }
             if (statement != null) {
                 statement.close();
+            }
+            if (conn != null) {
+                conn.close();
             }
         }
     }
@@ -1378,7 +1378,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         return result;
     }
 
-    private void deleteRating(String userEmail, int itineraryID) throws SQLException {
+    public void deleteRating(String userEmail, int itineraryID) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
@@ -1427,6 +1427,18 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         } catch (SQLException e) {
             throw new SQLException(e);
         }
+        finally {
+            if (resultset != null) {
+                resultset.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
         return rating;
     }
 
