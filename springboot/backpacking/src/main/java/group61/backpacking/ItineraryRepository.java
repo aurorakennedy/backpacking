@@ -1699,9 +1699,6 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
                 conn.close();
             }
         }
-
-        DecimalFormat df = new DecimalFormat("#.#");
-        averageRating = Double.parseDouble(df.format(averageRating));
         
         return averageRating;
     }

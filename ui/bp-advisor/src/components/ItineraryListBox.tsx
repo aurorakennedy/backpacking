@@ -340,7 +340,7 @@ const ItineraryListBox = ({
             averageRatingOfItineraryPromise.then((averageRating: number) => {
                 if (averageRating > 0) {
                     averageRatingElement.innerHTML =
-                        "Average rating: " + averageRating;
+                        "Average rating: " + averageRating.toFixed(1);
                 } else {
                     averageRatingElement.innerHTML = "No ratings yet";
                 }
