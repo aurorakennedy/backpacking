@@ -11,6 +11,7 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 @Repository
 public class ItineraryRepository {
@@ -1446,7 +1447,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultset = null;
-        double averageRating = 0.0;
+        Double averageRating = 0.0;
         int ratingCount = 0;
         
         try {
@@ -1476,8 +1477,48 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
                 conn.close();
             }
         }
+
+        DecimalFormat df = new DecimalFormat("#.#");
+        averageRating = Double.parseDouble(df.format(averageRating));
         
         return averageRating;
+    }
+
+    public List<Itinerary> loadRatedItineraries(String userEmail) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> ratedItineraries = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary INNER JOIN Rating r ON (id = itinerary_id) WHERE r.user_email = ?";
+
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, userEmail);
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                ratedItineraries.add(itinerary);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        
+        return ratedItineraries;
     }
 
 }
