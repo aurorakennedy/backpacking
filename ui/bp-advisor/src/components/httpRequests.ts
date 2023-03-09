@@ -236,7 +236,7 @@ async function getAverageRatingOfItinerary(
     itineraryId: number
 ): Promise<number> {
     const response: Response = await fetch(
-        `http://localhost:8080/getaverageratingofitinerary/${itineraryId}`
+        `http://localhost:8080/averageratingofitinerary/${itineraryId}`
     );
     if (!response.ok) {
         throw new Error("Failed to get average rating of itinerary");
@@ -246,11 +246,12 @@ async function getAverageRatingOfItinerary(
 }
 
 async function getUserRatingOfItinerary(
-    email: string,
+    userEmail: string,
     itineraryId: number
 ): Promise<number> {
+    console.log("Requestemail: " + userEmail);
     const response: Response = await fetch(
-        `http://localhost:8080/getuserratingofitinerary/${email}/${itineraryId}`
+        `http://localhost:8080/getuserratingofitinerary/${userEmail}/${itineraryId}`
     );
     if (!response.ok) {
         throw new Error("Failed to get user rating of itinerary");
@@ -265,7 +266,7 @@ async function addRatingOfItinerary(
     rating: number
 ): Promise<void> {
     const response: Response = await fetch(
-        `http://localhost:8080/addRatingOfItinerary/${userEmail}/${itineraryId}`,
+        `http://localhost:8080/addratingofitinerary/${userEmail}/${itineraryId}`,
         {
             method: "PUT",
             headers: {

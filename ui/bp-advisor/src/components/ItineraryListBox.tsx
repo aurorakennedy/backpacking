@@ -238,6 +238,9 @@ const ItineraryListBox = ({
                         <RatingBar
                             loggedInUser={loggedInUser}
                             itineraryId={parseInt(itineraryId)}
+                            updateAverageRating={function (): void {
+                                updateAverageRating(itineraryId);
+                            }}
                         />
                     );
                     createRoot(itineraryRatingBarDiv).render(ratingBar);
@@ -245,24 +248,7 @@ const ItineraryListBox = ({
                         itineraryRatingBarDiv
                     );
 
-                    let averageRatingElement: HTMLParagraphElement =
-                        document.getElementById(
-                            "averageRating"
-                        ) as HTMLParagraphElement;
-                    try {
-                        const averageRatingOfItineraryPromise: Promise<number> =
-                            httpRequests.getAverageRatingOfItinerary(
-                                parseInt(itineraryId)
-                            );
-                        averageRatingOfItineraryPromise.then(
-                            (averageRating: number) => {
-                                averageRatingElement.innerHTML =
-                                    "Average rating by users: " + averageRating;
-                            }
-                        );
-                    } catch (error) {
-                        alert("Could not update average rating");
-                    }
+                    updateAverageRating(itineraryId);
 
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
@@ -316,6 +302,45 @@ const ItineraryListBox = ({
         setitineraryBoxExpanded(true);
     }
 
+    /**
+     * Function that gets the average rating of an itinerary from the backend,
+     * and displays it a paragraph element.
+     * @param itineraryId string, the id of the itinerary
+     */
+    async function updateAverageRating(itineraryId: string) {
+        let itineraryLikeAndRatingFlexBox: HTMLDivElement =
+            document.getElementById(
+                "itineraryLikeAndRatingFlexBox"
+            ) as HTMLDivElement;
+
+        let averageRatingElement: HTMLParagraphElement =
+            document.getElementById("averageRating") as HTMLDivElement;
+
+        if (averageRatingElement === null) {
+            averageRatingElement = document.createElement("p");
+            averageRatingElement.id = "averageRating";
+        }
+
+        try {
+            const averageRatingOfItineraryPromise: Promise<number> =
+                httpRequests.getAverageRatingOfItinerary(parseInt(itineraryId));
+            averageRatingOfItineraryPromise.then((averageRating: number) => {
+                if (averageRating > 0) {
+                    averageRatingElement.innerHTML =
+                        "Average rating: " + averageRating;
+                } else {
+                    averageRatingElement.innerHTML = "No ratings yet";
+                }
+                itineraryLikeAndRatingFlexBox.appendChild(averageRatingElement);
+            });
+        } catch (error) {
+            alert("Could not update average rating");
+        }
+    }
+
+    /**
+     * Closes the expanded itinerary box and refreshes the page.
+     */
     const handleExpansionClose = () => {
         setitineraryBoxExpanded(false);
         window.location.reload();
@@ -356,7 +381,6 @@ const ItineraryListBox = ({
                                         initialLiked={buttonLiked}
                                     />
                                 </div>
-                                <p id="averageRating"></p>
                             </div>
                             <p id="itineraryBoxDescription"></p>
                         </div>
