@@ -135,10 +135,15 @@ async function addItinerary(itinerary: Itinerary): Promise<void> {
 
 // AURORA: 
 
-async function deletItinerary(itinerary: Itinerary): Promise<void> {
-    const response: Response = await fetch("http://localhost:8080/itinerary", {
+async function deletItinerary(email: string, title : string): Promise<void> {
+    const response: Response = await fetch(`http://localhost:8080/deleteitinerary/${title}`, {
       
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(email), 
+    
       
     });
     if (!response.ok) {

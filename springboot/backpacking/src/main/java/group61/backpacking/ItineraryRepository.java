@@ -584,7 +584,7 @@ public class ItineraryRepository {
     // update / delete functions
 
     // sletting basert på tittel og email
-    public void deleteItinerary_byEmail(User user, String title) throws SQLException{
+    public void deleteItinerary_byEmail(String email, String title) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -592,7 +592,7 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "DELETE FROM Itinerary WHERE title = ? AND writer_email = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(1, email);
             preparedStatement.setString(2, title);
             
             preparedStatement.executeUpdate();

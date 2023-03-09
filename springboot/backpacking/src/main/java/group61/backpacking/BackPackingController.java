@@ -124,13 +124,13 @@ public class BackPackingController {
 
 
 
-      // AURORA: 
+    // AURORA: 
 
-    /*   @CrossOrigin(origins = "*")
-      @DeleteMapping("/users/{id}")
-      public void deleteItinerary(@PathVariable int id, @RequestBody User user) throws RuntimeException, SQLException {
-          itineraryRep.deleteItinerary_byEmail(user, null);
-      } */
+      @CrossOrigin(origins = "*")
+      @DeleteMapping("/deleteitinerary/{title}")
+      public void deleteItinerary(@RequestBody String email, @PathVariable String title) throws RuntimeException, SQLException {
+          itineraryRep.deleteItinerary_byEmail(email, title);
+      } 
   
       // 
     @CrossOrigin(origins = "*")

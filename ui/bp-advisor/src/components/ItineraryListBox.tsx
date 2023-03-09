@@ -5,6 +5,7 @@ import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
+import ItineraryDelete from "./DeleteItinerary";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -30,8 +31,13 @@ const ItineraryListBox = ({
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] =
         useState<Boolean>(false);
-    const [buttonLiked, setButtonLiked] =
+    
+        const [buttonLiked, setButtonLiked] =
         useState(false);
+
+    //Aurora 
+    const [deleteButton] =
+        useState(false)
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -134,7 +140,7 @@ const ItineraryListBox = ({
      * @param itineraryId A string, the id of the itinerary to show
      */
     async function handleExpansionOpen(
-        itineraryId: string
+        itineraryId: string,
     ): Promise<React.MouseEventHandler<HTMLElement> | any> {
         try {
             const promise: Promise<ItineraryAndDestinations> =
@@ -189,6 +195,7 @@ const ItineraryListBox = ({
                     let likeButton: HTMLButtonElement =
                         document.getElementById("itineraryDetailsLike") as HTMLButtonElement;
 
+
                     try {
                         const getLikePromise: Promise<boolean> =
                             httpRequests.itineraryIsLiked(loggedInUser.email, parseInt(itineraryId));
@@ -198,6 +205,7 @@ const ItineraryListBox = ({
                     } catch (error) {
                         alert("Could not get like state");
                     }
+                
 
                     likeButton.addEventListener("click", () => {
                         try {
@@ -208,6 +216,23 @@ const ItineraryListBox = ({
                         }
                       });
 
+                       //  Aurora -- FEIL??
+                    let deleteItineraryButton: HTMLButtonElement =
+                    document.getElementById('itineraryDeleteButton') as HTMLButtonElement;
+                    
+                //
+
+                    // aurora
+                    deleteItineraryButton.addEventListener("click", () => {
+                        try {
+                          httpRequests.deletItinerary(loggedInUser.email, itineraryAndDestinations.itinerary.title );
+                          
+                        } catch (error) {
+                          alert("Could not delete itinerary");
+                        }
+                      });
+
+                    //
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
                         (destination) => {
@@ -297,6 +322,14 @@ const ItineraryListBox = ({
                         <div id="itineraryLikeButton">
                             <LikeButton id={"itineraryDetailsLike"} initialLiked={buttonLiked} />
                         </div>
+
+                       {/*  AURORA */}
+
+                       <div id="itineraryDeleteButton">
+                            <LikeButton id={"itineraryDeleteButton"} initialLiked={buttonLiked} />
+                        </div>
+                         
+                         
                         <p
                             id="itineraryBoxCloseButton"
                             onClick={handleExpansionClose}

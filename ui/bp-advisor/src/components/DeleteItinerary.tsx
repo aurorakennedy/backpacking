@@ -9,24 +9,30 @@ import httpRequests from "./httpRequests";
   };
    */
 
-  type Props = {
+  interface deleteItineraryProps {
     itinerary: Itinerary;
+    loggedInUser: LoggedInUser | null;
     onDelete: () => void;
   };
   
- const ItineraryDelete: React.FC<Props> = ({ itinerary, onDelete }) => {
+ const ItineraryDelete: React.FC<deleteItineraryProps> = ({ itinerary, loggedInUser, onDelete }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
   
     const handleDelete = async () => {
       setLoading(true);
       try {
-        // Send a request to delete the itinerary
-        await httpRequests.deletItinerary(itinerary);
-        // Call the onDelete callback to update the UI
-        onDelete();
-        // Navigate back to the homepage
-        navigate("/");
+        // Check if the loggedInUser is the author of the itinerary
+        if (loggedInUser && itinerary.writerEmail === loggedInUser.email) {
+          // Send a request to delete the itinerary
+          await httpRequests.deletItinerary(itinerary.writerEmail, itinerary.title);
+          // Call the onDelete callback to update the UI
+          onDelete();
+          // Navigate back to the homepage
+          navigate("/");
+        } else {
+          alert("You are not authorized to delete this itinerary");
+        }
       } catch (error) {
         console.error(error);
         setLoading(false);
