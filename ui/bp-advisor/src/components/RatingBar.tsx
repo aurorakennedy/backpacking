@@ -6,6 +6,7 @@ import { LoggedInUser } from "./types";
 type RatingBarProps = {
     loggedInUser: LoggedInUser;
     itineraryId: number;
+    updateAverageRating: () => void;
 };
 
 /**
@@ -15,7 +16,11 @@ type RatingBarProps = {
  * @param itineraryId number, the if of the itinerary
  * @returns HTML code for the rating bar component
  */
-const RatingBar = ({ loggedInUser, itineraryId }: RatingBarProps) => {
+const RatingBar = ({
+    loggedInUser,
+    itineraryId,
+    updateAverageRating,
+}: RatingBarProps) => {
     const [selectedRating, setSelectedRating] = useState<string>("");
 
     useEffect(() => {
@@ -54,7 +59,6 @@ const RatingBar = ({ loggedInUser, itineraryId }: RatingBarProps) => {
      */
     function setRating(rating: number): void {
         if (rating < 1 || rating > 5) {
-            console.error("Rating must be between 1 and 5.");
             return;
         }
 
@@ -78,16 +82,17 @@ const RatingBar = ({ loggedInUser, itineraryId }: RatingBarProps) => {
     async function handleRatingClick(
         event: React.MouseEvent<HTMLInputElement>
     ) {
+        removeRatingIfChecked(event);
         const target = event.target as HTMLInputElement;
-        const rating = target.checked ? target.value : "0"; // NÅR RATING FJERNES, KAN DEN VÆRE 0 ELLER MÅ RATINGEN SLETTES FRA DATABASEN???
+        const rating = target.checked ? target.value : "0";
         try {
             await httpRequests.addRatingOfItinerary(
                 loggedInUser.email,
                 itineraryId,
                 parseInt(rating)
             );
+            updateAverageRating();
         } catch (error) {}
-        removeRatingIfChecked(event);
     }
 
     /**
