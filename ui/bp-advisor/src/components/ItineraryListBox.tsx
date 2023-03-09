@@ -12,7 +12,8 @@ type ItineraryListBoxProps = {
     itinerariesBasedOn:
         | "Your itineraries"
         | "Recommended itineraries"
-        | "Liked itineraries";
+        | "Liked itineraries"
+        | "Rated itineraries";
     loggedInUser: LoggedInUser;
 };
 
@@ -21,7 +22,8 @@ type ItineraryListBoxProps = {
  *
  * @param itinerariesBasedOn String that defines what the itineraries in the list should be based on. Can be "Your itineraries",
  * which returns a list of the logged in users itineraries, "Recommended itineraries", which returns a list of recommended
- * itineraries for the logged in user, or "Liked itineraries", which returns a list of itineraries the user has liked.
+ * itineraries for the logged in user, "Liked itineraries", which returns a list of itineraries the user has liked, or
+ * "Rated itineraries, which returns a list of the itineraries that the user has rated."
  * @param loggedInUser A user object, the logged in user.
  * @returns HTML-code for a BP-Advisor list of itineraries.
  */
@@ -75,6 +77,17 @@ const ItineraryListBox = ({
                     httpRequests.getLikedItineraries(loggedInUser.email);
                 promise.then((likedItineraries: Itinerary[]) => {
                     displayItineraries(likedItineraries, itinerariesBasedOn);
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
+        } else if (itinerariesBasedOn === "Rated itineraries") {
+            try {
+                const promise: Promise<Itinerary[]> =
+                    httpRequests.getRatedItineraries(loggedInUser.email);
+                promise.then((ratedItineraries: Itinerary[]) => {
+                    console.log(ratedItineraries);
+                    displayItineraries(ratedItineraries, itinerariesBasedOn);
                 });
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
