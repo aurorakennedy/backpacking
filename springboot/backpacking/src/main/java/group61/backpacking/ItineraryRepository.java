@@ -422,7 +422,7 @@ public class ItineraryRepository {
             
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null,0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
@@ -888,6 +888,228 @@ public class ItineraryRepository {
         }
 
     }
+
+  /*   public void saveItineries() throws SQLException {s
+        // Itinerary 1
+        Itinerary itinerary1 = new Itinerary(10, "jarl@test.org", "", (int)(Math.random() * 41) + 10, "Chile is a backpacker's paradise, with stunning natural wonders and a rich culture to explore. On this trip, you'll experience the best of what Chile has to offer, from the bustling city of Santiago to the rugged landscapes of Patagonia. Hike through the Torres del Paine National Park, visit the Atacama Desert, and sample delicious Chilean cuisine along the way. This is an adventure you won't soon forget!", "", "Chile Backpacking Adventure", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary1_1 = new Destination("Torres del Paine National Park", "Chile", "");
+        Destination destinationforitinerary1_2 = new Destination("Atacama Desert", "Chile", "");
+        Destination destinationforitinerary1_3 = new Destination("Easter Island", "Chile", "");
+        List<Destination> destinationsOfItinerary1 = new ArrayList<>();
+        destinationsOfItinerary1.add(destinationforitinerary1_1);
+        destinationsOfItinerary1.add(destinationforitinerary1_2);
+        destinationsOfItinerary1.add(destinationforitinerary1_3);
+        ItineraryAndDestinations itinerary1AndDestinations = new ItineraryAndDestinations(itinerary1, destinationsOfItinerary1);
+        saveItinerary(itinerary1AndDestinations);
+
+        // Itinerary 2
+        Itinerary itinerary2 = new Itinerary(11, "marisa@test.org", "", (int)(Math.random() * 41) + 10, "Experience the beauty and diversity of Europe on this unforgettable train journey. From the romance of Paris to the canals of Venice, you'll see it all. Explore the history of Berlin, take in the stunning Swiss Alps, and enjoy the vibrant nightlife of Amsterdam. This is the ultimate European adventure!", "", "Europe by Train" , (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary2_1 = new Destination("Paris", "France", "");
+        Destination destinationforitinerary2_2 = new Destination("Berlin", "Germany", "");
+        Destination destinationforitinerary2_3 = new Destination("Venice", "Italy", "");
+        Destination destinationforitinerary2_4 = new Destination("Swiss Alps", "Switzerland", "");
+        Destination destinationforitinerary2_5 = new Destination("Amsterdam", "Netherlands", "");
+        List<Destination> destinationsOfItinerary2 = new ArrayList<>();
+        destinationsOfItinerary2.add(destinationforitinerary2_1);
+        destinationsOfItinerary2.add(destinationforitinerary2_2);
+        destinationsOfItinerary2.add(destinationforitinerary2_3);
+        destinationsOfItinerary2.add(destinationforitinerary2_4);
+        destinationsOfItinerary2.add(destinationforitinerary2_5);
+        ItineraryAndDestinations itinerary2AndDestinations = new ItineraryAndDestinations(itinerary2, destinationsOfItinerary2);
+        saveItinerary(itinerary2AndDestinations);
+
+        // Itinerary 3
+        Itinerary itinerary3 = new Itinerary(12, "tobias@test.org", "", (int)(Math.random() * 41) + 10, "Experience the rich and diverse cultures of Asia on this incredible tour. Visit ancient temples, bustling markets, and stunning natural landscapes. Explore the vibrant cities of Tokyo and Seoul, and discover the hidden gems of Vietnam and Cambodia. This is a journey you'll never forget!", "", "Discovering Asia", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary3_1 = new Destination("Angkor Wat", "Cambodia", "");
+        Destination destinationforitinerary3_2 = new Destination("Halong Bay", "Vietnam", "");
+        Destination destinationforitinerary3_3 = new Destination("Tokyo", "Japan", "");
+        Destination destinationforitinerary3_4 = new Destination("Seoul", "South Korea", "");
+        List<Destination> destinationsOfItinerary3 = new ArrayList<>();
+        destinationsOfItinerary3.add(destinationforitinerary3_1);
+        destinationsOfItinerary3.add(destinationforitinerary3_2);
+        destinationsOfItinerary3.add(destinationforitinerary3_3);
+        destinationsOfItinerary3.add(destinationforitinerary3_4);
+        ItineraryAndDestinations itinerary3AndDestinations = new ItineraryAndDestinations(itinerary3, destinationsOfItinerary3);
+        saveItinerary(itinerary3AndDestinations);
+
+        // Itinerary 4
+        Itinerary itinerary4 = new Itinerary(13, "simen@test.org", "", (int)(Math.random() * 41) + 10, "Embark on an unforgettable journey through South America, where you'll experience the stunning natural beauty, rich culture, and amazing cuisine. Explore the Amazon rainforest, visit Machu Picchu, and discover the vibrant cities of Rio de Janeiro and Buenos Aires. This is an adventure of a lifetime!", "", "South America Expedition", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary4_1 = new Destination("Machu Picchu", "Peru", "");
+        Destination destinationforitinerary4_2 = new Destination("Amazon Rainforest", "Brazil", "");
+        Destination destinationforitinerary4_3 = new Destination("Rio de Janeiro", "Brazil", "");
+        Destination destinationforitinerary4_4 = new Destination("Buenos Aires", "Argentina", "");
+        List<Destination> destinationsOfItinerary4 = new ArrayList<>();
+        destinationsOfItinerary4.add(destinationforitinerary4_1);
+        destinationsOfItinerary4.add(destinationforitinerary4_2);
+        destinationsOfItinerary4.add(destinationforitinerary4_3);
+        destinationsOfItinerary4.add(destinationforitinerary4_4);
+        ItineraryAndDestinations itinerary4AndDestinations = new ItineraryAndDestinations(itinerary4, destinationsOfItinerary4);
+        saveItinerary(itinerary4AndDestinations);
+
+        // Itinerary 5
+        Itinerary itinerary5 = new Itinerary(14, "emil@test.org", "", (int)(Math.random() * 41) + 10,"Experience the beauty of the American West on this unforgettable journey. From the rugged Rocky Mountains to the stunning deserts of Arizona, you'll discover the awe-inspiring landscapes that have inspired artists and adventurers for generations. Explore the vibrant cities of Denver and Phoenix, and discover the rich cultural heritage of the Native American tribes that call this land home.", "", "Wild West Adventure", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary5_1 = new Destination("Grand Canyon", "USA", "");
+        Destination destinationforitinerary5_2 = new Destination("Yellowstone National Park", "USA", "");
+        Destination destinationforitinerary5_3 = new Destination("Denver", "USA", "");
+        Destination destinationforitinerary5_4 = new Destination("Phoenix", "USA", "");
+        List<Destination> destinationsOfItinerary5 = new ArrayList<>();
+        destinationsOfItinerary5.add(destinationforitinerary5_1);
+        destinationsOfItinerary5.add(destinationforitinerary5_2);
+        destinationsOfItinerary5.add(destinationforitinerary5_3);
+        destinationsOfItinerary5.add(destinationforitinerary5_4);
+        ItineraryAndDestinations itinerary5AndDestinations = new ItineraryAndDestinations(itinerary5, destinationsOfItinerary5);
+        saveItinerary(itinerary5AndDestinations);
+
+        // Itinerary 6
+        Itinerary itinerary6 = new Itinerary(15, "aurora@test.org", "", (int)(Math.random() * 41) + 10, "Discover the idyllic islands of the Mediterranean on this breathtaking adventure. From the ancient ruins of Greece to the stunning beaches of Croatia, you'll explore some of the most beautiful destinations in the world. Swim in crystal-clear waters, sample delicious local cuisine, and soak up the laid-back Mediterranean lifestyle. This is the ultimate island-hopping experience!", "", "Mediterranean Islands", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary6_1 = new Destination("Santorini", "Greece", "");
+        Destination destinationforitinerary6_2 = new Destination("Hvar", "Croatia", "");
+        Destination destinationforitinerary6_3 = new Destination("Capri", "Italy", "");
+        Destination destinationforitinerary6_4 = new Destination("Corsica", "France", "");
+        List<Destination> destinationsOfItinerary6 = new ArrayList<>();
+        destinationsOfItinerary6.add(destinationforitinerary6_1);
+        destinationsOfItinerary6.add(destinationforitinerary6_2);
+        destinationsOfItinerary6.add(destinationforitinerary6_3);
+        destinationsOfItinerary6.add(destinationforitinerary6_4);
+        ItineraryAndDestinations itinerary6AndDestinations = new ItineraryAndDestinations(itinerary6, destinationsOfItinerary6);
+        saveItinerary(itinerary6AndDestinations);
+
+        // Itinerary 7
+        Itinerary itinerary7 = new Itinerary(16, "marisa@test.org", "", (int)(Math.random() * 41) + 10, "Hit the open road on this epic cross-country adventure. From the bright lights of New York City to the sun-soaked beaches of California, you'll explore the diverse landscapes and cultures that make America great. Visit iconic landmarks like the Grand Canyon and Mount Rushmore, and discover hidden gems off the beaten path. This is the ultimate American road trip!", "", "Cross-Country Odyssey", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary7_1 = new Destination("New York City", "USA", "");
+        Destination destinationforitinerary7_2 = new Destination("Grand Canyon", "USA", "");
+        Destination destinationforitinerary7_3 = new Destination("Mount Rushmore", "USA", "");
+        Destination destinationforitinerary7_4 = new Destination("Los Angeles", "USA", "");
+        List<Destination> destinationsOfItinerary7 = new ArrayList<>();
+        destinationsOfItinerary7.add(destinationforitinerary7_1);
+        destinationsOfItinerary7.add(destinationforitinerary7_2);
+        destinationsOfItinerary7.add(destinationforitinerary7_3);
+        destinationsOfItinerary7.add(destinationforitinerary7_4);
+        ItineraryAndDestinations itinerary7AndDestinations = new ItineraryAndDestinations(itinerary7, destinationsOfItinerary7);
+        saveItinerary(itinerary7AndDestinations);
+
+        // Itinerary 8
+        Itinerary itinerary8 = new Itinerary(17, "simen@test.org", "", (int)(Math.random() * 41) + 10, "Embark on a journey to the top of the world on this unforgettable trek through the Himalayas. Hike through remote mountain villages, encounter ancient Buddhist monasteries, and take in stunning panoramic views of the world's highest peaks. You'll tackle challenging terrain and altitude, but the sense of accomplishment and awe-inspiring beauty will be worth it. This is the adventure of a lifetime!", "", "Himalayan Trek", (int)(Math.random() * 2301) + 900);
+        Destination destinationforitinerary8_1 = new Destination("Everest Base Camp", "Nepal", "");
+        Destination destinationforitinerary8_2 = new Destination("Annapurna Circuit", "Nepal", "");
+        Destination destinationforitinerary8_3 = new Destination("Tibet", "China", "");
+        Destination destinationforitinerary8_4 = new Destination("Kathmandu", "Nepal", "");
+        List<Destination> destinationsOfItinerary8 = new ArrayList<>();
+        destinationsOfItinerary8.add(destinationforitinerary8_1);
+        destinationsOfItinerary8.add(destinationforitinerary8_2);
+        destinationsOfItinerary8.add(destinationforitinerary8_3);
+        destinationsOfItinerary8.add(destinationforitinerary8_4);
+        ItineraryAndDestinations itinerary8AndDestinations = new ItineraryAndDestinations(itinerary8, destinationsOfItinerary8);
+        saveItinerary(itinerary8AndDestinations);
+
+        Itinerary itinerary9 = new Itinerary(18, "tobias@test.org", "", 12, "Experience the wonders of Peru on this backpacking adventure! From the breathtaking heights of Machu Picchu to the colorful streets of Cusco, this trip is sure to be a once-in-a-lifetime experience.", "", "The wonders of Peru", 2500);
+        Destination destinationforitinerary9_1 = new Destination("Machu Picchu", "Peru", "");
+        Destination destinationforitinerary9_2 = new Destination("Cusco", "Peru", "");
+        Destination destinationforitinerary9_3 = new Destination("Lake Titicaca", "Peru", "");
+        List<Destination> destinationsOfItinerary9 = new ArrayList<>();
+        destinationsOfItinerary9.add(destinationforitinerary9_1);
+        destinationsOfItinerary9.add(destinationforitinerary9_2);
+        destinationsOfItinerary9.add(destinationforitinerary9_3);
+        ItineraryAndDestinations itinerary9AndDestinations = new ItineraryAndDestinations(itinerary9, destinationsOfItinerary9);
+        saveItinerary(itinerary9AndDestinations);
+
+        Itinerary itinerary10 = new Itinerary(19, "marisa@test.org", "", 30, "All aboard! Get ready to see the stunning sights of Europe from the comfort of a train. From the romantic streets of Paris to the historic landmarks of Berlin, this trip is a must for any travel enthusiast.", "", "Europe by train", 2800);
+        Destination destinationforitinerary10_1 = new Destination("Paris", "France", "");
+        Destination destinationforitinerary10_2 = new Destination("Venice", "Italy", "");
+        Destination destinationforitinerary10_3 = new Destination("Berlin", "Germany", "");
+        Destination destinationforitinerary10_4 = new Destination("Vienna", "Austria", "");
+        List<Destination> destinationsOfItinerary10 = new ArrayList<>();
+        destinationsOfItinerary10.add(destinationforitinerary10_1);
+        destinationsOfItinerary10.add(destinationforitinerary10_2);
+        destinationsOfItinerary10.add(destinationforitinerary10_3);
+        destinationsOfItinerary10.add(destinationforitinerary10_4);
+        ItineraryAndDestinations itinerary10AndDestinations = new ItineraryAndDestinations(itinerary10, destinationsOfItinerary10);
+        saveItinerary(itinerary10AndDestinations);
+
+        Itinerary itinerary11 = new Itinerary(20, "aurora@test.org", "", 15, "Experience the beauty and culture of Japan on this train trip through some of the country's most iconic cities. From the neon lights of Tokyo to the serene temples of Kyoto, this trip is sure to be an unforgettable adventure.", "", "Experience beautiful Japan", 3100);
+        Destination destinationforitinerary11_1 = new Destination("Tokyo", "Japan", "");
+        Destination destinationforitinerary11_2 = new Destination("Kyoto", "Japan", "");
+        Destination destinationforitinerary11_3 = new Destination("Hiroshima", "Japan", "");
+        Destination destinationforitinerary11_4 = new Destination("Osaka", "Japan", "");
+        List<Destination> destinationsOfItinerary11 = new ArrayList<>();
+        destinationsOfItinerary11.add(destinationforitinerary11_1);
+        destinationsOfItinerary11.add(destinationforitinerary11_2);
+        destinationsOfItinerary11.add(destinationforitinerary11_3);
+        destinationsOfItinerary11.add(destinationforitinerary11_4);
+        ItineraryAndDestinations itinerary11AndDestinations = new ItineraryAndDestinations(itinerary11, destinationsOfItinerary11);
+        saveItinerary(itinerary11AndDestinations);
+
+        Itinerary itinerary12 = new Itinerary(21, "emil@test.org", "", 40, "Get ready to explore the wilds of Patagonia on this backpacking trip of a lifetime. From the soaring peaks of the Andes to the crystal clear lakes and rivers, this trip is sure to satisfy any adventurer's thirst for the great outdoors.", "", "Explore the wonders of Patagonia", 2000);
+        Destination destinationforitinerary12_1 = new Destination("Torres del Paine National Park", "Chile", "");
+        Destination destinationforitinerary12_2 = new Destination("El Chalten", "Argentina", "");
+        Destination destinationforitinerary12_3 = new Destination("Perito Moreno Glacier", "Argentina", "");
+        List<Destination> destinationsOfItinerary12 = new ArrayList<>();
+        destinationsOfItinerary12.add(destinationforitinerary12_1);
+        destinationsOfItinerary12.add(destinationforitinerary12_2);
+        destinationsOfItinerary12.add(destinationforitinerary12_3);
+        ItineraryAndDestinations itinerary12AndDestinations = new ItineraryAndDestinations(itinerary12, destinationsOfItinerary12);
+        saveItinerary(itinerary12AndDestinations);
+
+        Itinerary itinerary13 = new Itinerary(22, "tobias@test.org", "", 30, "Get ready to hit the open road on this ultimate European adventure. From the sunny beaches of Spain to the romantic canals of Venice, this trip has it all. Pack your bags, grab some snacks, and let's go!", "", "The Ultimate European Road Trip", 2800);
+        Destination destinationforitinerary13_1 = new Destination("Barcelona", "Spain", "");
+        Destination destinationforitinerary13_2 = new Destination("Nice", "France", "");
+        Destination destinationforitinerary13_3 = new Destination("Cinque Terre", "Italy", "");
+        Destination destinationforitinerary13_4 = new Destination("Venice", "Italy", "");
+        Destination destinationforitinerary13_5 = new Destination("Vienna", "Austria", "");
+        Destination destinationforitinerary13_6 = new Destination("Munich", "Germany", "");
+        Destination destinationforitinerary13_7 = new Destination("Amsterdam", "Netherlands", "");
+        List<Destination> destinationsOfItinerary13 = new ArrayList<>();
+        destinationsOfItinerary13.add(destinationforitinerary13_1);
+        destinationsOfItinerary13.add(destinationforitinerary13_2);
+        destinationsOfItinerary13.add(destinationforitinerary13_3);
+        destinationsOfItinerary13.add(destinationforitinerary13_4);
+        destinationsOfItinerary13.add(destinationforitinerary13_5);
+        destinationsOfItinerary13.add(destinationforitinerary13_6);
+        destinationsOfItinerary13.add(destinationforitinerary13_7);
+        ItineraryAndDestinations itinerary13AndDestinations = new ItineraryAndDestinations(itinerary13, destinationsOfItinerary13);
+        saveItinerary(itinerary13AndDestinations);
+
+        Itinerary itinerary14 = new Itinerary(23, "tobias@test.org", "", 35, "Embark on the adventure of a lifetime with this ultimate backpacking trip through Europe. From the art and architecture of Paris to the beaches of Barcelona, this trip has it all. Experience the best of what Europe has to offer on this unforgettable journey.", "", "Ultimate European Backpacking Adventure", 2800);
+        Destination destinationforitinerary14_1 = new Destination("Paris", "France", "");
+        Destination destinationforitinerary14_2 = new Destination("Berlin", "Germany", "");
+        Destination destinationforitinerary14_3 = new Destination("Prague", "Czech Republic", "");
+        Destination destinationforitinerary14_4 = new Destination("Vienna", "Austria", "");
+        Destination destinationforitinerary14_5 = new Destination("Rome", "Italy", "");
+        Destination destinationforitinerary14_6 = new Destination("Barcelona", "Spain", "");
+        Destination destinationforitinerary14_7 = new Destination("Amsterdam", "Netherlands", "");
+        List<Destination> destinationsOfItinerary14 = new ArrayList<>();
+        destinationsOfItinerary14.add(destinationforitinerary14_1);
+        destinationsOfItinerary14.add(destinationforitinerary14_2);
+        destinationsOfItinerary14.add(destinationforitinerary14_3);
+        destinationsOfItinerary14.add(destinationforitinerary14_4);
+        destinationsOfItinerary14.add(destinationforitinerary14_5);
+        destinationsOfItinerary14.add(destinationforitinerary14_6);
+        destinationsOfItinerary14.add(destinationforitinerary14_7);
+        ItineraryAndDestinations itinerary14AndDestinations = new ItineraryAndDestinations(itinerary14, destinationsOfItinerary14);
+        saveItinerary(itinerary14AndDestinations);
+
+        Itinerary itinerary15 = new Itinerary(24, "simen@test.org", "", 25, "Experience the vibrant culture, delicious cuisine, and stunning scenery of Southeast Asia on this epic adventure. From bustling cities to tranquil beaches, this trip has it all.", "", "Exploring Southeast Asia", 2800);
+        Destination destinationforitinerary15_1 = new Destination("Bangkok", "Thailand", "");
+        Destination destinationforitinerary15_2 = new Destination("Siem Reap", "Cambodia", "");
+        Destination destinationforitinerary15_3 = new Destination("Hanoi", "Vietnam", "");
+        Destination destinationforitinerary15_4 = new Destination("Luang Prabang", "Laos", "");
+        Destination destinationforitinerary15_5 = new Destination("Yangon", "Myanmar", "");
+        Destination destinationforitinerary15_6 = new Destination("Bali", "Indonesia", "");
+        Destination destinationforitinerary15_7 = new Destination("Singapore", "Singapore", "");
+        Destination destinationforitinerary15_8 = new Destination("Kuala Lumpur", "Malaysia", "");
+        List<Destination> destinationsOfItinerary15 = new ArrayList<>();
+        destinationsOfItinerary15.add(destinationforitinerary15_1);
+        destinationsOfItinerary15.add(destinationforitinerary15_2);
+        destinationsOfItinerary15.add(destinationforitinerary15_3);
+        destinationsOfItinerary15.add(destinationforitinerary15_4);
+        destinationsOfItinerary15.add(destinationforitinerary15_5);
+        destinationsOfItinerary15.add(destinationforitinerary15_6);
+        destinationsOfItinerary15.add(destinationforitinerary15_7);
+        destinationsOfItinerary15.add(destinationforitinerary15_8);
+        ItineraryAndDestinations itinerary15AndDestinations = new ItineraryAndDestinations(itinerary15, destinationsOfItinerary15);
+        saveItinerary(itinerary15AndDestinations);
+
+    } */
 
 
     public void saveInitialContintentsCountriesAndDestinations() throws SQLException{
