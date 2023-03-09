@@ -93,6 +93,17 @@ async function deleteUser(userId: number): Promise<void> {
     }
 }
 
+async function getUsernameByEmail(email: string): Promise<string> {
+    const response: Response = await fetch(
+        `http://localhost:8080/usernames/${email}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch username");
+    }
+    const username: string = await response.text();
+    return username;
+}
+
 async function getItineraryAndDestinationsById(
     itineraryId: number
 ): Promise<ItineraryAndDestinations> {
@@ -240,6 +251,7 @@ const httpRequests = {
     login,
     updateUser,
     deleteUser,
+    getUsernameByEmail,
     addItinerary,
     getItineraryAndDestinationsById,
     getItinerariesByUserEmail,

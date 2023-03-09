@@ -151,8 +151,7 @@ const ItineraryListBox = ({
                 httpRequests.getItineraryAndDestinationsById(
                     parseInt(itineraryId)
                 );
-            promise.then(
-                (itineraryAndDestinations: ItineraryAndDestinations) => {
+            promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
                     console.log(itineraryAndDestinations);
                     let title: HTMLElement = document.getElementById(
                         "itineraryBoxTitle"
@@ -163,9 +162,13 @@ const ItineraryListBox = ({
                         "itineraryDetailsAuthor"
                     ) as HTMLElement;
 
+                    const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(
+                            itineraryAndDestinations.itinerary.writerEmail);
+                    const username: string = await usernamePromise;
+
                     author.innerHTML =
                         "Author: " +
-                        itineraryAndDestinations.itinerary.writerEmail;
+                        username;
 
                     let duration: HTMLElement = document.getElementById(
                         "itineraryDetailsDuration"

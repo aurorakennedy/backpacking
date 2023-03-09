@@ -3,7 +3,6 @@ package group61.backpacking;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -422,7 +421,7 @@ public class ItineraryRepository {
             
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null,0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
@@ -463,6 +462,7 @@ public class ItineraryRepository {
             "FROM Itinerary_destination "+
             "JOIN Destinations "+
             "ON Itinerary_destination.destination_name = Destinations.destination_name "+
+            "AND Itinerary_destination.country = Destinations.country "+
             "WHERE Itinerary_destination.itinerary_id = ? "+
             "ORDER BY Itinerary_destination.order_number ASC;";
             statement = conn.prepareStatement(sqlQuery);
