@@ -280,6 +280,17 @@ async function addRatingOfItinerary(
     }
 }
 
+async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getrateditineraries/${userEmail}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get rated itineraries");
+    }
+    const ratedItineraries: Itinerary[] = await response.json();
+    return ratedItineraries;
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -299,6 +310,7 @@ const httpRequests = {
     getAverageRatingOfItinerary,
     getUserRatingOfItinerary,
     addRatingOfItinerary,
+    getRatedItineraries,
 };
 
 export default httpRequests;

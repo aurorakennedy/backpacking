@@ -187,6 +187,12 @@ public class BackPackingController {
         }
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getrateditineraries/{userEmail}")
+    public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
+        return itineraryRep.loadRatedItineraries(userEmail);
+    }
+
     
 
 
