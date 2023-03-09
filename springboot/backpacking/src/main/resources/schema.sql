@@ -51,7 +51,6 @@ CREATE TABLE Rating (
   user_email VARCHAR(50) NOT NULL ,
   itinerary_id INT NOT NULL,
   rating INT NOT NULL,
-  rating_comment VARCHAR(255) DEFAULT null,
   PRIMARY KEY (user_email, itinerary_id),
   CONSTRAINT fk_rating_user_email 
     FOREIGN KEY (user_email) REFERENCES User(email) 

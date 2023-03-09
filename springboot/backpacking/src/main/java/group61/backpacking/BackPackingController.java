@@ -154,16 +154,46 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
+    @GetMapping("/getlikeditineraries/{email}")
+    public List<Itinerary> getLikedItineraries(@PathVariable String email) throws SQLException {
+        return itineraryRep.loadLikedItineraries(email);
+    }
+
+    @CrossOrigin(origins = "*")
     @GetMapping("/getrecommendeditineraries/{email}")
     public List<Itinerary> getRecommendedItineraries(@PathVariable String email) throws SQLException {
         return itineraryRep.getRecommendedItineraries(email);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/getlikeditineraries/{email}")
-    public List<Itinerary> getLikedItineraries(@PathVariable String email) throws SQLException {
-        return itineraryRep.loadLikedItineraries(email);
+    @GetMapping("/averageratingofitinerary/{itineraryId}")
+    public double getItineraryAverageRating(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.getItineraryAverageRating(itineraryId);
     }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getuserratingofitinerary/{userEmail}/{itineraryId}")
+    public double getUserRatingOnItinerary(@PathVariable String userEmail, @PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.getUserRatingOnItinerary(userEmail, itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/addratingofitinerary/{userEmail}/{itineraryId}")
+    public void addRating(@PathVariable String userEmail, @PathVariable int itineraryId,  @RequestBody int rating) throws SQLException {
+        if (rating == 0) {
+            itineraryRep.deleteRating(userEmail, itineraryId);
+        } else {
+            itineraryRep.saveRating(userEmail, itineraryId, rating);
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getrateditineraries/{userEmail}")
+    public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
+        return itineraryRep.loadRatedItineraries(userEmail);
+    }
+
+    
 
 
 }

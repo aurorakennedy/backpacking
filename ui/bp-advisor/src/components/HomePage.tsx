@@ -48,6 +48,13 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         loggedInUser={loggedInUser}
                     />
                 </div>
+                <div id="ratedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"ratedItineraries"}
+                        itinerariesBasedOn={"Rated itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
             </div>
         </>
     );

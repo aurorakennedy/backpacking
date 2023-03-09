@@ -3,7 +3,6 @@ package group61.backpacking;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 @Repository
 public class ItineraryRepository {
@@ -1306,10 +1306,222 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             recommendedItineraries.addAll(holdingSet);
         }
     }
+    return recommendedItineraries;  
+    }
 
-    return recommendedItineraries;
+    public void saveRating(String userEmail, int itineraryID, int rating) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Rating(user_email, itinerary_id, rating) VALUES (?, ?, ?)";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, userEmail);
+            statement.setInt(2, itineraryID);
+            statement.setInt(3, rating);
+
+            if (hasUserRatedItinerary(userEmail, itineraryID)) {
+                deleteRating(userEmail, itineraryID);
+            }
+            statement.executeUpdate();
+            System.out.println("SAVE RATING RECIEVED IN REPO");
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
+    // Check if user already has given rating
+    private boolean hasUserRatedItinerary(String userEmail, int itineraryID) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultset = null;
+        boolean result = false;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Rating WHERE user_email = ? AND itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, userEmail);
+            statement.setInt(2, itineraryID);
+            resultset = statement.executeQuery();
+
+            if (resultset.next()) {
+                result = true;
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+
+        } finally {
+            try {
+                if (resultset != null) {
+                    resultset.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                // do nothing
+            }
+        }
+        return result;
+    }
+
+    public void deleteRating(String userEmail, int itineraryID) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Rating WHERE user_email = ? AND itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, userEmail);
+            statement.setInt(2, itineraryID);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                // do nothing
+            }
+        }
+    }
+
+    public int getUserRatingOnItinerary(String userEmail, int ItineraryID) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultset = null;
+        int rating = 0;
+
+        try {
+        conn = connectToDB();
+        String sqlQuery = "SELECT rating FROM Rating WHERE user_email = ? AND itinerary_id = ?";
+        statement = conn.prepareStatement(sqlQuery); 
+        statement.setString(1, userEmail);
+        statement.setInt(2, ItineraryID);
+        resultset = statement.executeQuery(); 
+            if (resultset.next()) {
+                rating = resultset.getInt("rating");
+            }
+        
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        finally {
+            if (resultset != null) {
+                resultset.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return rating;
+    }
+
+    public double getItineraryAverageRating(int itineraryID) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultset = null;
+        Double averageRating = 0.0;
+        int ratingCount = 0;
+        
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT rating FROM Rating WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryID);
+            resultset = statement.executeQuery();
+            
+            while (resultset.next()) {
+                averageRating += resultset.getInt("rating");
+                ratingCount++;
+            }
+            
+            if (ratingCount > 0) {
+                averageRating /= ratingCount;
+            }
+
+        } finally {
+            if (resultset != null) {
+                resultset.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        DecimalFormat df = new DecimalFormat("#.#");
+        averageRating = Double.parseDouble(df.format(averageRating));
+        
+        return averageRating;
+    }
+
+    public List<Itinerary> loadRatedItineraries(String userEmail) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> ratedItineraries = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary INNER JOIN Rating r ON (id = itinerary_id) WHERE r.user_email = ?";
+
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, userEmail);
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                ratedItineraries.add(itinerary);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        
+        return ratedItineraries;
+    }
 
 }
 
 
-}
+
