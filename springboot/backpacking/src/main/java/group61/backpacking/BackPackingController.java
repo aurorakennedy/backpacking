@@ -152,16 +152,11 @@ public class BackPackingController {
         @PathVariable int itineraryId) throws SQLException {
             return itineraryRep.likedItinerary(email, itineraryId);
     }
-    @CrossOrigin(origins = "*")
-    @PostMapping("/addrating")
-    public void addRating(@RequestBody int itineraryID, String user_email, int rating) throws SQLException {
-        itineraryRep.saveRating(user_email, itineraryID, rating);
-    }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/averagerating/{id}")
-    public double getItineraryAverageRating(@RequestBody int itineraryID) throws SQLException {
-        return itineraryRep.getItineraryAverageRating(itineraryID);
+    @GetMapping("/getlikeditineraries/{email}")
+    public List<Itinerary> getLikedItineraries(@PathVariable String email) throws SQLException {
+        return itineraryRep.loadLikedItineraries(email);
     }
 
     @CrossOrigin(origins = "*")
@@ -169,17 +164,30 @@ public class BackPackingController {
     public List<Itinerary> getRecommendedItineraries(@PathVariable String email) throws SQLException {
         return itineraryRep.getRecommendedItineraries(email);
     }
+
     @CrossOrigin(origins = "*")
-    @GetMapping("/userRatingOnItinerary/{userEmail, ItineraryId}")
-    public double getUserRatingOnItinerary(@RequestBody String userEmail, int itineraryID) throws SQLException {
-        return itineraryRep.getUserRatingOnItinerary(userEmail, itineraryID);
+    @GetMapping("/averageratingofitinerary/{itineraryId}")
+    public double getItineraryAverageRating(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.getItineraryAverageRating(itineraryId);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/getlikeditineraries/{email}")
-    public List<Itinerary> getLikedItineraries(@PathVariable String email) throws SQLException {
-        return itineraryRep.loadLikedItineraries(email);
+    @GetMapping("/getuserratingofitinerary/{userEmail}/{itineraryId}")
+    public double getUserRatingOnItinerary(@PathVariable String userEmail, @PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.getUserRatingOnItinerary(userEmail, itineraryId);
     }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/addratingofitinerary/{userEmail}/{itineraryId}")
+    public void addRating(@PathVariable String userEmail, @PathVariable int itineraryId,  @RequestBody int rating) throws SQLException {
+        if (rating == 0) {
+            itineraryRep.deleteRating(userEmail, itineraryId);
+        } else {
+            itineraryRep.saveRating(userEmail, itineraryId, rating);
+        }
+    }
+
+    
 
 
 }
