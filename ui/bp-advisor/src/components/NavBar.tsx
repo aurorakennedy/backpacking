@@ -32,6 +32,11 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
                 <img src={profilIcon} id='profilIcon' />
             </button> */}
 
+            
+            <Link to='/SearchPage'>
+                <button id='searchRoute'> Go to search</button>
+            </Link>
+
             <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
 
         </nav>
