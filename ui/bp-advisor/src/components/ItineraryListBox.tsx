@@ -386,12 +386,6 @@ const ItineraryListBox = ({
                                     id="itineraryDetailsCost"
                                     className="itineraryDetailElement"
                                 ></p>
-                                <div id="itineraryLikeButton">
-                                    <LikeButton
-                                        id={"itineraryDetailsLike"}
-                                        initialLiked={buttonLiked}
-                                    />
-                                </div>
                             </div>
                             <div id="itineraryLikeAndRatingFlexBox">
                                 <div id="itineraryLikeButton">
