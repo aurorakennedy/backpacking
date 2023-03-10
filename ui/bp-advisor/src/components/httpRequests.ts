@@ -245,6 +245,22 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
     return likedItineraries;
 }
 
+async function updateItinerary(itinerary: Itinerary): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/updateitinerary`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(itinerary),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to update itinerary");
+    }
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -262,6 +278,7 @@ const httpRequests = {
     updateLikeOnItinerary,
     itineraryIsLiked,
     getLikedItineraries,
+    updateItinerary,
 };
 
 export default httpRequests;

@@ -773,6 +773,37 @@ public class ItineraryRepository {
         return itineraryList;
     }
 
+    public void updateItinerary(Itinerary itinerary) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "UPDATE Itinerary "
+                + "SET title = ?, estimated_time = ?, itinerary_description = ?, cost = ? "
+                + "WHERE id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, itinerary.getTitle());
+            statement.setInt(2, itinerary.getEstimatedTime());
+            statement.setString(3, itinerary.getDescription());
+            statement.setDouble(4, itinerary.getCost());
+            statement.setInt(5, itinerary.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
     
 
 

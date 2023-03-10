@@ -174,5 +174,11 @@ public class BackPackingController {
         return itineraryRep.loadLikedItineraries(email);
     }
 
+    @CrossOrigin(origins = "*")
+    @PutMapping("/updateitinerary")
+    public void updateItinerary(@RequestBody Itinerary itinerary) throws SQLException {
+            itineraryRep.updateItinerary(itinerary);
+    }
+
 
 }

@@ -1,11 +1,11 @@
-import "./createNewItineraryFormStyle.css";
+import "./ItineraryFormStyle.css";
 import { Destination, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Nav from "./NavBar";
 
-type CreateNewItineraryFormProps = {
+type ItineraryFormProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
     loggedInUser: LoggedInUser;
 };
@@ -16,10 +16,19 @@ type CreateNewItineraryFormProps = {
  *
  * @returns HTML-code for a BP-Advisor login box and functions to support login.
  */
-const CreateNewItineraryForm = ({
+const ItineraryForm = ({
     loggedInUser,
     setLoggedInUser,
-}: CreateNewItineraryFormProps) => {
+}: ItineraryFormProps) => {
+
+    const { itineraryId } = useParams();
+    const { title } = useParams();
+    const { time } = useParams();
+    const { cost } = useParams();
+    const { desc } = useParams();
+
+    const [editMode] = useState(title !== undefined);
+
     // Saves a list of the destinations added
     const [destinations] = useState<Destination[]>([]);
 
@@ -104,32 +113,54 @@ const CreateNewItineraryForm = ({
             return;
         }
 
-        if (destinations.length < 1) {
+        if (!editMode && destinations.length < 1) {
             alert("You must have added at least one destination");
             return;
         }
 
-        try {
-            httpRequests.addItineraryAndDestinations({
-                itinerary: {
-                    id: -1,
-                    writerEmail: loggedInUser?.email,
+        if (!editMode) {
+            try {
+                httpRequests.addItineraryAndDestinations({
+                    itinerary: {
+                        id: -1,
+                        writerEmail: loggedInUser?.email,
+                        writtenDate: "",
+                        title: titleInputValue,
+                        cost: +priceInputValue,
+                        estimatedTime: +timeInputValue,
+                        description: descriptionInputValue,
+                        image: "",
+                    },
+                    destinations: destinations,
+                });
+                alert("Your itinerary was added successfully!");
+                window.location.reload();
+                window.location.replace("/homePage");
+            } catch (error) {
+                alert(
+                    "There was an error when trying to add the route, please try again."
+                );
+            }
+        } else if (itineraryId !== undefined) {
+            try {
+                httpRequests.updateItinerary({
+                    id: parseInt(itineraryId),
+                    writerEmail: "",
                     writtenDate: "",
                     title: titleInputValue,
                     cost: +priceInputValue,
                     estimatedTime: +timeInputValue,
                     description: descriptionInputValue,
                     image: "",
-                },
-                destinations: destinations,
-            });
-            alert("Your itinerary was added successfully!");
-            window.location.reload();
-            window.location.replace("/homePage");
-        } catch (error) {
-            alert(
-                "There was an error when trying to add the route, please try again."
-            );
+                })
+                alert("Your itinerary has been updated!");
+                window.location.reload();
+                window.location.replace("/homePage");
+            } catch (error) {
+                alert(
+                    "There was an error when trying to update the route, please try again."
+                );
+            }
         }
     }
 
@@ -138,7 +169,8 @@ const CreateNewItineraryForm = ({
             <Nav setLoggedInUser={setLoggedInUser} />
             <div id="newRouteBox">
                 <form>
-                    <h2> Add a backpacking itinerary</h2>
+                    {editMode ? <h2> Edit itinerary</h2>
+                    : <h2> Add a backpacking itinerary</h2>}
                     <Link id="cancelButton" to="/homePage">
                         Cancel
                     </Link>
@@ -151,6 +183,7 @@ const CreateNewItineraryForm = ({
                         id="titleInput"
                         type="input"
                         placeholder="   ..."
+                        defaultValue={editMode ? title : ""}
                     ></input>
                     <br></br>
                     <label
@@ -164,6 +197,7 @@ const CreateNewItineraryForm = ({
                         id="estimatedTimeInput"
                         type="input"
                         placeholder="   ..."
+                        defaultValue={editMode ? time : ""}
                     ></input>
                     <br></br>
                     <label
@@ -177,82 +211,97 @@ const CreateNewItineraryForm = ({
                         id="estimatedPriceInput"
                         type="input"
                         placeholder="   ..."
+                        defaultValue={editMode ? cost : ""}
                     ></input>
                     <br></br>
                     <label className="newRouteLabel" id="descriptionInputLabel">
                         {" "}
                         Description{" "}
                     </label>
-                    <textarea
-                        className="newRouteInput"
-                        id="descriptionInput"
-                        placeholder="   ..."
-                    ></textarea>
-                    <br></br>
-                    <br></br>
-                    <label className="newRouteLabel" id="destinationInputLabel">
-                        Add destination to itinerary
-                    </label>
-                    <br></br>
-                    <div id="destinationInputBox">
-                        <div>
-                            <label
-                                className="newRouteLabel"
-                                id="destinationNameInputLabel"
-                            >
-                                Destination name
-                            </label>
-                            <input
-                                className="newRouteInput"
-                                id="destinationNameInput"
-                                type="input"
-                                placeholder="   ..."
-                            ></input>
-                        </div>
-                        <div>
-                            <label
-                                className="newRouteLabel"
-                                id="countryInputLabel"
-                            >
-                                Country of destination
-                            </label>
-                            <input
-                                className="newRouteInput"
-                                id="countryInput"
-                                type="input"
-                                placeholder="   ..."
-                            ></input>
-                        </div>
-                    </div>
-                    <br></br>
-                    <button
-                        id="addDestinationButton"
-                        onClick={handleAddDestination}
-                        type="button"
-                    >
-                        {" "}
-                        Add destination
-                    </button>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div id="destinationsAsHTML">
-                        <p id="destinationsAsHTMLTitle">Destinations added:</p>
+                        <textarea
+                            className="newRouteInput"
+                            id="descriptionInput"
+                            placeholder="   ..."
+                            defaultValue={editMode ? desc : ""}
+                        ></textarea>
                         <br></br>
                         <br></br>
-                    </div>
-                    <button
-                        id="submitItineraryButton"
-                        onClick={submitDestinationInfo}
-                        type="button"
-                    >
-                        {" "}
-                        Add route
-                    </button>
+                    {editMode ? null : <div>
+                        <label className="newRouteLabel" id="destinationInputLabel">
+                            Add destination to itinerary
+                        </label>
+                        <br></br>
+                        <div id="destinationInputBox">
+                            <div>
+                                <label
+                                    className="newRouteLabel"
+                                    id="destinationNameInputLabel"
+                                >
+                                    Destination name
+                                </label>
+                                <input
+                                    className="newRouteInput"
+                                    id="destinationNameInput"
+                                    type="input"
+                                    placeholder="   ..."
+                                ></input>
+                            </div>
+                            <div>
+                                <label
+                                    className="newRouteLabel"
+                                    id="countryInputLabel"
+                                >
+                                    Country of destination
+                                </label>
+                                <input
+                                    className="newRouteInput"
+                                    id="countryInput"
+                                    type="input"
+                                    placeholder="   ..."
+                                ></input>
+                            </div>
+                        </div>
+                        <br></br>
+                        <button
+                            id="addDestinationButton"
+                            onClick={handleAddDestination}
+                            type="button"
+                        >
+                            {" "}
+                            Add destination
+                        </button>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div id="destinationsAsHTML">
+                            <p id="destinationsAsHTMLTitle">Destinations added:</p>
+                            <br></br>
+                            <br></br>
+                        </div>
+                    </div>}
+                    {editMode ? 
+                        <button
+                            id="submitItineraryButton"
+                            onClick={submitDestinationInfo}
+                            type="button"
+                        >
+                            {" "}
+                            Update itinerary
+                        </button>
+                        :
+                        <button
+                            id="submitItineraryButton"
+                            onClick={submitDestinationInfo}
+                            type="button"
+                        >
+                            {" "}
+                            Add route
+                        </button>
+                    }
                 </form>
             </div>
         </>
     );
 };
 
-export default CreateNewItineraryForm;
+export default ItineraryForm;
