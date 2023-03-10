@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
 import CreateNewItineraryForm from "./components/CreateNewItineraryForm";
+import SearchPageBox from "./components/SearchPage";
 
 function App() {
     // Keeps track of the logged in user.
@@ -62,6 +63,15 @@ function App() {
                                 }
                             />
                             <Route
+                                path="/SearchPage"
+                                element={
+                                    <SearchPageBox
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}
+                                    />
+                                }
+                            />
+                            <Route
                                 path="/createItinerary"
                                 element={
                                     <CreateNewItineraryForm
@@ -86,6 +96,7 @@ function App() {
                                 <SignUpBox setLoggedInUser={setLoggedInUser} />
                             }
                         />
+                        
                         <Route
                             path="/logIn"
                             element={
