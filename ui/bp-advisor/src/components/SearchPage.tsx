@@ -32,10 +32,13 @@ const SearchPageBox = ({
             <button id='searchButton' onClick={enterKeywordInfo} type='button'> Search now</button>
             <h2>Your search results: </h2>
 
-            <ItineraryListBox
-                    itinerariesBasedOn={"loggedInUser"}
-                    loggedInUser={loggedInUser}
-                />
+            <div id="searchedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"searchedItineraries"}
+                        itinerariesBasedOn={"Searched itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+              </div>
 
         </div>
         </form>
