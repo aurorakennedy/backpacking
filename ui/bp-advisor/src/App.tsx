@@ -5,7 +5,7 @@ import LogInBox from "./components/LogInBox";
 import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
-import CreateNewItineraryForm from "./components/CreateNewItineraryForm";
+import ItineraryForm from "./components/ItineraryForm";
 
 function App() {
     // Keeps track of the logged in user.
@@ -64,10 +64,18 @@ function App() {
                             <Route
                                 path="/createItinerary"
                                 element={
-                                    <CreateNewItineraryForm
+                                    <ItineraryForm
                                         setLoggedInUser={setLoggedInUser}
-                                        loggedInUser={loggedInUser}
-                                    />
+                                        loggedInUser={loggedInUser} 
+                                 />
+                                }
+                            />
+                            <Route
+                                path={`/editItinerary/:itineraryId/:title/:time/:cost/:desc`}
+                                element={
+                                    <ItineraryForm
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}                                  />
                                 }
                             />
                         </Routes>

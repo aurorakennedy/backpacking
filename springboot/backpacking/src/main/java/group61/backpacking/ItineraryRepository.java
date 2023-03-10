@@ -11,7 +11,6 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 
 @Repository
 public class ItineraryRepository {
@@ -463,6 +462,7 @@ public class ItineraryRepository {
             "FROM Itinerary_destination "+
             "JOIN Destinations "+
             "ON Itinerary_destination.destination_name = Destinations.destination_name "+
+            "AND Itinerary_destination.country = Destinations.country "+
             "WHERE Itinerary_destination.itinerary_id = ? "+
             "ORDER BY Itinerary_destination.order_number ASC;";
             statement = conn.prepareStatement(sqlQuery);
@@ -771,6 +771,37 @@ public class ItineraryRepository {
         }
 
         return itineraryList;
+    }
+
+    public void updateItinerary(Itinerary itinerary) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "UPDATE Itinerary "
+                + "SET title = ?, estimated_time = ?, itinerary_description = ?, cost = ? "
+                + "WHERE id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, itinerary.getTitle());
+            statement.setInt(2, itinerary.getEstimatedTime());
+            statement.setString(3, itinerary.getDescription());
+            statement.setDouble(4, itinerary.getCost());
+            statement.setInt(5, itinerary.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
     }
 
     

@@ -91,6 +91,17 @@ async function deleteUser(userId: number): Promise<void> {
     }
 }
 
+async function getUsernameByEmail(email: string): Promise<string> {
+    const response: Response = await fetch(
+        `http://localhost:8080/usernames/${email}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch username");
+    }
+    const username: string = await response.text();
+    return username;
+}
+
 async function getItineraryAndDestinationsById(
     itineraryId: number
 ): Promise<ItineraryAndDestinations> {
@@ -232,6 +243,22 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
     return likedItineraries;
 }
 
+async function updateItinerary(itinerary: Itinerary): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/updateitinerary`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(itinerary),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to update itinerary");
+    }
+}
+
 async function getAverageRatingOfItinerary(
     itineraryId: number
 ): Promise<number> {
@@ -268,11 +295,11 @@ async function addRatingOfItinerary(
     const response: Response = await fetch(
         `http://localhost:8080/addratingofitinerary/${userEmail}/${itineraryId}`,
         {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(rating),
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rating),
         }
     );
     if (!response.ok) {
@@ -297,6 +324,7 @@ const httpRequests = {
     login,
     updateUser,
     deleteUser,
+    getUsernameByEmail,
     addItinerary,
     getItineraryAndDestinationsById,
     getItinerariesByUserEmail,
@@ -307,6 +335,7 @@ const httpRequests = {
     updateLikeOnItinerary,
     itineraryIsLiked,
     getLikedItineraries,
+    updateItinerary,
     getAverageRatingOfItinerary,
     getUserRatingOfItinerary,
     addRatingOfItinerary,
