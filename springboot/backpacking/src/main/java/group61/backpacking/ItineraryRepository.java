@@ -509,7 +509,7 @@ public class ItineraryRepository {
             }
 
         } catch (SQLException exception) {
-            System.out.println("Errorin search");  
+            System.out.println("Error in search");  
         }
             
         }
