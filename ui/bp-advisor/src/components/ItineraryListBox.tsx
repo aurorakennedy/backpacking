@@ -11,8 +11,12 @@ type ItineraryListBoxProps = {
     itinerariesBasedOn:
         | "Your itineraries"
         | "Recommended itineraries"
-        | "Liked itineraries";
+        | "Liked itineraries"
+        | "Searched itineraries";
     loggedInUser: LoggedInUser;
+
+    //added keyword
+    keyword: string;
 };
 
 /**
@@ -28,6 +32,9 @@ const ItineraryListBox = ({
     itinerariesBasedOn,
     loggedInUser,
     idOfWrappingDiv,
+
+    //10th March: added keyword 
+    keyword,
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] =
         useState<Boolean>(false);
@@ -78,7 +85,26 @@ const ItineraryListBox = ({
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
+
+            //March 10th: Added another searched itineraries
+            //Need help here. I think it messed up all ItineraryListBox
+        }else if (itinerariesBasedOn === "Searched itineraries") {
+            try {
+                
+                const promise: Promise<Itinerary[]> =
+                    httpRequests.searchByKeyword(keyword);
+                    //Takes in keyword string
+
+                promise.then((searchedItineraries: Itinerary[]) => {
+                    displayItineraries(searchedItineraries, itinerariesBasedOn);
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         }
+    
+    
+        //10th march, marisa, adding another paranthesis
     }
 
     function displayItineraries(

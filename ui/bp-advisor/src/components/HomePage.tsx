@@ -32,6 +32,9 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"userItineraries"}
                         itinerariesBasedOn={"Your itineraries"}
                         loggedInUser={loggedInUser}
+                        
+                        //what if i want nothing
+                        keyword={""}
                     />
                 </div>
                 <div id="recommendedItineraries">
@@ -39,6 +42,9 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"recommendedItineraries"}
                         itinerariesBasedOn={"Recommended itineraries"}
                         loggedInUser={loggedInUser}
+
+                        //added this
+                        keyword={""}
                     />
                 </div>
                 <div id="likedItineraries">
@@ -46,6 +52,9 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"likedItineraries"}
                         itinerariesBasedOn={"Liked itineraries"}
                         loggedInUser={loggedInUser}
+
+                        //added this
+                        keyword={""}
                     />
                 </div>
             </div>
