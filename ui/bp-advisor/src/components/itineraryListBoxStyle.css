@@ -89,6 +89,12 @@
     margin-top: 40px;
 }
 
+#closeAndDeleteColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 #itineraryBoxCloseButton {
     text-decoration: underline;
     color: dodgerblue;
@@ -120,4 +126,7 @@
 #averageRating {
     margin-top: 20px;
     font-size: 13px;
+}
+
+#itineraryDeleteButton {
 }

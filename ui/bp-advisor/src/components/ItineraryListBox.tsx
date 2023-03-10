@@ -5,8 +5,8 @@ import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
-import ItineraryDelete from "./DeleteItinerary";
 import RatingBar from "./RatingBar";
+import DeleteItinerary from "./DeleteItinerary";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -271,7 +271,7 @@ const ItineraryListBox = ({
                     updateAverageRating(itineraryId);
 
                        //  Aurora -- FEIL??
-                    let deleteItineraryButton: HTMLButtonElement =
+                    /* let deleteItineraryButton: HTMLButtonElement =
                     document.getElementById('itineraryDeleteButton') as HTMLButtonElement;
                     
                 //
@@ -284,9 +284,28 @@ const ItineraryListBox = ({
                         } catch (error) {
                           alert("Could not delete itinerary");
                         }
-                      });
+                      }); */
 
                     //
+
+                    if( loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail){
+                        let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById("closeAndDeleteColumn") as HTMLDivElement;
+
+                        let deleteButtonDiv: HTMLDivElement = document.createElement("div");
+                        deleteButtonDiv.id = "itineraryDeleteButton";
+                        
+                        let deleteButton = (
+                            <DeleteItinerary emailOfAuthor={itineraryAndDestinations.itinerary.writerEmail} titleOfItinerary={itineraryAndDestinations.itinerary.title}/>)
+                        createRoot(deleteButtonDiv).render(deleteButton);
+                        closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
+
+
+
+                    }
+
+                    
+
+
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
                         (destination) => {
@@ -421,12 +440,14 @@ const ItineraryListBox = ({
                             </div>
                             <p id="itineraryBoxDescription"></p>
                         </div>
-                        <p
-                            id="itineraryBoxCloseButton"
-                            onClick={handleExpansionClose}
-                        >
-                            Close
-                        </p>
+                        <div id="closeAndDeleteColumn">
+                            <p
+                                id="itineraryBoxCloseButton"
+                                onClick={handleExpansionClose}
+                            >
+                                Close
+                            </p>
+                        </div>
                         
                         
                     </div>

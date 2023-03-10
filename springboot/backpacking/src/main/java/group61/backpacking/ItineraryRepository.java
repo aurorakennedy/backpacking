@@ -592,9 +592,9 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "DELETE FROM Itinerary WHERE title = ? AND writer_email = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, title);
-            
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, email);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);

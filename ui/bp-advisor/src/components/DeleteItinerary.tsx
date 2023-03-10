@@ -10,46 +10,46 @@ import httpRequests from "./httpRequests";
    */
 
   interface deleteItineraryProps {
-    itinerary: Itinerary;
-    loggedInUser: LoggedInUser | null;
-    onDelete: () => void;
+    emailOfAuthor: string;
+    titleOfItinerary: string;
   };
   
- const ItineraryDelete: React.FC<deleteItineraryProps> = ({ itinerary, loggedInUser, onDelete }) => {
+/**
+ * generel linje 
+ * @param itinerary hvilken type - hva det er 
+ * @returns hva den retunerer 
+ */
+ const DeleteItinerary = ({ emailOfAuthor, titleOfItinerary }: deleteItineraryProps) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const navigate = useNavigate();
   
     const handleDelete = async () => {
+      console.log("Deletion initioated");
       setLoading(true);
       try {
-        // Check if the loggedInUser is the author of the itinerary
-        if (loggedInUser && itinerary.writerEmail === loggedInUser.email) {
           // Send a request to delete the itinerary
-          await httpRequests.deletItinerary(itinerary.writerEmail, itinerary.title);
+          await httpRequests.deleteItinerary(emailOfAuthor, titleOfItinerary);
           // Call the onDelete callback to update the UI
-          onDelete();
           // Navigate back to the homepage
-          navigate("/");
-        } else {
-          alert("You are not authorized to delete this itinerary");
-        }
-      } catch (error) {
-        console.error(error);
+          /* window.location.reload(); */
+          } catch (error) {
+          console.error(error);
+          alert("Deletion unsuccessfull");
         setLoading(false);
       }
     };
   
     return (
       <div>
-        <p>Are you sure you want to delete this itinerary?</p>
-        <button onClick={handleDelete} disabled={loading}>
+{/*         <p>Are you sure you want to delete this itinerary?</p>
+ */}        <button id='slettKnapp' onClick={handleDelete} disabled={loading}>
           {loading ? "Deleting..." : "Delete"}
+          Delete 
         </button>
       </div>
     );
   };
   
-  export default ItineraryDelete;
+  export default DeleteItinerary;
 
 
 /*
