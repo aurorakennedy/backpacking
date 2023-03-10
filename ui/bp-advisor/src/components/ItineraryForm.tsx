@@ -103,6 +103,11 @@ const ItineraryForm = ({
             return;
         }
 
+        if (titleInputValue.length > 30) {
+            alert("Title can not be longer than 30 characters");
+            return;
+        }
+
         if (!/^\d+$/.test(timeInputValue) || parseInt(timeInputValue) < 1) {
             alert("Estimated duration must be a number greater than 0");
             return;
