@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 
 @Repository
@@ -35,40 +32,47 @@ public class UserRepository {
     public User saveUser(User user) throws SQLException, RuntimeException {
 
         Connection conn = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement1 = null;
+        PreparedStatement preparedStatement2 = null;
         ResultSet resultSet = null;
 
         try {
             conn = connectToDB();
 
             String sqlQueryDupUsername = "SELECT COUNT(*) FROM User WHERE username = ?";
-            preparedStatement = conn.prepareStatement(sqlQueryDupUsername);
-            preparedStatement.setString(1, user.getUsername());
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement1 = conn.prepareStatement(sqlQueryDupUsername);
+            preparedStatement1.setString(1, user.getUsername());
+            resultSet = preparedStatement1.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
                 throw new DuplicateUserException("Username " + user.getUsername() + " is already taken");
             }
 
             String sqlQuery = "INSERT INTO User (username, password, email) VALUES (?, ?, ?);";
-            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement2 = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.executeUpdate();
+            preparedStatement2.setString(1, user.getUsername());
+            preparedStatement2.setString(2, user.getPassword());
+            preparedStatement2.setString(3, user.getEmail());
+            preparedStatement2.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
-        }
-
-        try {
-            preparedStatement.close();
-            conn.close();
-        } catch (RuntimeException e) {
-            // do nothing
-        }
+        } finally {
+            if (preparedStatement1 != null) {
+                preparedStatement1.close();
+            } 
+            if (preparedStatement2 != null) {
+                preparedStatement2.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } 
 
         try {
             return loadUser(user.getEmail());
@@ -103,12 +107,16 @@ public class UserRepository {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
         return user;
     }
@@ -132,11 +140,13 @@ public class UserRepository {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         }
 
-        try {
-            preparedStatement.close();
-            conn.close();
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
     }
@@ -165,6 +175,17 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if (password.equals(user.getPassword())) {
@@ -207,14 +228,16 @@ public class UserRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            preparedStatement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if (moderator != null) {

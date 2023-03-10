@@ -3,7 +3,11 @@ package group61.backpacking;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -84,14 +88,16 @@ public class ItineraryRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
     }
@@ -126,14 +132,16 @@ public class ItineraryRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         Itinerary itineraryOutput = new Itinerary(-1, null, null, 0, null, null, null,0);
@@ -193,12 +201,16 @@ public class ItineraryRepository {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
         if(itinerary.getId() == -1){
             return true;
@@ -228,12 +240,16 @@ public class ItineraryRepository {
             throw new SQLException(e);
             // throw new UserNotFoundException("User with email " + email + " not found");
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
         if (destination2.getDestinationName() == null) {
             return true;
@@ -274,12 +290,16 @@ public class ItineraryRepository {
             // throw new UserNotFoundException("User with email " + email + " not found");
             
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if(itinerary.getId() == -1){
@@ -321,12 +341,16 @@ public class ItineraryRepository {
             // throw new UserNotFoundException("User with email " + email + " not found");
             
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         if(itinerary.getId() == -1){
@@ -354,7 +378,7 @@ public class ItineraryRepository {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(-1, null, null, -1, null, null, null,0);  // TODO: kostruktør i Itinerary
+                Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null,0);  // TODO: kostruktør i Itinerary
                 itinerary.mapItineraryFromResultSet(resultSet);
                 // TODO: Legge til destinations
                 itineraries.add(itinerary);
@@ -362,13 +386,16 @@ public class ItineraryRepository {
 
         } catch (Exception e) {
             // TODO: handle exception
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (preparedStatement != null) preparedStatement.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                // handle exception
+        }         
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
             }
         }
         return itineraries;
@@ -408,12 +435,16 @@ public class ItineraryRepository {
             // throw new UserNotFoundException("User with email " + email + " not found");
             
         }
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         return itineraryList;
@@ -451,6 +482,17 @@ public class ItineraryRepository {
             System.out.println("Error in loadItinerary   1");
             throw new SQLException(e);
         }
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
         System.out.println(destinationList.size());
         return destinationList;
 
@@ -471,10 +513,12 @@ public class ItineraryRepository {
     }
 
 
-    public List<Itinerary> searchByKeyword(String keyword) {
+    public List<Itinerary> searchByKeyword(String keyword) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
         ResultSet resultSet = null;
+        ResultSet resultSet2 = null;
         List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
         try  {
@@ -491,31 +535,39 @@ public class ItineraryRepository {
                 itineraryList.add(itinerary);
             }
             
-        } catch (SQLException e) {
-            System.out.println("Error in search");  
-        
-        try {
-            conn = connectToDB();
-            String sqlQuery ="SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
+            String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id) "
             + "WHERE destination_name LIKE '%' || :keyword || '%' "
             + "OR country LIKE '%' || :keyword || '%'";
-            statement = conn.prepareStatement(sqlQuery);
-            resultSet = statement.executeQuery();
+            statement2 = conn.prepareStatement(sqlQuery2);
+            resultSet2 = statement.executeQuery();
             
-            while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null, 0);
-                itinerary.mapItineraryFromResultSet(resultSet);
+            while (resultSet2.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet2);
                 itineraryList.add(itinerary);
             }
 
         } catch (SQLException exception) {
-            System.out.println("Error in search");  
+            throw new SQLException(exception);
+        }    
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (statement2 != null) {
+                statement2.close();
+            }
+            if (resultSet2 != null) {
+                resultSet2.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
-            
-        }
-        try {
-            conn.close();
-        } catch (Exception e) {}
+
         return itineraryList;
     }
 
@@ -548,14 +600,14 @@ public class ItineraryRepository {
             throw new SQLException(e);
         }
 
-        try {
-            preparedStatement.close();
-            conn.close();
-                
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
-
+            if (conn != null) {
+                conn.close();
+            }
+        }
 
     }
 
@@ -573,49 +625,55 @@ public class ItineraryRepository {
             throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
         }
 
-        try {
-            preparedStatement.close();
-            conn.close();   
-        } catch (RuntimeException e) {}
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
     }
 
 
     ///////////////////////////////////////////////////////////////////////////////////
     // Liked Itineraries
 
-    public void updateLikedItinerary(Itinerary itinerary, User user) throws SQLException {
-        if (likedItinerary(itinerary, user)) {
-            deleteLikedItinerary(itinerary, user);
+    public void updateLikedItinerary(String email, int itineraryId) throws SQLException {
+        if (likedItinerary(email, itineraryId)) {
+            deleteLikedItinerary(email, itineraryId);
         } else {
-            saveLikedItinerary(itinerary, user);
+            saveLikedItinerary(email, itineraryId);
         }
     }
 
-    private void deleteLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+    private void deleteLikedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
         try {
             conn = connectToDB();
-            String sqlQuery = "DELETE * FROM Liked_Itineraries WHERE user_email = ? AND itinerary_id = ?";
+            String sqlQuery = "DELETE FROM Liked_Itineraries WHERE user_email = ? AND itinerary_id = ?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new SQLException(e);
         }
 
-        try {
-            conn.close();
-            statement.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
     }
 
-    private void saveLikedItinerary(Itinerary itinerary, User user) throws SQLException {
+    private void saveLikedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
@@ -623,28 +681,28 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "INSERT INTO Liked_Itineraries (user_email, itinerary_id) VALUES (?, ?)";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new SQLException(e);
         } 
-
-        try {
-            conn.close();
-            statement.close();
-        } catch (SQLException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
-
     }
 
-    public boolean likedItinerary(Itinerary itinerary, User user) throws SQLException {
+    public boolean likedItinerary(String email, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        boolean result = true;
+        boolean result = false;
 
         try {
             conn = connectToDB();
@@ -652,29 +710,32 @@ public class ItineraryRepository {
             + "user_email = ? AND itinerary_id = ?";
 
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
-            statement.setInt(2, itinerary.getId());
+            statement.setString(1, email);
+            statement.setInt(2, itineraryId);
             resultSet = statement.executeQuery();
 
-            if (resultSet.next() && resultSet.getInt(1) > 0) {
-                result = false;
+            if (resultSet.next()) {
+                result = true;
             }
 
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
         return result;
     }
 
-    public List<Itinerary> loadLikedItineraries(User user) throws SQLException {
+    public List<Itinerary> loadLikedItineraries(String email) throws SQLException {
 
         Connection conn = null;
         PreparedStatement statement = null;
@@ -685,11 +746,11 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "SELECT * FROM Itinerary INNER JOIN Liked_Itineraries ON (id = itinerary_id) WHERE user_email = ?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, user.getEmail());
+            statement.setString(1, email);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null,0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
             }
@@ -697,13 +758,16 @@ public class ItineraryRepository {
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-
-        try {
-            conn.close();
-            statement.close();
-            resultSet.close();
-        } catch (Exception e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
         return itineraryList;
@@ -738,14 +802,16 @@ public class ItineraryRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
     }
@@ -777,14 +843,16 @@ public class ItineraryRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
     }
 
@@ -807,14 +875,16 @@ public class ItineraryRepository {
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
             // already exists");
         }
-
-        try {
-            resultSet.close();
-            statement.close();
-            conn.close();
-
-        } catch (RuntimeException e) {
-            // do nothing
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
 
     }
@@ -1062,59 +1132,184 @@ public class ItineraryRepository {
 
     }
 
-   
-
-    
-
-
-        try  {
-            conn = connectToDB();
-            String sqlQuery = "SELECT * FROM Itinerary WHERE "
-            + "title LIKE '%' || :keyword || '%' "
-            + "OR description LIKE '%' || :keyword || '%'";
-            statement = conn.prepareStatement(sqlQuery);
-            resultSet = statement.executeQuery();
-            
-            while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null,0);
-                itinerary.mapItineraryFromResultSet(resultSet);
-                itineraryList.add(itinerary);
-            }
-            
-        } catch (SQLException e) {
-            System.out.println("Error in search");  
-        
-        try {
-            conn = connectToDB();
-            String sqlQuery ="SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
-            + "WHERE destination_name LIKE '%' || :keyword || '%' "
-            + "OR country LIKE '%' || :keyword || '%'";
-            statement = conn.prepareStatement(sqlQuery);
-            resultSet = statement.executeQuery();
-            
-            while (resultSet.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, (Integer) null, null, null, null);
-                itinerary.mapItineraryFromResultSet(resultSet);
-                itineraryList.add(itinerary);
-            }
-
-        } catch (SQLException exception) {
-            System.out.println("Errorin search");  
-        }
-            
-        }
-        try {
-            conn.close();
-        } catch (Exception e) {}
-        return itineraryList;
-    }
     //Combined SQL
        //     "SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id)"
         //   + "WHERE destination_name LIKE '%' || :keyword || '%' "
          //   + "OR country LIKE '%' || :keyword || '%'"
          // + "OR title LIKE '%' || :keyword || '%' "
           //  + "OR description LIKE '%' || :keyword || '%'";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Recommended itineraries
+
+public List<Integer> getLikedOrRatedItineraries(String userEmail) throws SQLException {
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Integer> itineraryIDs = new ArrayList<>();
+
+    try{ 
+        conn = connectToDB();
+        String sqlQuery = "SELECT itinerary_id FROM Rating WHERE user_email = ? AND rating > 3 " +
+        "UNION SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?";
+        statement = conn.prepareStatement(sqlQuery);
+
+        statement.setString(1, userEmail);
+        statement.setString(2, userEmail);
+
+        resultset = statement.executeQuery();
+        while (resultset.next()) {
+            int itineraryID = resultset.getInt("itinerary_id");
+            itineraryIDs.add(itineraryID);
+        }
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    }
+    finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+
+    return itineraryIDs;
+}
+
+public List<Itinerary> getRandomItineraries(int numberOfItineraries, String userEmail) throws SQLException {
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Itinerary> itineraries = new ArrayList<>();
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "SELECT * FROM Itinerary WHERE "
+        + "id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Rating WHERE user_email = ?) "
+        + "AND id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?) "
+        + "ORDER BY RANDOM() LIMIT " + numberOfItineraries;
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setString(1, userEmail);
+        statement.setString(2, userEmail);
+        statement.setString(3, userEmail);
+
+        resultset = statement.executeQuery();
+
+        while (resultset.next()) {
+            Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+            itinerary.mapItineraryFromResultSet(resultset);
+            itineraries.add(itinerary);
+        }
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    return itineraries;
 }
 
 
+public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLException {
+    
+    Connection conn = null;
+    PreparedStatement statement = null;
+    ResultSet resultset = null;
+    List<Integer> likedOrRatedItineraryIDs = getLikedOrRatedItineraries(userEmail); // get liked/rated itineraries by user
+    List<Itinerary> recommendedItineraries = new ArrayList<>();
 
+    
+    if (likedOrRatedItineraryIDs.isEmpty()) {
+        // if user has not liked or rated any itineraries, return ten random itineraries
+        return getRandomItineraries(10, userEmail);
+    }
+
+    String sqlQuery = "SELECT DISTINCT i.id, i.title, i. writer_email, i.written_date, i.estimated_time, i.itinerary_description, i.image, i.cost, COUNT(*) AS num_common_destinations "
+                + "FROM Itinerary_Destination id1 "
+                + "JOIN Itinerary_Destination id2 ON id1.destination_name = id2.destination_name AND id1.country = id2.country "
+                + "JOIN Itinerary i ON id2.itinerary_id = i.id "
+                + "WHERE id1.itinerary_id IN (" + String.join(",", Collections.nCopies(likedOrRatedItineraryIDs.size(), "?")) + ") "
+                + "AND id2.itinerary_id NOT IN (" + String.join(",", Collections.nCopies(likedOrRatedItineraryIDs.size(), "?")) + ") "
+                + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Rating WHERE user_email = ?) "
+                + "AND id2.itinerary_id NOT IN (SELECT itinerary_id FROM Liked_Itineraries WHERE user_email = ?) "
+                + "AND id2.itinerary_id NOT IN (SELECT id FROM Itinerary WHERE writer_email = ?) "
+                + "GROUP BY i.id "
+                + "HAVING COUNT(*) >= 1 "
+                + "ORDER BY num_common_destinations DESC "
+                + "LIMIT 10";
+
+    try {
+        conn = connectToDB();
+        statement = conn.prepareStatement(sqlQuery);
+
+        // set parameters for liked/rated itinerary IDs
+        for (int i = 0; i < likedOrRatedItineraryIDs.size(); i++) {
+            statement.setInt(i + 1, likedOrRatedItineraryIDs.get(i));
+        }
+        // set parameters for exclusion of liked/rated itinerary IDs
+        for (int i = 0; i < likedOrRatedItineraryIDs.size(); i++) {
+            statement.setInt(i + likedOrRatedItineraryIDs.size() + 1, likedOrRatedItineraryIDs.get(i));
+        }
+        // set user email parameter for exclusion of rated itineraries
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 1, userEmail);
+        // set user email parameter for exclusion of liked itineraries
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 2, userEmail);
+        statement.setString(2 * likedOrRatedItineraryIDs.size() + 3, userEmail);
+
+        resultset = statement.executeQuery();
+
+        while (resultset.next()) {
+            Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+            itinerary.mapItineraryFromResultSet(resultset);
+            recommendedItineraries.add(itinerary);
+        }
+
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } 
+
+    finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (resultset != null) {
+            resultset.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+
+    if(recommendedItineraries.isEmpty()) {
+        recommendedItineraries = getRandomItineraries(10, userEmail);
+    } else if (recommendedItineraries.size() < 10) {
+        Set<Itinerary> holdingSet = new HashSet<>();
+        holdingSet.addAll(recommendedItineraries);
+        int i = 0;
+        while (holdingSet.size() < 10 && i != 5) {
+            holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+            i++;
+            recommendedItineraries.clear();
+            recommendedItineraries.addAll(holdingSet);
+        }
+    }
+
+    return recommendedItineraries;
+
+}
+
+
+}

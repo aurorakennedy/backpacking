@@ -2,7 +2,7 @@
     padding: 100px;
     justify-content: space-between;
     /*  background-color: rgba(255, 254, 250, 1); */
-    background-color: #FFF3E9;
+    background-color: #fff3e9;
     padding-top: 100px;
 }
 
@@ -11,14 +11,12 @@
     margin-bottom: 50px;
 }
 
-
-
 #searchBar {
     height: 40px;
-    font-family: 'Cabin Condensed';
+    font-family: "Cabin Condensed";
     font-weight: 40;
     font-size: 25px;
-    color: #4B4B4B;
+    color: #4b4b4b;
     border-radius: 10px;
     border: none;
     width: 700px;
@@ -26,4 +24,11 @@
 
 #searchBar::placeholder {
     text-align: center;
+}
+
+#userItineraries,
+#recommendedItineraries,
+#likedItineraries {
+    display: flex;
+    flex-direction: row;
 }

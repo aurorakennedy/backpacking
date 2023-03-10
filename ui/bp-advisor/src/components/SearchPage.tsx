@@ -51,16 +51,15 @@ async function enterKeywordInfo(): Promise<React.MouseEventHandler<HTMLButtonEle
   const keywordInputValue: string = (document.getElementById('keywordInput') as HTMLInputElement).value;
 
   if ((keywordInputValue.includes(".") && keywordInputValue.includes("@"))) {
-    alert('The keyword is invalid.')
-    return;
+      alert('The keyword is invalid.')
+      return;
   }
    
-  try {
-    console.log(keywordInputValue);
-
-    const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
-    promise.then((itineraries: Itinerary[]) => {
-  //  ItineraryListBox.displayItineraries(itinerariesOfUser, itinerariesBasedOn);
+    try {
+      console.log(keywordInputValue);
+      const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
+      promise.then((itineraries: Itinerary[]) => {
+      ItineraryListBox.displayItineraries(itinerariesOfUser, itinerariesBasedOn);
   });
     } catch (error) {
     //TODO: Error handling

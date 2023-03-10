@@ -15,20 +15,39 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
             <NavBar setLoggedInUser={setLoggedInUser} />
             {/*  <ViewItineraryBox destinations={["Trondheim", "Bergen"]} /> */}
             <div id="homePage">
-                <div id="search">
+                {/* <div id="search">
                     <input
                         id="searchBar"
                         type="text"
-                        placeholder="Where do you want to travel?" /* onChange={} */
+                        placeholder="Where do you want to travel?" onChange={}
+                    />
+                </div> */}
+
+                <br></br>
+                <br></br>
+                <br></br>
+
+                <div id="userItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"userItineraries"}
+                        itinerariesBasedOn={"Your itineraries"}
+                        loggedInUser={loggedInUser}
                     />
                 </div>
-
-                <h2>Your routes</h2>
-
-                <ItineraryListBox
-                    itinerariesBasedOn={"loggedInUser"}
-                    loggedInUser={loggedInUser}
-                />
+                <div id="recommendedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"recommendedItineraries"}
+                        itinerariesBasedOn={"Recommended itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
+                <div id="likedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"likedItineraries"}
+                        itinerariesBasedOn={"Liked itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
             </div>
         </>
     );
