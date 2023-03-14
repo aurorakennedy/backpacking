@@ -1,15 +1,8 @@
 package group61.backpacking;
 
-import java.io.InputStream;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.util.List;
 
-import javax.print.attribute.standard.Destination;
-
-import jakarta.websocket.Decoder.BinaryStream;
 
 public class Itinerary {
     

@@ -1,20 +1,9 @@
 package group61.backpacking;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.io.InputStream;
 import java.sql.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class Playground {
 
@@ -71,8 +60,8 @@ public class Playground {
 
     public void saveDestination(String destName, String country, String destDescription) throws SQLException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
 
         try {
 
@@ -93,8 +82,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -105,8 +94,8 @@ public class Playground {
 
     public void saveCountry(String countryName, String continent) throws SQLException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
 
         try {
             saveContinent(continent);
@@ -132,8 +121,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -143,8 +132,8 @@ public class Playground {
 
     public void saveContinent(String continent) throws SQLException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
         try {
 
             conn = connectToDB();
@@ -162,8 +151,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -175,15 +164,15 @@ public class Playground {
     public Date getDate() {
         // find out how to get current date
 
-        return new Date(2020, 12, 12);
+        return new Date(10000);
 
     }
 
     public void saveItineraryAndDestinations(User user, String title, String destination, String country, Integer order,
             Itinerary itinerary) throws SQLException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
 
         try {
             saveDestination(destination, country, null);
@@ -212,8 +201,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -343,8 +332,8 @@ public class Playground {
     public void saveItinerary(User user, String estimatedTime, String description, String image, String title,
             List<String> destinationsList, List<String> countryList, double cost) throws SQLException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
 
         try {
             if (validateItinerary(title, user.getEmail()) == false) {
@@ -371,8 +360,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -401,8 +390,8 @@ public class Playground {
 
     public User saveUser(User user) throws SQLException, RuntimeException {
         Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+        //Statement statement = null;
+        //ResultSet resultSet = null;
         try {
 
             conn = connectToDB();
@@ -421,8 +410,8 @@ public class Playground {
         }
 
         try {
-            resultSet.close();
-            statement.close();
+            //resultSet.close();
+            //statement.close();
             conn.close();
 
         } catch (RuntimeException e) {
@@ -633,22 +622,26 @@ public class Playground {
         return itinerary_destinationList;
     }
 
-
+    public String formatInput(String input) {
+        // every input should have capital letter at the beginning and the rest lower case
+        String formattedInput = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+        return formattedInput;
+    }
     
 
 
 
     public static void main(String[] args) throws SQLException, RuntimeException {
-        Playground t = new Playground();
+        //Playground t = new Playground();
         // t.doStuff();
-        User user = new User("tobbtest1@test.com", "test111", "tet3979w4");
+        //User user = new User("tobbtest1@test.com", "test111", "tet3979w4");
         //t.saveUser(user);
 
         // test itinerarystuff below: //////////////////////////////////////
-        List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
-        List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
+        //List<String> destinationsList = Arrays.asList("Oslo", "Singapore", "Trondheim");
+        //List<String> countryList = Arrays.asList("Spain", "Singapore", "Norway");
         
-        t.saveUser(user);
+        
 
         //t.saveItinerary(user, "11.2", "a cool trip", null, "t6", destinationsList, countryList, 200.0);
         

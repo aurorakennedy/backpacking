@@ -1,17 +1,18 @@
-#travelRouteDiv {
+.expandableItineraryList {
     width: 1000px;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-left: 50px;
     margin-right: 50px;
     padding: 20px;
-    overflow: auto;
-    white-space: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .itinerarySummaryDiv {
-    display: inline-block;
+    flex: 0 0 auto;
+    margin-right: 14px;
     text-align: center;
-    margin: 14px;
     text-decoration: none;
     cursor: pointer;
 }
@@ -22,20 +23,21 @@
 }
 
 #itineraryBox {
-    margin-top: 120px;
+    margin: auto;
     width: 70%;
-    max-width: 1200px;
+    max-width: 1000px;
     background-color: white;
     position: fixed;
-    top: 0;
-    left: 12%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 200;
     border-radius: 25px;
     display: flex;
     flex-direction: row;
     padding: 50px;
     overflow-y: scroll;
-    height: 600px;
+    max-height: calc(100vh - 120px);
     box-shadow: 0.5px 0.5px 30px gray;
 }
 
@@ -44,13 +46,17 @@
     flex-direction: column;
     max-width: 65%;
     align-items: flex-start;
-
 }
 
 #itineraryDetailsFlexBox {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+#itineraryLikeAndRatingFlexBox {
+    display: flex;
+    flex-direction: row;
 }
 
 .itineraryDetailElement {
@@ -60,21 +66,27 @@
 
 #itineraryDestinationBox {
     width: 25%;
-    background-color: #ECECEC;
+    background-color: #ececec;
     height: 600px;
     border-radius: 25px;
     margin-right: 50px;
+    overflow-y: scroll;
+    padding-bottom: 30px;
 }
 
 #itineraryBoxTitle {
     font-family: "Knewave";
-    color: #D65745;
+    color: #d65745;
     font-size: 40px;
     margin-top: 0px;
+    width: 650px;
+    text-align: left;
 }
 
 #itineraryBoxDescription {
     text-align: left;
+    width: 650px;
+    margin-top: 40px;
 }
 
 #itineraryBoxCloseButton {
@@ -87,4 +99,38 @@
     margin-top: 30px;
     margin-bottom: 30px;
     font-weight: bold;
+}
+
+.itineraryListTitles {
+    margin-top: 140px;
+    width: 100px;
+    font-size: 18px;
+    text-align: left;
+    margin-right: 10px;
+}
+
+#itineraryLikeButton {
+    display: flex;
+    justify-content: center;
+    width: 13vh;
+    height: 5vh;
+    margin-top: 1vh;
+}
+
+#editButton {
+    margin-top: 1vh;
+    float: left;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+}
+
+#averageRating {
+    margin-top: 20px;
+    font-size: 13px;
 }
