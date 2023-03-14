@@ -37,9 +37,6 @@ const ItineraryListBox = ({
         useState<Boolean>(false);
     const [buttonLiked, setButtonLiked] = useState(false);
 
-    //Aurora 
-    const [deleteButton] =
-        useState(false)
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -270,37 +267,17 @@ const ItineraryListBox = ({
 
                     updateAverageRating(itineraryId);
 
-                       //  Aurora -- FEIL??
-                    /* let deleteItineraryButton: HTMLButtonElement =
-                    document.getElementById('itineraryDeleteButton') as HTMLButtonElement;
-                    
-                //
-
-                    // aurora
-                    deleteItineraryButton.addEventListener("click", () => {
-                        try {
-                          httpRequests.deletItinerary(loggedInUser.email, itineraryAndDestinations.itinerary.title );
-                          
-                        } catch (error) {
-                          alert("Could not delete itinerary");
-                        }
-                      }); */
-
-                    //
 
                     if( loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail){
                         let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById("closeAndDeleteColumn") as HTMLDivElement;
 
                         let deleteButtonDiv: HTMLDivElement = document.createElement("div");
-                        deleteButtonDiv.id = "itineraryDeleteButton";
+                        deleteButtonDiv.id = "itineraryDeleteButtonDiv";
                         
                         let deleteButton = (
-                            <DeleteItinerary emailOfAuthor={itineraryAndDestinations.itinerary.writerEmail} titleOfItinerary={itineraryAndDestinations.itinerary.title}/>)
+                            <DeleteItinerary itineraryID={itineraryAndDestinations.itinerary.id}/>)
                         createRoot(deleteButtonDiv).render(deleteButton);
                         closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
-
-
-
                     }
 
                     

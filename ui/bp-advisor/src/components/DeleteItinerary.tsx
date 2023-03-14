@@ -1,31 +1,29 @@
 import React, { useState } from "react";
 import httpRequests from "./httpRequests";
+import "./itineraryListBoxStyle.css";
 
 
   interface deleteItineraryProps {
-    emailOfAuthor: string;
-    titleOfItinerary: string;
+    itineraryID: number;
   };
   
 /**
- * generel linje 
- * @param itinerary hvilken type - hva det er 
- * @returns hva den retunerer 
+ * Component to delete an itinerary, deltes on det itineraryID 
+ * @param itineraryID takes in the itineraryID as a number 
+ * @returns a delete button, that on click deletes a itinarary
  */
- const DeleteItinerary = ({ emailOfAuthor, titleOfItinerary }: deleteItineraryProps) => {
+ const DeleteItinerary = ({ itineraryID }: deleteItineraryProps) => {
     const [loading , setLoading ] = useState<boolean>(false);
   
     const handleDelete = async () => {
-      /* console.log("Deletion initioated"); */
+      
       const confirmed = window.confirm("Are you sure you want to delete this itinerary?");
       if(confirmed) {
         setLoading(true);
         try {
             // Send a request to delete the itinerary
-            await httpRequests.deleteItinerary(emailOfAuthor, titleOfItinerary);
-            // Call the onDelete callback to update the UI
-            // Navigate back to the homepage
-            console.log("Delete works in ITINERARY")
+            await httpRequests.deleteItinerary(itineraryID);
+            // Reloads window after deletion 
             window.location.reload(); 
             } catch (error) {
             console.error(error);
@@ -36,8 +34,7 @@ import httpRequests from "./httpRequests";
   
     return (
       <div>
-{/*         <p>Are you sure you want to delete this itinerary?</p>
- */}        <button id='slettKnapp' onClick={handleDelete} disabled={loading}>
+          <button id='itineraryDeleteButton' onClick={handleDelete} disabled={loading}>
           {loading ? "Deleting..." : "Delete"}
         </button>
       </div>

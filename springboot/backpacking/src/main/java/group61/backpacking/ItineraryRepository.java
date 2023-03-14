@@ -583,7 +583,7 @@ public class ItineraryRepository {
     ///////////////////////////////////////////////////////////////////////////
     // update / delete functions
 
-    // sletting basert på tittel og email
+    // sletting basert på tittel og email 
     public void deleteItinerary_byEmail(String email, String title) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -611,6 +611,7 @@ public class ItineraryRepository {
 
     }
 
+    // Denne som brukes for sletting av Itinerarys
     public void deleteItinerary(int itineraryId) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
