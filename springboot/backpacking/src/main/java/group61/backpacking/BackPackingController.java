@@ -130,6 +130,7 @@ public class BackPackingController {
       @DeleteMapping("/deleteitinerary/{email}/{title}")
       public void deleteItinerary(@PathVariable String email, @PathVariable String title) throws RuntimeException, SQLException {
           itineraryRep.deleteItinerary_byEmail(email, title);
+          System.out.println("Delete works in CONTROLLER");
       } 
   
       // 
