@@ -5,6 +5,7 @@ import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
+import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
 import DeleteItinerary from "./DeleteItinerary";
 
@@ -37,6 +38,13 @@ const ItineraryListBox = ({
         useState<Boolean>(false);
     const [buttonLiked, setButtonLiked] = useState(false);
 
+    const [itineraryId, setItineraryId] = useState(-1);
+    const [title, setTitle] = useState('');
+    const [time, setTime] = useState(-1);
+    const [cost, setCost] = useState(-1);
+    const [desc, setDesc] = useState('');
+
+    const [sameUser, setSameUser] = useState(false);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -167,9 +175,16 @@ const ItineraryListBox = ({
                 httpRequests.getItineraryAndDestinationsById(
                     parseInt(itineraryId)
                 );
-            promise.then(
-                (itineraryAndDestinations: ItineraryAndDestinations) => {
+            promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
                     console.log(itineraryAndDestinations);
+
+                    setItineraryId(parseInt(itineraryId));
+                    setTitle(itineraryAndDestinations.itinerary.title);
+                    setTime(itineraryAndDestinations.itinerary.estimatedTime);
+                    setCost(itineraryAndDestinations.itinerary.cost);
+                    setDesc(itineraryAndDestinations.itinerary.description);
+                    
+
                     let title: HTMLElement = document.getElementById(
                         "itineraryBoxTitle"
                     ) as HTMLElement;
@@ -179,9 +194,16 @@ const ItineraryListBox = ({
                         "itineraryDetailsAuthor"
                     ) as HTMLElement;
 
+                    const email: string = itineraryAndDestinations.itinerary.writerEmail;
+
+                    const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(email);
+                    const username: string = await usernamePromise;
+
                     author.innerHTML =
                         "Author: " +
-                        itineraryAndDestinations.itinerary.writerEmail;
+                        username;
+                    
+                    setSameUser(loggedInUser.email === email);
 
                     let duration: HTMLElement = document.getElementById(
                         "itineraryDetailsDuration"
@@ -414,6 +436,17 @@ const ItineraryListBox = ({
                                         initialLiked={buttonLiked}
                                     />
                                 </div>
+                                
+                                <Link to={`/editItinerary/${itineraryId}/${title}/${time}/${cost}/${desc}`}>
+                                    <button
+                                        id="editButton"
+                                        type="button"
+                                        hidden={!sameUser}
+                                    >
+                                        {" "}
+                                        Edit
+                                    </button>
+                                </Link>
                             </div>
                             <p id="itineraryBoxDescription"></p>
                         </div>

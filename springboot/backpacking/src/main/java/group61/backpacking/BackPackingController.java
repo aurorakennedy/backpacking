@@ -3,6 +3,8 @@ package group61.backpacking;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,6 +77,13 @@ public class BackPackingController {
     @GetMapping("/users/{id}")
     public User getUserById(@RequestBody User user) throws RuntimeException, SQLException {
         return userRep.loadUser(user.getEmail());
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/usernames/{email}")
+    public ResponseEntity<String> getUsernameByEmail(@PathVariable String email) throws RuntimeException, SQLException {
+        String username = userRep.loadUser(email).getUsername();
+        return ResponseEntity.ok(username);
     }
 
     // Travel Routes/ Itinerary
@@ -196,12 +205,15 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
+    @PutMapping("/updateitinerary")
+    public void updateItinerary(@RequestBody Itinerary itinerary) throws SQLException {
+            itineraryRep.updateItinerary(itinerary);
+    }
+
+    @CrossOrigin(origins = "*")
     @GetMapping("/getrateditineraries/{userEmail}")
     public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
         return itineraryRep.loadRatedItineraries(userEmail);
     }
-
-    
-
 
 }
