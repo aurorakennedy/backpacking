@@ -117,7 +117,8 @@ public class BackPackingController {
             
     }
 
-    @GetMapping("/itineraries") 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/searchItineraries/{keyword}") 
     public List<Itinerary> search(@PathVariable String keyword) throws SQLException {
             return itineraryRep.searchByKeyword(keyword);
     }

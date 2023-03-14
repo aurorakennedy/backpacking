@@ -35,7 +35,7 @@ const SearchPageBox = ({
             <div id='search'>
                     <input id='searchBar' type='text' placeholder='Type here to search for an itinerary' /* onChange={} */ />
             </div>
-            <button id='searchButton' onClick={enterKeywordInfo(loggedInUser)} type='button'> Search now</button>
+            <button id='searchButton' onClick={(async) => enterKeywordInfo(loggedInUser)} type='button'> Search now</button>
             <h2>Your search results: </h2>
 
             {/* <div id="searchedItineraries">
@@ -59,27 +59,29 @@ const SearchPageBox = ({
 
     }
 
-async function enterKeywordInfo(loggedInUser: LoggedInUser): MouseEventHandler<HTMLButtonElement> | Promise<any> {
-  const keywordInputValue: string = (document.getElementById('keywordInput') as HTMLInputElement).value;
+async function enterKeywordInfo(loggedInUser: LoggedInUser) {
+  console.log("Function called")
+  const keywordInputValue: string = (document.getElementById('searchBar') as HTMLInputElement).value;
 
   if ((keywordInputValue.includes(".") && keywordInputValue.includes("@"))) {
       alert('The keyword is invalid.')
       return;
   }
-   
-    try {
-      console.log(keywordInputValue);
-      const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
-      promise.then((itineraries: Itinerary[]) => {
+    //window.location.reload();
+    document.getElementById('searchedItineraries')?.remove();
+      try {
+        console.log(keywordInputValue);
+        const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
+        promise.then((itineraries: Itinerary[]) => {
 
-        let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById('searchItinerariesWrapped') as HTMLDivElement;
-        let searchedItinerariesdiv = document.createElement('div');
-        searchedItinerariesdiv.id = 'searchedItineraries';
-        let searchedItinerariesListBox = (<ItineraryListBox idOfWrappingDiv={'searchedItineraries'} itinerariesBasedOn={'Searched itineraries'} loggedInUser={loggedInUser} keyword={keywordInputValue}/>);
-        createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
-        searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
-      
-        //ItineraryListBox.displayItineraries(itinerariesOfUser, itinerariesBasedOn);
+          let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById('searchItinerariesWrapped') as HTMLDivElement;
+          let searchedItinerariesdiv = document.createElement('div');
+          searchedItinerariesdiv.id = 'searchedItineraries';
+          let searchedItinerariesListBox = (<ItineraryListBox idOfWrappingDiv={'searchedItineraries'} itinerariesBasedOn={'Searched itineraries'} loggedInUser={loggedInUser} keyword={keywordInputValue}/>);
+          createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
+          searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
+        
+          //ItineraryListBox.displayItineraries(itinerariesOfUser, itinerariesBasedOn);
   });
     } catch (error) {
     //TODO: Error handling
