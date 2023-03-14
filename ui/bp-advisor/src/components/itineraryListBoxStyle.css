@@ -128,5 +128,16 @@
     font-size: 13px;
 }
 
+
 #itineraryDeleteButton {
-}
+    background-color: #d65645ac;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #itineraryDeleteButton:hover {
+    background-color: #d65745;
+  }
