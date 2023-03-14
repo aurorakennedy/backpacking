@@ -611,18 +611,19 @@ public class ItineraryRepository {
 
     }
 
-    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
+    public void deleteItinerary(int itineraryId) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+
         try {
             conn = connectToDB();
-            String sqlQuery = "DELETE FROM Itinerary WHERE itinerary_description = ?;";
+            String sqlQuery = "DELETE FROM Itinerary WHERE id = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
             
-            preparedStatement.setString(1, itinerary.getTitle());
+            preparedStatement.setInt(1, itineraryId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
+            throw new SQLException(e);  
         }
 
         finally {
