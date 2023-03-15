@@ -1844,6 +1844,30 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         conn = connectToDB();
         String sqlQuery = "DELETE FROM Itinerary_Comment WHERE id = ?";
         statement = conn.prepareStatement(sqlQuery);
+        statement.setInt(1, commentId);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    }
+
+    public void updateComment(int commentId, String comment) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "UPDATE Itinerary_Comment SET comment = ? WHERE id = ?";
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setString(1, comment);
         statement.setInt(2, commentId);
 
         statement.executeUpdate();
