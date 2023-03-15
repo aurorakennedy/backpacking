@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import org.springframework.jdbc.object.SqlQuery;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1771,6 +1772,92 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         return ratedItineraries;
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ITINERARY COMMENTS
+
+    public void saveComment(String comment, String userEmail, int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "INSERT INTO Itinerary_Comment(user_email, itinerary_id, comment) VALUES (?, ?, ?)";
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setString(1, userEmail);
+        statement.setInt(2, itineraryId);
+        statement.setString(3, comment);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    }
+
+    public List<Comment> loadItineraryComments(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Comment> commentList = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary_Comment WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Comment comment = new Comment(null, null, -1);
+                comment.mapCommentFromResultSet(resultSet);
+                commentList.add(comment);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return commentList;
+    }
+
+    public void deleteComment(int commentId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "DELETE FROM Itinerary_Comment WHERE id = ?";
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setInt(2, commentId);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    }
 }
 
 
