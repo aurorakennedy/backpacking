@@ -1,6 +1,7 @@
 import React from "react";
 import NavBar from "./NavBar";
-import { LoggedInUser } from "./types";
+import "./profilePageStyle.css";
+import { LoggedInUser, User } from "./types";
 import ItineraryListBox from "./ItineraryListBox";
 
 type ProfilePageProps = {
@@ -8,14 +9,22 @@ type ProfilePageProps = {
     loggedInUser: LoggedInUser;
 };
 
+/* const profilAvatar = require('../img/avatar_placeholder.png'); */
+
+
 const ProfilePage = ({ setLoggedInUser, loggedInUser }: ProfilePageProps) => {
     return (
-        <><NavBar setLoggedInUser={setLoggedInUser} />
+        <>
+        <NavBar setLoggedInUser={setLoggedInUser} />
         <div id="profilePage">
 
-            <br></br>
-            <br></br>
-            <br></br>
+            <div id='userInfo'  >
+                <img id='profilePicture' src={require('../img/avatar_placeholder.png')}alt="Avatar" />
+                <h2>{loggedInUser.username}'s Profile</h2>
+                <p>Email: {loggedInUser.email}</p>
+
+            </div>
+
 
             <div id="userItineraries">
                 <ItineraryListBox
@@ -23,6 +32,14 @@ const ProfilePage = ({ setLoggedInUser, loggedInUser }: ProfilePageProps) => {
                     itinerariesBasedOn={"Your itineraries"}
                     loggedInUser={loggedInUser} />
             </div>
+
+            <div id="likedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"likedItineraries"}
+                        itinerariesBasedOn={"Liked itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
         </div></>
     ) 
 };
