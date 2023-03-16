@@ -1,5 +1,6 @@
 package group61.backpacking;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,8 +144,8 @@ public class BackPackingController {
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
-    ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
-        itineraryRep.saveItinerary(itineraryAndDestinations);
+    ItineraryAndDestinations itineraryAndDestinations, @RequestBody byte[] file) throws SQLException, IOException {
+        itineraryRep.saveItinerary(itineraryAndDestinations, file);
         System.out.println(itineraryAndDestinations.getItinerary());
         System.out.println(itineraryAndDestinations.getDestinations());
     }
@@ -214,6 +215,12 @@ public class BackPackingController {
     @GetMapping("/getrateditineraries/{userEmail}")
     public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
         return itineraryRep.loadRatedItineraries(userEmail);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getitineraryimage/{itineraryId}")
+    public byte[] getItineraryImage(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.loadItineraryImage(itineraryId);
     }
 
 }

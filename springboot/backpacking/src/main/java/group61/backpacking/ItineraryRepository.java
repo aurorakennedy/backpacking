@@ -1,12 +1,16 @@
 package group61.backpacking;
 
+import org.springframework.jdbc.object.SqlQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.IOException;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -103,10 +107,13 @@ public class ItineraryRepository {
     }
 
 
-    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations, byte[] image) throws SQLException, IOException {
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
+        Connection conn2 = null;
+        PreparedStatement statement2 = null;
+        ResultSet resultSet2 = null;
         Itinerary itinerary = itineraryAndDestinations.getItinerary();
 
         try {
@@ -115,18 +122,17 @@ public class ItineraryRepository {
             }
 
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, image, title, cost ) VALUES (?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, title, cost ) VALUES (?,?,?,?,?)";
+            statement = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
-            preparedStatement.setString(1, itinerary.getWriterEmail());
-            preparedStatement.setInt(2, itinerary.getEstimatedTime());
-            preparedStatement.setString(3, itinerary.getDescription());
-            preparedStatement.setString(4, itinerary.getImage());
-            preparedStatement.setString(5, itinerary.getTitle());
-            preparedStatement.setDouble(6, itinerary.getCost());
+            statement.setString(1, itinerary.getWriterEmail());
+            statement.setInt(2, itinerary.getEstimatedTime());
+            statement.setString(3, itinerary.getDescription());
+            statement.setString(4, itinerary.getTitle());
+            statement.setDouble(5, itinerary.getCost());
 
-            preparedStatement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
@@ -163,9 +169,84 @@ public class ItineraryRepository {
             throw new SQLException(e);
         }
 
+        if (image != null) {
+
+            try {
+                conn2 = connectToDB();
+                String sqlQuery = "SELECT id FROM Itinerary WHERE writer_email = ? AND title = ?";
+                statement2 = conn2.prepareStatement(sqlQuery);
+                statement2.setString(1, itinerary.getWriterEmail());
+                statement2.setString(2, itinerary.getTitle());
+
+                resultSet2 = statement2.executeQuery();
+
+                resultSet2.next();
+                int i = resultSet2.getInt("id");
+
+                saveImageOnItinerary(image, i);
+            } catch (SQLException e) {
+                throw new SQLException(e);
+            }
+        }
+
     }
 
+    private void saveImageOnItinerary(byte[] image, int itineraryId) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement statement = null;
 
+        try {
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO Itinerary_Image (itinerary_id, data) VALUES (?,?)";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+            statement.setBytes(2, image);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
+    public byte[] loadItineraryImage(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        byte[] image = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary_Image WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                image = resultSet.getBytes("data");
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return image;
+    }
     
 
 
