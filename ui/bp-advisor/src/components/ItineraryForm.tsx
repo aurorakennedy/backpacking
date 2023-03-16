@@ -4,7 +4,6 @@ import httpRequests from "./httpRequests";
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Nav from "./NavBar";
-import { count } from "console";
 
 type ItineraryFormProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -28,6 +27,18 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
     //Saves a list of the destinations added
     const [destinations] = useState<Destination[]>([]);
+
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            setSelectedImage(event.target.files[0]);
+        }
+    };
+
+    function isJpeg(file: File): boolean {
+        return file.type === "image/jpeg";
+    }
 
     /**
      * Adds a destination type from the state
@@ -109,7 +120,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
      * Gets the information form the input fields and sends it as http-requests to the backend for saving
      * in the database.
      */
-    function submitDestinationInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+    function submitItineraryInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
         const titleInputValue: string = (document.getElementById("titleInput") as HTMLInputElement)
             .value;
         const timeInputValue: string = (
@@ -152,8 +163,21 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
             return;
         }
 
+        if (selectedImage !== null && !isJpeg(selectedImage)) {
+            alert(
+                `The uploaded image must be a JPEG file, and have one of 
+                the following file extensions: .jpeg, .jpg, .jpe, .jfif`
+            );
+            return;
+        }
+
         if (!editMode) {
             try {
+                let formData = null;
+                if (selectedImage) {
+                    formData = new FormData();
+                    formData.append("image", selectedImage);
+                }
                 httpRequests.addItineraryAndDestinations({
                     itinerary: {
                         id: -1,
@@ -166,6 +190,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                         image: "",
                     },
                     destinations: destinations,
+                    // formData: formData,
                 });
                 alert("Your itinerary was added successfully!");
                 window.location.reload();
@@ -248,6 +273,12 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                         defaultValue={editMode ? desc : ""}
                     ></textarea>
                     <br></br>
+                    <label className="newRouteLabel">Upload image</label>
+                    <input
+                        type="file"
+                        className="newRouteInput"
+                        onChange={handleImageChange}
+                    ></input>
                     <br></br>
                     {editMode ? null : (
                         <div>
@@ -301,7 +332,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                     {editMode ? (
                         <button
                             id="submitItineraryButton"
-                            onClick={submitDestinationInfo}
+                            onClick={submitItineraryInfo}
                             type="button"
                         >
                             {" "}
@@ -310,7 +341,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                     ) : (
                         <button
                             id="submitItineraryButton"
-                            onClick={submitDestinationInfo}
+                            onClick={submitItineraryInfo}
                             type="button"
                         >
                             {" "}
