@@ -208,4 +208,28 @@ public class BackPackingController {
         return itineraryRep.loadRatedItineraries(userEmail);
     }
 
+    @CrossOrigin(origins = "*")
+    @PostMapping("/addcomment/{itineraryId}")
+    public void addComment(@RequestBody String userEmail, @PathVariable int itineraryId, @RequestBody String comment) throws SQLException {
+        itineraryRep.saveComment(comment, userEmail, itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getitinerarycomments/{itineraryId}")
+    public void getItineraryComments(@PathVariable int itineraryId) throws SQLException {
+        itineraryRep.loadItineraryComments(itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/deletecomment/{commentId}")
+    public void deleteComment(@PathVariable int commentId) throws SQLException {
+        itineraryRep.deleteComment(commentId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/editcomment/{commentId}")
+    public void editComment(@PathVariable int commentId, @RequestBody String comment) throws SQLException {
+            itineraryRep.updateComment(commentId, comment);
+    }
+
 }
