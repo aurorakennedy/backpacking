@@ -26,7 +26,10 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
 
     return (
         <nav id='nav'>
-            <h1 id='logo'>BP-Advisor</h1>
+            <Link to='/homePage'>
+                <button id='logo'> BP-Advisor </button>
+            </Link>
+            {/* <h1 id='logo'>BP-Advisor</h1> */}
 
             <Link to='/createItinerary'>
                 <button id='addRoute'> + Add  new itinerary</button>
