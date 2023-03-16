@@ -34,11 +34,11 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
 
             
             <Link to='/SearchPage'>
-                <button id='searchRoute'> Go to search</button>
+                <button id='switchPages'> Search Page</button>
             </Link>
 
             <Link to='/homePage'>
-                <button id='goHome'> Go to home page</button>
+                <button id='switchPages'> Home Page</button>
             </Link>
 
             <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}

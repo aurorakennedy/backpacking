@@ -7,6 +7,7 @@ import Header from './Header';
 import ItineraryListBox from "./ItineraryListBox";
 import "./homePageStyle.css";
 import { createRoot } from 'react-dom/client';
+import './navBarStyle.css';
 
 
 
@@ -29,13 +30,13 @@ const SearchPageBox = ({
         <NavBar setLoggedInUser={setLoggedInUser} />
         <form>
         <div id='searchpage'>
-        
-
-            <h2>Search for an itinerary</h2>
+            <br></br>
+            <br></br>
+            <br></br>
             <div id='search'>
                     <input id='searchBar' type='text' placeholder='Type here to search for an itinerary' /* onChange={} */ />
             </div>
-            <button id='searchButton' onClick={(async) => enterKeywordInfo(loggedInUser)} type='button'> Search now</button>
+            <button id='searchButton' onClick={(async) => enterKeywordInfo(loggedInUser)} type='button'>Search</button>
             <h2>Your search results: </h2>
 
             {/* <div id="searchedItineraries">
@@ -80,8 +81,6 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
           let searchedItinerariesListBox = (<ItineraryListBox idOfWrappingDiv={'searchedItineraries'} itinerariesBasedOn={'Searched itineraries'} loggedInUser={loggedInUser} keyword={keywordInputValue}/>);
           createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
           searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
-        
-          //ItineraryListBox.displayItineraries(itinerariesOfUser, itinerariesBasedOn);
   });
     } catch (error) {
     //TODO: Error handling

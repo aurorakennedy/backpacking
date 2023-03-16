@@ -68,7 +68,35 @@
     margin-top: 50px;
 }
 
+#searchButton {
+    font-size: 20px;
+    position: relative;
+    font-weight: bold;
+    width: 220px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #D65745;
+    color: white;
+    cursor: pointer;
+    margin-right: 60px;
+    margin-top: 2px;
+}
 
+#switchPages {
+    font-size: 10px;
+    position: relative;
+    font-weight: bold;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: none;
+    background-color: #A1C88E;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
+    margin-top: 50px;
+}
 
 
 /* @media (max-width: 600px) {

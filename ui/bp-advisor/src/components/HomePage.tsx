@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./homePageStyle.css";
 import ItineraryListBox from "./ItineraryListBox";
 import NavBar from "./NavBar";
@@ -23,9 +24,14 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                     />
                 </div> */}
 
-                <br></br>
-                <br></br>
-                <br></br>
+                
+                
+                <div id='search'>
+                    <input id='searchBar' type='text' placeholder='Type here to search for an itinerary' /* onChange={} */ />
+                </div>
+                <Link to='/SearchPage'>
+                <button id='searchButton'> Search</button>
+                </Link>
 
                 <div id="userItineraries">
                     <ItineraryListBox

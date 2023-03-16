@@ -516,36 +516,45 @@ public class ItineraryRepository {
     public List<Itinerary> searchByKeyword(String keyword) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
-     //   PreparedStatement statement2 = null;
+        //PreparedStatement statement2 = null;
         ResultSet resultSet = null;
-       // ResultSet resultSet2 = null;
+        //ResultSet resultSet2 = null;
         List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
         try  {
             conn = connectToDB();
 
-         //   String sqlQuery = "SELECT DISTINCT * FROM Itinerary WHERE "
-         //   + "title LIKE ?"
-         //   + "OR itinerary_description LIKE ?";
-         //   statement = conn.prepareStatement(sqlQuery);
-
-            //start testing 14th march
-            String sqlQuery_test = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE"
-            + "(title LIKE ?"
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            + "title LIKE ?"
             + "OR itinerary_description LIKE ?"
             + "OR destination_name LIKE ?"
-            + "OR country LIKE ?)";
-            statement = conn.prepareStatement(sqlQuery_test);
+            + "OR country LIKE ?";
+
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, "%" + keyword + "%");
+            statement.setString(2, "%" + keyword + "%");
+            statement.setString(3, "%" + keyword + "%");
+            statement.setString(4, "%" + keyword + "%");
             
-            statement.setString(1, "'%" + keyword + "%'");
-            statement.setString(2, "'%" + keyword + "%'");
-            statement.setString(3, "'%" + keyword + "%'");
-            statement.setString(4, "'%" + keyword + "%'");
+
+            // //start testing 14th march
+            // String sqlQuery_test = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            // + "title LIKE %:keyword%"
+            // + " OR itinerary_description LIKE %keyword%"
+            // + " OR destination_name LIKE %keyword%"
+            // + " OR country LIKE %keyword%";
+            // statement = conn.prepareStatement(sqlQuery_test);
+            
+            //statement.setString(1, "'%" + keyword + "%'");
+           // statement.setString(2, "'%" + keyword + "%'");
+          //  statement.setString(3, "'%" + keyword + "%'");
+          //  statement.setString(4, "'%" + keyword + "%'");
 
             resultSet = statement.executeQuery();
             
             //end testing 14th march
 
+            
             //resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
