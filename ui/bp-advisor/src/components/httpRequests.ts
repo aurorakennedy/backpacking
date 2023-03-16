@@ -130,20 +130,30 @@ async function getItinerariesByUserEmail(
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
-    const response: Response = await fetch(
-        "http://localhost:8080/additinerary",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(itinerary),
-        }
-    );
-    if (!response.ok) {
-        throw new Error("Failed to add itinerary");
-    }
+  const response: Response = await fetch("http://localhost:8080/itinerary", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(itinerary),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to add itinerary");
+  }
 }
+
+async function deleteItinerary(itineraryID: number): Promise<void> {
+    const response: Response = await fetch(`http://localhost:8080/deleteitinerary/${itineraryID}`, {
+
+      method: "DELETE"
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete itinerary");
+    }
+  }
+  
+  
+  // 
 
 async function getItineraryDestinations(
     itineraryID: number
@@ -326,6 +336,7 @@ const httpRequests = {
     deleteUser,
     getUsernameByEmail,
     addItinerary,
+    deleteItinerary,
     getItineraryAndDestinationsById,
     getItinerariesByUserEmail,
     getItineraryDestinations,

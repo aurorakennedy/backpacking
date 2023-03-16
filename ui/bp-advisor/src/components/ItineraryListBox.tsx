@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
+import DeleteItinerary from "./DeleteItinerary";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -167,7 +168,7 @@ const ItineraryListBox = ({
      * @param itineraryId A string, the id of the itinerary to show
      */
     async function handleExpansionOpen(
-        itineraryId: string
+        itineraryId: string,
     ): Promise<React.MouseEventHandler<HTMLElement> | any> {
         try {
             const promise: Promise<ItineraryAndDestinations> =
@@ -237,6 +238,7 @@ const ItineraryListBox = ({
                         "itineraryDetailsLike"
                     ) as HTMLButtonElement;
 
+
                     try {
                         const getLikePromise: Promise<boolean> =
                             httpRequests.itineraryIsLiked(
@@ -249,6 +251,7 @@ const ItineraryListBox = ({
                     } catch (error) {
                         alert("Could not get like state");
                     }
+                
 
                     likeButton.addEventListener("click", () => {
                         try {
@@ -285,6 +288,22 @@ const ItineraryListBox = ({
                     );
 
                     updateAverageRating(itineraryId);
+
+
+                    if( loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail){
+                        let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById("closeAndDeleteColumn") as HTMLDivElement;
+
+                        let deleteButtonDiv: HTMLDivElement = document.createElement("div");
+                        deleteButtonDiv.id = "itineraryDeleteButtonDiv";
+                        
+                        let deleteButton = (
+                            <DeleteItinerary itineraryID={itineraryAndDestinations.itinerary.id}/>)
+                        createRoot(deleteButtonDiv).render(deleteButton);
+                        closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
+                    }
+
+                    
+
 
                     let counterOfDestinations: number = 0;
                     itineraryAndDestinations.destinations.forEach(
@@ -431,12 +450,16 @@ const ItineraryListBox = ({
                             </div>
                             <p id="itineraryBoxDescription"></p>
                         </div>
-                        <p
-                            id="itineraryBoxCloseButton"
-                            onClick={handleExpansionClose}
-                        >
-                            Close
-                        </p>
+                        <div id="closeAndDeleteColumn">
+                            <p
+                                id="itineraryBoxCloseButton"
+                                onClick={handleExpansionClose}
+                            >
+                                Close
+                            </p>
+                        </div>
+                        
+                        
                     </div>
                 </>
             )}

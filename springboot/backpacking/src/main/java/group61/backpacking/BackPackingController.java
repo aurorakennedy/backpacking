@@ -132,6 +132,14 @@ public class BackPackingController {
     }
 
 
+
+      @CrossOrigin(origins = "*")
+      @DeleteMapping("/deleteitinerary/{itineraryId}")
+      public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
+          itineraryRep.deleteItinerary(itineraryId);
+      } 
+  
+    
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
