@@ -26,7 +26,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
     const [editMode] = useState(title !== undefined);
 
-    // Saves a list of the destinations added
+    //Saves a list of the destinations added
     const [destinations] = useState<Destination[]>([]);
 
     /**
