@@ -1,14 +1,7 @@
-import {
-    Itinerary,
-    ItineraryAndDestinations,
-    ItineraryDestination,
-    User,
-} from "./types";
+import { Itinerary, ItineraryAndDestinations, ItineraryDestination, User } from "./types";
 
 async function getUser(userId: number): Promise<User> {
-    const response: Response = await fetch(
-        `http://localhost:8080/users/${userId}`
-    );
+    const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
     if (!response.ok) {
         throw new Error("Failed to fetch user");
     }
@@ -64,37 +57,29 @@ async function login(user: User): Promise<User> {
 }
 
 async function updateUser(userId: number, user: User): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/users/${userId}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        }
-    );
+    const response: Response = await fetch(`http://localhost:8080/users/${userId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
     if (!response.ok) {
         throw new Error("Failed to update user");
     }
 }
 
 async function deleteUser(userId: number): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/users/${userId}`,
-        {
-            method: "DELETE",
-        }
-    );
+    const response: Response = await fetch(`http://localhost:8080/users/${userId}`, {
+        method: "DELETE",
+    });
     if (!response.ok) {
         throw new Error("Failed to delete user");
     }
 }
 
 async function getUsernameByEmail(email: string): Promise<string> {
-    const response: Response = await fetch(
-        `http://localhost:8080/usernames/${email}`
-    );
+    const response: Response = await fetch(`http://localhost:8080/usernames/${email}`);
     if (!response.ok) {
         throw new Error("Failed to fetch username");
     }
@@ -111,17 +96,12 @@ async function getItineraryAndDestinationsById(
     if (!response.ok) {
         throw new Error("Failed to fetch itinerary");
     }
-    const itineraryAndDestinations: ItineraryAndDestinations =
-        await response.json();
+    const itineraryAndDestinations: ItineraryAndDestinations = await response.json();
     return itineraryAndDestinations;
 }
 
-async function getItinerariesByUserEmail(
-    userEmail: string
-): Promise<Itinerary[]> {
-    const response: Response = await fetch(
-        `http://localhost:8080/getitineraries/${userEmail}`
-    );
+async function getItinerariesByUserEmail(userEmail: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/getitineraries/${userEmail}`);
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries");
     }
@@ -130,34 +110,30 @@ async function getItinerariesByUserEmail(
 }
 
 async function addItinerary(itinerary: Itinerary): Promise<void> {
-  const response: Response = await fetch("http://localhost:8080/itinerary", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(itinerary),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to add itinerary");
-  }
+    const response: Response = await fetch("http://localhost:8080/itinerary", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itinerary),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to add itinerary");
+    }
 }
 
 async function deleteItinerary(itineraryID: number): Promise<void> {
     const response: Response = await fetch(`http://localhost:8080/deleteitinerary/${itineraryID}`, {
-
-      method: "DELETE"
+        method: "DELETE",
     });
     if (!response.ok) {
-      throw new Error("Failed to delete itinerary");
+        throw new Error("Failed to delete itinerary");
     }
-  }
-  
-  
-  // 
+}
 
-async function getItineraryDestinations(
-    itineraryID: number
-): Promise<ItineraryDestination[]> {
+//
+
+async function getItineraryDestinations(itineraryID: number): Promise<ItineraryDestination[]> {
     const response: Response = await fetch(
         `http://localhost:8080/itinerarydestinations/${itineraryID}`
     );
@@ -171,25 +147,20 @@ async function getItineraryDestinations(
 async function addItineraryAndDestinations(
     itineraryAndDestinations: ItineraryAndDestinations
 ): Promise<void> {
-    const response: Response = await fetch(
-        "http://localhost:8080/additineraryanddestinations",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(itineraryAndDestinations),
-        }
-    );
+    const response: Response = await fetch("http://localhost:8080/additineraryanddestinations", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itineraryAndDestinations),
+    });
     if (!response.ok) {
         throw new Error("Failed to add itinerary and destinations");
     }
 }
 
 async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
-    const response: Response = await fetch(
-        `http://localhost:8080/itineraries/`
-    );
+    const response: Response = await fetch(`http://localhost:8080/itineraries/`);
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries by keyword");
     }
@@ -197,9 +168,7 @@ async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
     return itineraries;
 }
 
-async function getRecommendedItineraries(
-    userEmail: string
-): Promise<Itinerary[]> {
+async function getRecommendedItineraries(userEmail: string): Promise<Itinerary[]> {
     const response: Response = await fetch(
         `http://localhost:8080/getrecommendeditineraries/${userEmail}`
     );
@@ -210,31 +179,20 @@ async function getRecommendedItineraries(
     return recommendedItineraries;
 }
 
-async function updateLikeOnItinerary(
-    email: String,
-    itineraryId: number
-): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/likes/${email}/${itineraryId}`,
-        {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
+async function updateLikeOnItinerary(email: String, itineraryId: number): Promise<void> {
+    const response: Response = await fetch(`http://localhost:8080/likes/${email}/${itineraryId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
     if (!response.ok) {
         throw new Error("Failed to update like");
     }
 }
 
-async function itineraryIsLiked(
-    email: String,
-    itineraryId: number
-): Promise<boolean> {
-    const response: Response = await fetch(
-        `http://localhost:8080/likes/${email}/${itineraryId}`
-    );
+async function itineraryIsLiked(email: String, itineraryId: number): Promise<boolean> {
+    const response: Response = await fetch(`http://localhost:8080/likes/${email}/${itineraryId}`);
     if (!response.ok) {
         throw new Error("Failed to check if itinerary is liked");
     }
@@ -254,24 +212,19 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
 }
 
 async function updateItinerary(itinerary: Itinerary): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/updateitinerary`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(itinerary),
-        }
-    );
+    const response: Response = await fetch(`http://localhost:8080/updateitinerary`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itinerary),
+    });
     if (!response.ok) {
         throw new Error("Failed to update itinerary");
     }
 }
 
-async function getAverageRatingOfItinerary(
-    itineraryId: number
-): Promise<number> {
+async function getAverageRatingOfItinerary(itineraryId: number): Promise<number> {
     const response: Response = await fetch(
         `http://localhost:8080/averageratingofitinerary/${itineraryId}`
     );
@@ -282,10 +235,7 @@ async function getAverageRatingOfItinerary(
     return averageRatingOfItinerary;
 }
 
-async function getUserRatingOfItinerary(
-    userEmail: string,
-    itineraryId: number
-): Promise<number> {
+async function getUserRatingOfItinerary(userEmail: string, itineraryId: number): Promise<number> {
     console.log("Requestemail: " + userEmail);
     const response: Response = await fetch(
         `http://localhost:8080/getuserratingofitinerary/${userEmail}/${itineraryId}`
@@ -305,11 +255,11 @@ async function addRatingOfItinerary(
     const response: Response = await fetch(
         `http://localhost:8080/addratingofitinerary/${userEmail}/${itineraryId}`,
         {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rating),
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(rating),
         }
     );
     if (!response.ok) {
@@ -326,6 +276,24 @@ async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
     }
     const ratedItineraries: Itinerary[] = await response.json();
     return ratedItineraries;
+}
+
+async function isAdmin(userEmail: string): Promise<Boolean> {
+    const response: Response = await fetch(`http://localhost:8080/isadmin/${userEmail}`);
+    if (!response.ok) {
+        throw new Error("Failed to check if user is admin");
+    }
+    const isAdmin: boolean = await response.json();
+    return isAdmin;
+}
+
+async function getEveryItinerary(): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/everyitinerary`);
+    if (!response.ok) {
+        throw new Error("Failed to load every itinerary");
+    }
+    const everyItinerary: Itinerary[] = await response.json();
+    return everyItinerary;
 }
 
 const httpRequests = {
@@ -351,6 +319,8 @@ const httpRequests = {
     getUserRatingOfItinerary,
     addRatingOfItinerary,
     getRatedItineraries,
+    isAdmin,
+    getEveryItinerary,
 };
 
 export default httpRequests;
