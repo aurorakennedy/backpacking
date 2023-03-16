@@ -20,6 +20,10 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
         window.location.replace('/logIn');
     }
 
+    const toProfilePage: React.MouseEventHandler<HTMLParagraphElement> | undefined = () => {
+        
+    }
+
     return (
         <nav id='nav'>
             <h1 id='logo'>BP-Advisor</h1>
@@ -28,11 +32,16 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
                 <button id='addRoute'> + Add  new itinerary</button>
             </Link>
 
+            <Link to='/profilePage'>
+                <button id='profilePageButton'> My Profile</button>
+            </Link>
+
             {/* <button id="profilIconButton">
                 <img src={profilIcon} id='profilIcon' />
             </button> */}
 
             <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
+
 
         </nav>
     );

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
 import ItineraryForm from "./components/ItineraryForm";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
     // Keeps track of the logged in user.
@@ -78,7 +79,18 @@ function App() {
                                         loggedInUser={loggedInUser}                                  />
                                 }
                             />
+                            <Route
+                                path={`/profilePage`}
+                                element={
+                                    <ProfilePage
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}                                  />
+                                }
+                            />
+
                         </Routes>
+
+                        
                     </>
                 ) : (
                     <Routes>
