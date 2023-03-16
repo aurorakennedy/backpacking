@@ -14,7 +14,7 @@ public class UserRepository {
 
     public static Connection connectToDB() {
         Connection conn = null;
-        String url = "jdbc:sqlite:bpDatabase.db";
+        String url = "jdbc:sqlite:bpAdvisorDatabase.db";
 
         try {
             conn = DriverManager.getConnection(url);
