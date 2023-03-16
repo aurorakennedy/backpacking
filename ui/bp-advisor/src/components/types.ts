@@ -47,3 +47,10 @@ export interface ItineraryAndDestinations {
     itinerary: Itinerary;
     destinations: Destination[];
 }
+
+export interface ItineraryComment {
+    id: number;
+    itineraryId: number;
+    author: string;
+    content: string;
+}

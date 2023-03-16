@@ -1,6 +1,7 @@
 import {
     Itinerary,
     ItineraryAndDestinations,
+    ItineraryComment,
     ItineraryDestination,
     User,
 } from "./types";
@@ -318,6 +319,62 @@ async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
     return ratedItineraries;
 }
 
+async function getComments(itineraryId: number): Promise<ItineraryComment[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getitinerarycomments/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get comments with itinerary ID " + itineraryId);
+    }
+    const comments: ItineraryComment[] = await response.json();
+    return comments;
+}
+
+async function updateComment(commentId: number, newContent: string): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/editcomment/${commentId}/${newContent}`,
+        {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to update comment with comment ID " + commentId);
+    }
+}
+
+async function deleteComment(commentId: number): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/deletecomment/${commentId}`,
+        {
+            method: "DELETE",
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to delete comment with comment ID " + commentId);
+    }
+}
+
+async function addComment(comment: ItineraryComment): Promise<number> {
+    const response: Response = await fetch(
+        "http://localhost:8080/addcomment",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(comment),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to add new comment");
+    }
+    const id: number = await response.json();
+    return id;
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -340,6 +397,10 @@ const httpRequests = {
     getUserRatingOfItinerary,
     addRatingOfItinerary,
     getRatedItineraries,
+    getComments,
+    updateComment,
+    deleteComment,
+    addComment,
 };
 
 export default httpRequests;

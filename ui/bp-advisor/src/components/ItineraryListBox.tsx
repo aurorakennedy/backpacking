@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import ItinerarySummaryBox from "./ItinerarySummaryBox";
 import "./itineraryListBoxStyle.css";
-import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
+import { Itinerary, ItineraryAndDestinations, ItineraryComment, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
+import Comment from "./Comment";
+import AddComment from "./AddComment";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -44,6 +46,9 @@ const ItineraryListBox = ({
     const [desc, setDesc] = useState('');
 
     const [sameUser, setSameUser] = useState(false);
+    const [comments, setComments] = useState([
+        {id: 1, author: "Test", content: "Test", allowEditing: false}
+    ]);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -168,170 +173,185 @@ const ItineraryListBox = ({
      */
     async function handleExpansionOpen(
         itineraryId: string
-    ): Promise<React.MouseEventHandler<HTMLElement> | any> {
-        try {
-            const promise: Promise<ItineraryAndDestinations> =
+        ): Promise<React.MouseEventHandler<HTMLElement> | any> {
+            try {
+                const promise: Promise<ItineraryAndDestinations> =
                 httpRequests.getItineraryAndDestinationsById(
                     parseInt(itineraryId)
-                );
-            promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
-                    console.log(itineraryAndDestinations);
+                    );
+                    promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
+                        console.log(itineraryAndDestinations);
+                        
+                        setItineraryId(parseInt(itineraryId));
+                        setTitle(itineraryAndDestinations.itinerary.title);
+                        setTime(itineraryAndDestinations.itinerary.estimatedTime);
+                        setCost(itineraryAndDestinations.itinerary.cost);
+                        setDesc(itineraryAndDestinations.itinerary.description);
 
-                    setItineraryId(parseInt(itineraryId));
-                    setTitle(itineraryAndDestinations.itinerary.title);
-                    setTime(itineraryAndDestinations.itinerary.estimatedTime);
-                    setCost(itineraryAndDestinations.itinerary.cost);
-                    setDesc(itineraryAndDestinations.itinerary.description);
-                    
+                        let title: HTMLElement = document.getElementById(
+                            "itineraryBoxTitle"
+                        ) as HTMLElement;
+                        title.innerHTML = itineraryAndDestinations.itinerary.title;
 
-                    let title: HTMLElement = document.getElementById(
-                        "itineraryBoxTitle"
-                    ) as HTMLElement;
-                    title.innerHTML = itineraryAndDestinations.itinerary.title;
-
-                    let author: HTMLElement = document.getElementById(
-                        "itineraryDetailsAuthor"
-                    ) as HTMLElement;
-
-                    const email: string = itineraryAndDestinations.itinerary.writerEmail;
-
-                    const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(email);
-                    const username: string = await usernamePromise;
-
-                    author.innerHTML =
-                        "Author: " +
-                        username;
-                    
-                    setSameUser(loggedInUser.email === email);
-
-                    let duration: HTMLElement = document.getElementById(
-                        "itineraryDetailsDuration"
-                    ) as HTMLElement;
-
-                    duration.innerHTML =
-                        "Duration: " +
-                        itineraryAndDestinations.itinerary.estimatedTime +
-                        " days";
-
-                    let cost: HTMLElement = document.getElementById(
-                        "itineraryDetailsCost"
-                    ) as HTMLElement;
-
-                    cost.innerHTML =
-                        "Cost: $ " + itineraryAndDestinations.itinerary.cost;
-
-                    let itineraryBoxDescription: HTMLElement =
-                        document.getElementById(
-                            "itineraryBoxDescription"
+                        let author: HTMLElement = document.getElementById(
+                            "itineraryDetailsAuthor"
                         ) as HTMLElement;
 
-                    itineraryBoxDescription.innerHTML =
-                        itineraryAndDestinations.itinerary.description;
+                        const email: string = itineraryAndDestinations.itinerary.writerEmail;
 
-                    let itineraryDestinationBox: HTMLDivElement =
-                        document.getElementById(
-                            "itineraryDestinationBox"
-                        ) as HTMLDivElement;
+                        const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(email);
+                        const username: string = await usernamePromise;
 
-                    let likeButton: HTMLButtonElement = document.getElementById(
-                        "itineraryDetailsLike"
-                    ) as HTMLButtonElement;
+                        author.innerHTML =
+                            "Author: " +
+                            username;
+                        
+                        setSameUser(loggedInUser.email === email);
 
-                    try {
-                        const getLikePromise: Promise<boolean> =
-                            httpRequests.itineraryIsLiked(
-                                loggedInUser.email,
-                                parseInt(itineraryId)
-                            );
-                        getLikePromise.then((liked: boolean) => {
-                            setButtonLiked(liked);
-                        });
-                    } catch (error) {
-                        alert("Could not get like state");
-                    }
+                        let duration: HTMLElement = document.getElementById(
+                            "itineraryDetailsDuration"
+                        ) as HTMLElement;
 
-                    likeButton.addEventListener("click", () => {
+                        duration.innerHTML =
+                            "Duration: " +
+                            itineraryAndDestinations.itinerary.estimatedTime +
+                            " days";
+
+                        let cost: HTMLElement = document.getElementById(
+                            "itineraryDetailsCost"
+                        ) as HTMLElement;
+
+                        cost.innerHTML =
+                            "Cost: $ " + itineraryAndDestinations.itinerary.cost;
+
+                        let itineraryBoxDescription: HTMLElement =
+                            document.getElementById(
+                                "itineraryBoxDescription"
+                            ) as HTMLElement;
+
+                        itineraryBoxDescription.innerHTML =
+                            itineraryAndDestinations.itinerary.description;
+
+                        let itineraryDestinationBox: HTMLDivElement =
+                            document.getElementById(
+                                "itineraryDestinationBox"
+                            ) as HTMLDivElement;
+
+                        let likeButton: HTMLButtonElement = document.getElementById(
+                            "itineraryDetailsLike"
+                        ) as HTMLButtonElement;
+
                         try {
-                            httpRequests.updateLikeOnItinerary(
-                                loggedInUser.email,
-                                parseInt(itineraryId)
-                            );
-                            setButtonLiked(!buttonLiked);
+                            const getLikePromise: Promise<boolean> =
+                                httpRequests.itineraryIsLiked(
+                                    loggedInUser.email,
+                                    parseInt(itineraryId)
+                                );
+                            getLikePromise.then((liked: boolean) => {
+                                setButtonLiked(liked);
+                            });
                         } catch (error) {
-                            alert("Could not update like");
+                            alert("Could not get like state");
                         }
-                    });
 
-                    let itineraryLikeAndRatingFlexBox: HTMLDivElement =
-                        document.getElementById(
-                            "itineraryLikeAndRatingFlexBox"
-                        ) as HTMLDivElement;
-
-                    let itineraryRatingBarDiv: HTMLDivElement =
-                        document.createElement("div");
-
-                    let ratingBar = (
-                        <RatingBar
-                            loggedInUser={loggedInUser}
-                            itineraryId={parseInt(itineraryId)}
-                            updateAverageRating={function (): void {
-                                updateAverageRating(itineraryId);
-                            }}
-                        />
-                    );
-                    createRoot(itineraryRatingBarDiv).render(ratingBar);
-                    itineraryLikeAndRatingFlexBox.appendChild(
-                        itineraryRatingBarDiv
-                    );
-
-                    updateAverageRating(itineraryId);
-
-                    let counterOfDestinations: number = 0;
-                    itineraryAndDestinations.destinations.forEach(
-                        (destination) => {
-                            let p = document.createElement("p");
-                            p.innerHTML = destination.destinationName;
-                            itineraryDestinationBox.appendChild(p);
-
-                            counterOfDestinations++;
-
-                            if (
-                                counterOfDestinations !==
-                                itineraryAndDestinations.destinations.length
-                            ) {
-                                let circle1 = document.createElement("div");
-                                circle1.style.width = "4px";
-                                circle1.style.height = "4px";
-                                circle1.style.backgroundColor = "#d65745";
-                                circle1.style.borderRadius = "50%";
-                                circle1.style.margin = "auto";
-                                circle1.style.marginTop = "4px";
-                                circle1.style.marginBottom = "4px";
-                                itineraryDestinationBox.appendChild(circle1);
-
-                                let circle2 = document.createElement("div");
-                                circle2.style.width = "7px";
-                                circle2.style.height = "7px";
-                                circle2.style.backgroundColor = "#d65745";
-                                circle2.style.borderRadius = "50%";
-                                circle2.style.margin = "auto";
-                                circle2.style.marginTop = "4px";
-                                circle2.style.marginBottom = "4px";
-                                itineraryDestinationBox.appendChild(circle2);
-
-                                let circle3 = document.createElement("div");
-                                circle3.style.width = "4px";
-                                circle3.style.height = "4px";
-                                circle3.style.backgroundColor = "#d65745";
-                                circle3.style.borderRadius = "50%";
-                                circle3.style.margin = "auto";
-                                circle3.style.marginTop = "4px";
-                                circle3.style.marginBottom = "4px";
-                                itineraryDestinationBox.appendChild(circle3);
+                        likeButton.addEventListener("click", () => {
+                            try {
+                                httpRequests.updateLikeOnItinerary(
+                                    loggedInUser.email,
+                                    parseInt(itineraryId)
+                                );
+                                setButtonLiked(!buttonLiked);
+                            } catch (error) {
+                                alert("Could not update like");
                             }
-                        }
-                    );
-                }
+                        });
+
+                        let itineraryLikeAndRatingFlexBox: HTMLDivElement =
+                            document.getElementById(
+                                "itineraryLikeAndRatingFlexBox"
+                            ) as HTMLDivElement;
+
+                        let itineraryRatingBarDiv: HTMLDivElement =
+                            document.createElement("div");
+
+                        let ratingBar = (
+                            <RatingBar
+                                loggedInUser={loggedInUser}
+                                itineraryId={parseInt(itineraryId)}
+                                updateAverageRating={function (): void {
+                                    updateAverageRating(itineraryId);
+                                }}
+                            />
+                        );
+                        createRoot(itineraryRatingBarDiv).render(ratingBar);
+                        itineraryLikeAndRatingFlexBox.appendChild(
+                            itineraryRatingBarDiv
+                        );
+
+                        updateAverageRating(itineraryId);
+
+                        let counterOfDestinations: number = 0;
+                        itineraryAndDestinations.destinations.forEach(
+                            (destination) => {
+                                let p = document.createElement("p");
+                                p.innerHTML = destination.destinationName;
+                                itineraryDestinationBox.appendChild(p);
+
+                                counterOfDestinations++;
+
+                                if (
+                                    counterOfDestinations !==
+                                    itineraryAndDestinations.destinations.length
+                                ) {
+                                    let circle1 = document.createElement("div");
+                                    circle1.style.width = "4px";
+                                    circle1.style.height = "4px";
+                                    circle1.style.backgroundColor = "#d65745";
+                                    circle1.style.borderRadius = "50%";
+                                    circle1.style.margin = "auto";
+                                    circle1.style.marginTop = "4px";
+                                    circle1.style.marginBottom = "4px";
+                                    itineraryDestinationBox.appendChild(circle1);
+
+                                    let circle2 = document.createElement("div");
+                                    circle2.style.width = "7px";
+                                    circle2.style.height = "7px";
+                                    circle2.style.backgroundColor = "#d65745";
+                                    circle2.style.borderRadius = "50%";
+                                    circle2.style.margin = "auto";
+                                    circle2.style.marginTop = "4px";
+                                    circle2.style.marginBottom = "4px";
+                                    itineraryDestinationBox.appendChild(circle2);
+
+                                    let circle3 = document.createElement("div");
+                                    circle3.style.width = "4px";
+                                    circle3.style.height = "4px";
+                                    circle3.style.backgroundColor = "#d65745";
+                                    circle3.style.borderRadius = "50%";
+                                    circle3.style.margin = "auto";
+                                    circle3.style.marginTop = "4px";
+                                    circle3.style.marginBottom = "4px";
+                                    itineraryDestinationBox.appendChild(circle3);
+                                }
+                            }
+                        );
+
+                        comments.length = 0;
+
+                        const commentsList: ItineraryComment[] = await
+                            httpRequests.getComments(parseInt(itineraryId));
+                    
+                        console.log(commentsList);
+
+                        const updatedComments = commentsList.reverse().map(comment => ({
+                            id: comment.id,
+                            author: comment.author,
+                            content: comment.content,
+                            allowEditing: loggedInUser.username === comment.author,
+                          }));
+                          
+                        setComments(updatedComments);
+                    }
             );
         } catch (error) {}
 
@@ -430,6 +450,48 @@ const ItineraryListBox = ({
                                 </Link>
                             </div>
                             <p id="itineraryBoxDescription"></p>
+                            <div style={{backgroundColor: '#eee', padding: '20px', marginTop: '50px',
+                            borderRadius: '0px', border: '1px solid black', width: '100%'}}>
+                                <div style={{padding: '20px'}}>
+                                    <AddComment onSubmit={async function (comment: string): Promise<void> {
+                                        const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(loggedInUser.email);
+                                        const username: string = await usernamePromise;
+                                        const id: number = await httpRequests.addComment({
+                                            id: -1,
+                                            itineraryId: itineraryId,
+                                            author: username,
+                                            content: comment,
+                                        });
+                                        setComments([
+                                            {
+                                                id: id,
+                                                author: username,
+                                                content: comment,
+                                                allowEditing: true,
+                                            },
+                                            ...comments
+                                        ])
+                                    } }></AddComment>
+                                </div>
+                                <div style={{padding: '10px', borderRadius: '10px'}}>
+                                    {comments.map(comment => (
+                                        <Comment 
+                                            key={comment.id}
+                                            author={comment.author}
+                                            content={comment.content}
+                                            allowEditing={comment.allowEditing}
+                                            onDelete={function (): void {
+                                                httpRequests.deleteComment(comment.id);
+                                                const updatedComments = comments.filter(c => c.id !== comment.id);
+                                                setComments(updatedComments);
+                                            } } 
+                                            onUpdate={function (updatedContent: string): void {
+                                                httpRequests.updateComment(comment.id, updatedContent);
+                                            } } 
+                                        />
+                                ))}
+                                </div>
+                            </div>
                         </div>
                         <p
                             id="itineraryBoxCloseButton"

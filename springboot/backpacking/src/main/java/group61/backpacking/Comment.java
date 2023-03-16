@@ -1,34 +1,40 @@
 package group61.backpacking;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class Comment {
-    String userEmail;
-    String comment;
+    int id;
     int itineraryId;
-
-
-    public String getUserEmail() {
-        return userEmail;
+    String author;
+    String content;
+    
+    public Comment(int id, int itineraryId, String author, String content) {
+        this.id = id;
+        this.itineraryId = itineraryId;
+        this.author = author;
+        this.content = content;
     }
-    public String getComment() {
-        return comment;
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
     public int getItineraryId() {
         return itineraryId;
     }
-    public Comment(String userEmail, String comment, int itineraryId) {
-        this.userEmail = userEmail;
-        this.comment = comment;
+    public void setItineraryId(int itineraryId) {
         this.itineraryId = itineraryId;
     }
-
-    public void mapCommentFromResultSet(ResultSet resultSet) throws SQLException {
-        this.userEmail = resultSet.getString("user_email");
-        this.itineraryId = resultSet.getInt("itinerary_id");
-        this.comment = resultSet.getString("comment");
+    public String getAuthor() {
+        return author;
     }
-
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
     
 }

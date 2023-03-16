@@ -1776,29 +1776,41 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     // ITINERARY COMMENTS
 
-    public void saveComment(String comment, String userEmail, int itineraryId) throws SQLException {
+    public int saveComment(Comment comment) throws SQLException {
         Connection conn = null;
-        PreparedStatement statement = null;
+        PreparedStatement statement1 = null;
+        PreparedStatement statement2 = null;
+        int id = -1;
 
     try {
         conn = connectToDB();
-        String sqlQuery = "INSERT INTO Itinerary_Comment(user_email, itinerary_id, comment) VALUES (?, ?, ?)";
-        statement = conn.prepareStatement(sqlQuery);
-        statement.setString(1, userEmail);
-        statement.setInt(2, itineraryId);
-        statement.setString(3, comment);
+        String sqlQuery = "INSERT INTO Itinerary_Comment(username, itinerary_id, comment) VALUES (?, ?, ?)";
+        statement1 = conn.prepareStatement(sqlQuery);
+        statement1.setString(1, comment.getAuthor());
+        statement1.setInt(2, comment.getItineraryId());
+        statement1.setString(3, comment.getContent());
 
-        statement.executeUpdate();
+        statement1.executeUpdate();
+
+        sqlQuery = "SELECT * FROM Itinerary_Comment WHERE username = ? ORDER BY written_date DESC LIMIT 1";
+        statement2 = conn.prepareStatement(sqlQuery);
+        statement2.setString(1, comment.getAuthor());
+
+        id = statement2.executeQuery().getInt("id");
     } catch (SQLException e) {
         throw new SQLException(e);
     } finally {
-        if (statement != null) {
-            statement.close();
+        if (statement1 != null) {
+            statement1.close();
+        }
+        if (statement2 != null) {
+            statement2.close();
         }
         if (conn != null) {
             conn.close();
         }
     }
+    return id;
     }
 
     public List<Comment> loadItineraryComments(int itineraryId) throws SQLException {
@@ -1815,8 +1827,10 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Comment comment = new Comment(null, null, -1);
-                comment.mapCommentFromResultSet(resultSet);
+                int id = resultSet.getInt("id");
+                String author = resultSet.getString("username");
+                String content = resultSet.getString("comment");
+                Comment comment = new Comment(id, itineraryId, author, content);
                 commentList.add(comment);
             }
         } catch (SQLException e) {

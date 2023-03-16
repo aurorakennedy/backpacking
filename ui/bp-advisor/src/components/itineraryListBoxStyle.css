@@ -67,7 +67,6 @@
 #itineraryDestinationBox {
     width: 25%;
     background-color: #ececec;
-    height: 600px;
     border-radius: 25px;
     margin-right: 50px;
     overflow-y: scroll;
