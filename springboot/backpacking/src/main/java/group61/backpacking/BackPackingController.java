@@ -142,12 +142,12 @@ public class BackPackingController {
   
     
     @CrossOrigin(origins = "*")
-    @PostMapping("/additineraryanddestinations")
+    @PostMapping("/additineraryanddestinationswithimage")
     public void addItineraryAndDestinations(@RequestBody 
-    ItineraryAndDestinations itineraryAndDestinations, @RequestBody byte[] file) throws SQLException, IOException {
-        itineraryRep.saveItinerary(itineraryAndDestinations, file);
-        System.out.println(itineraryAndDestinations.getItinerary());
-        System.out.println(itineraryAndDestinations.getDestinations());
+    ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
+        System.out.println("HTTP request received in controller");
+        System.out.println("IMAGE IN CONTROLLER: " + itineraryAndDestinationsWithImage.getImageByteArray());
+        itineraryRep.saveItinerary(itineraryAndDestinationsWithImage);
     }
 
     @CrossOrigin(origins = "*")
