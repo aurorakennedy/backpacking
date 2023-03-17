@@ -114,7 +114,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
         destinationsAsHTML.appendChild(div);
 
-        console.log(destinations);
+        (document.getElementById("destinationNameInput") as HTMLInputElement).value = "";
     }
 
     /**
