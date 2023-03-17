@@ -141,6 +141,7 @@ public class BackPackingController {
       @DeleteMapping("/deleteitinerary/{itineraryId}")
       public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
           itineraryRep.deleteItinerary(itineraryId);
+          itineraryRep.deleteItineraryDestinations(itineraryId);
           itineraryRep.deleteImage(itineraryId);
       } 
   
