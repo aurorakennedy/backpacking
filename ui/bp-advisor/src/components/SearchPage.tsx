@@ -20,7 +20,6 @@ type searchPage = {
 }
 
 
-
 const SearchPageBox = ({ 
     loggedInUser,
     setLoggedInUser, }: searchPage) => {
@@ -38,15 +37,6 @@ const SearchPageBox = ({
             </div>
             <button id='searchButton' onClick={(async) => enterKeywordInfo(loggedInUser)} type='button'>Search</button>
             <h2>Your search results: </h2>
-            {/* <div id="searchedItineraries">
-                    <ItineraryListBox
-                        idOfWrappingDiv={"searchedItineraries"}
-                        itinerariesBasedOn={"Searched itineraries"}
-                        loggedInUser={loggedInUser}
-                        //keyword ={"string"}
-                        keyword={"keywordInputValue"}
-                    />
-            </div> */}
             <div id='searchItinerariesWrapped'>
             </div>
         </div>
@@ -86,6 +76,5 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
     }
   
   }
-
 
 export default SearchPageBox;
