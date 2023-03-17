@@ -107,7 +107,7 @@ public class ItineraryRepository {
     }
 
 
-    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations, byte[] image) throws SQLException, IOException {
+    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations, byte[] image) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -169,48 +169,59 @@ public class ItineraryRepository {
             throw new SQLException(e);
         }
 
-        if (image != null) {
+        try {
+            conn2 = connectToDB();
+            String sqlQuery = "SELECT id FROM Itinerary WHERE writer_email = ? AND title = ?";
+            statement2 = conn2.prepareStatement(sqlQuery);
+            statement2.setString(1, itinerary.getWriterEmail());
+            statement2.setString(2, itinerary.getTitle());
 
-            try {
-                conn2 = connectToDB();
-                String sqlQuery = "SELECT id FROM Itinerary WHERE writer_email = ? AND title = ?";
-                statement2 = conn2.prepareStatement(sqlQuery);
-                statement2.setString(1, itinerary.getWriterEmail());
-                statement2.setString(2, itinerary.getTitle());
+            resultSet2 = statement2.executeQuery();
 
-                resultSet2 = statement2.executeQuery();
+            resultSet2.next();
+            int i = resultSet2.getInt("id");
 
-                resultSet2.next();
-                int i = resultSet2.getInt("id");
-
-                saveImageOnItinerary(image, i);
-            } catch (SQLException e) {
-                throw new SQLException(e);
+            saveImageOnItinerary(image, i);
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (resultSet2 != null) {
+                resultSet2.close();
             }
+            if (statement2 != null) {
+                statement2.close();
+            }
+            if (conn2 != null){
+                conn2.close();
+            }
+              
         }
 
     }
 
-    private void saveImageOnItinerary(byte[] image, int itineraryId) throws SQLException, IOException {
+    public void saveImageOnItinerary(byte[] image, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
-        try {
-            conn = connectToDB();
-            String sqlQuery = "INSERT INTO Itinerary_Image (itinerary_id, data) VALUES (?,?)";
-            statement = conn.prepareStatement(sqlQuery);
-            statement.setInt(1, itineraryId);
-            statement.setBytes(2, image);
+        if (image != null) {
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-            if (conn != null) {
-                conn.close();
+            try {
+                conn = connectToDB();
+                String sqlQuery = "INSERT INTO Itinerary_Image (itinerary_id, data) VALUES (?,?)";
+                statement = conn.prepareStatement(sqlQuery);
+                statement.setInt(1, itineraryId);
+                statement.setBytes(2, image);
+
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new SQLException(e);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             }
         }
     }
@@ -248,6 +259,22 @@ public class ItineraryRepository {
         return image;
     }
     
+
+    public void deleteImage(int imageId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary_Image WHERE id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, imageId);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
 
 
     ///////////////////////////////////////////////////////////////////////////

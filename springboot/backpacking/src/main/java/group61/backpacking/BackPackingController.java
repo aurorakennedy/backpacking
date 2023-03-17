@@ -141,6 +141,7 @@ public class BackPackingController {
       } 
   
     
+    // ALSO ADDS IMAGE
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
@@ -222,5 +223,12 @@ public class BackPackingController {
     public byte[] getItineraryImage(@PathVariable int itineraryId) throws SQLException {
         return itineraryRep.loadItineraryImage(itineraryId);
     }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/updateitineraryimage/{imageId}/{itineraryId}")
+    public void updateImage(@PathVariable int imageId, @PathVariable int itineraryId, @RequestBody byte[] newImage) throws SQLException {
+            itineraryRep.deleteImage(imageId);
+            itineraryRep.saveImageOnItinerary(newImage, itineraryId);
+    }    
 
 }
