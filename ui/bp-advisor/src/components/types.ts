@@ -47,3 +47,9 @@ export interface ItineraryAndDestinations {
     itinerary: Itinerary;
     destinations: Destination[];
 }
+
+export interface ItineraryAndDestinationsWithImage {
+    itinerary: Itinerary;
+    destinations: Destination[];
+    imageByteArray: number[] | null;
+}
