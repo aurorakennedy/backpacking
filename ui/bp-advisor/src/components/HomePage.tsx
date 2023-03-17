@@ -4,6 +4,7 @@ import "./homePageStyle.css";
 import ItineraryListBox from "./ItineraryListBox";
 import NavBar from "./NavBar";
 import { LoggedInUser } from "./types";
+import SearchPage from "./SearchPage";
 
 type HomePageProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -11,6 +12,7 @@ type HomePageProps = {
 };
 
 const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
+
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />

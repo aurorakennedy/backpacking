@@ -11,17 +11,22 @@
     justify-content: space-around;
 }
 
+#navContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
 
 #logo {
     /* font-family: 'Bubbler One'; */
-    position: absolute;
-    top: -20px;
     font-family: "Knewave";
     font-size: 50px;
     letter-spacing: 0.10em;
-    margin-top: 60px;
     color: #D65745;
-
 }
 
 #logOutButton {
@@ -64,7 +69,7 @@
     background-color: #A1C88E;
     color: white;
     cursor: pointer;
-    margin-right: 400px;
+    margin-right: 40px;
     margin-top: 50px;
 }
 

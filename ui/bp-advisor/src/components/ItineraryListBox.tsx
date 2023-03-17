@@ -122,7 +122,11 @@ const ItineraryListBox = ({
         }
         let expandableItineraryListDiv: HTMLDivElement =
             document.createElement("div");
+        if (itinerariesBasedOn === "Searched itineraries"){
+            expandableItineraryListDiv.classList.add("expandableSearchItineraryList");
+        } else {
         expandableItineraryListDiv.classList.add("expandableItineraryList");
+            }
         itineraries.reverse().forEach((itinerary) => {
             let itinerarySummaryDiv: HTMLDivElement =
                 document.createElement("div");

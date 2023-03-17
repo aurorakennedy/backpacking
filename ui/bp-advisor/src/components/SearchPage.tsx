@@ -38,21 +38,17 @@ const SearchPageBox = ({
             </div>
             <button id='searchButton' onClick={(async) => enterKeywordInfo(loggedInUser)} type='button'>Search</button>
             <h2>Your search results: </h2>
-
             {/* <div id="searchedItineraries">
                     <ItineraryListBox
                         idOfWrappingDiv={"searchedItineraries"}
                         itinerariesBasedOn={"Searched itineraries"}
                         loggedInUser={loggedInUser}
-
                         //keyword ={"string"}
                         keyword={"keywordInputValue"}
                     />
             </div> */}
             <div id='searchItinerariesWrapped'>
-
-              </div>
-
+            </div>
         </div>
         </form>
     </>
@@ -84,6 +80,9 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
   });
     } catch (error) {
     //TODO: Error handling
+    alert(
+      "There was an error when searching for an itinerary, please try again."
+  );
     }
   
   }
