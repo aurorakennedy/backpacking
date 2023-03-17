@@ -67,6 +67,11 @@
     justify-content: space-around;
 }
 
+#itineraryLikeAndRatingFlexBox {
+    display: flex;
+    flex-direction: row;
+}
+
 .itineraryDetailElement {
     margin-left: 20px;
     margin-right: 20px;
@@ -75,7 +80,6 @@
 #itineraryDestinationBox {
     width: 25%;
     background-color: #ececec;
-    height: 600px;
     border-radius: 25px;
     margin-right: 50px;
     overflow-y: scroll;
@@ -94,6 +98,13 @@
 #itineraryBoxDescription {
     text-align: left;
     width: 650px;
+    margin-top: 40px;
+}
+
+#closeAndDeleteColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #itineraryBoxCloseButton {
@@ -119,7 +130,39 @@
 #itineraryLikeButton {
     display: flex;
     justify-content: center;
-    width: 30vh;
+    width: 13vh;
     height: 5vh;
     margin-top: 1vh;
 }
+
+#editButton {
+    margin-top: 1vh;
+    float: left;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+}
+
+#averageRating {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+
+#itineraryDeleteButton {
+    background-color: #d65645ac;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #itineraryDeleteButton:hover {
+    background-color: #d65745;
+  }

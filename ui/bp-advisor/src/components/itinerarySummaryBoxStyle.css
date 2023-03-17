@@ -1,11 +1,11 @@
 .itinerarySummaryDiv {
     /*     background-color: rgba(233, 234, 179, 0.8);
  */
-    background-color: rgb(212, 234, 201, 0.8);
+    background-color: #d4eac9cc;
     width: 170px;
     height: 200px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px #0000001a;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -16,6 +16,7 @@
 
 #routeName {
     letter-spacing: 0.05em;
+    font-family: 'Bubbler One';
     font-size: 20px;
     margin-bottom: 10px;
     color: #d65745;
@@ -31,6 +32,11 @@
     padding-right: 15px;
     padding-top: 15px;
     height: 40px;
+
+
+
+
+
 }
 
 /*   #routeImage {

@@ -64,7 +64,6 @@
     font-size: 12px;
 }
 
-
 #addDestinationButton {
     float: left;
     font-size: 12px;
@@ -80,10 +79,7 @@
 
 #destinationsAsHTMLTitle {
     font-weight: bold;
-    float: left;
-}
-
-#destinationsAsHTML {
+    margin-bottom: 0px;
     float: left;
 }
 
@@ -95,8 +91,28 @@
     height: 40px;
     border-radius: 10px;
     border: none;
-    background-color: #D65745;
+    background-color: rgb(87, 148, 92);
     color: white;
     cursor: pointer;
     float: right;
+}
+
+.destinationCountryPair {
+    display: flex;
+    flex-direction: row;
+}
+
+.destinationCountryPair button {
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    width: 20px;
+    cursor: pointer;
+    color: brown;
+    font-weight: bolder;
+    margin-top: 17px;
+}
+
+.destinationCountryPair button:hover {
+    color: orangered;
 }

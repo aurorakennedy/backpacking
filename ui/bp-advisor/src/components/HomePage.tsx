@@ -65,6 +65,20 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         keyword={""}
                     />
                 </div>
+                <div id="ratedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"ratedItineraries"}
+                        itinerariesBasedOn={"Rated itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
+                <div id="allItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"allItineraries"}
+                        itinerariesBasedOn={"All itineraries"}
+                        loggedInUser={loggedInUser}
+                    />
+                </div>
             </div>
         </>
     );
