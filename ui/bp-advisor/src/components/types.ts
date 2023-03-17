@@ -53,3 +53,8 @@ export interface ItineraryAndDestinationsWithImage {
     destinations: Destination[];
     imageByteArray: number[] | null;
 }
+
+export interface ItineraryWithImage {
+    itinerary: Itinerary;
+    imageByteArray: number[] | null;
+}

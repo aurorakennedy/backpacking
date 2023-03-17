@@ -269,15 +269,15 @@ public class ItineraryRepository {
     }
     
 
-    public void deleteImage(int imageId) throws SQLException {
+    public void deleteImage(int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
 
         try {
             conn = connectToDB();
-            String sqlQuery = "DELETE FROM Itinerary_Image WHERE id = ?";
+            String sqlQuery = "DELETE FROM Itinerary_Image WHERE itinerary_id = ?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setInt(1, imageId);
+            statement.setInt(1, itineraryId);
 
             statement.executeUpdate();
         } catch (SQLException e) {

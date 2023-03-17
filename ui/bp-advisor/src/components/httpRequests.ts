@@ -3,6 +3,7 @@ import {
     ItineraryAndDestinations,
     ItineraryAndDestinationsWithImage,
     ItineraryDestination,
+    ItineraryWithImage,
     User,
 } from "./types";
 
@@ -221,13 +222,13 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
     return likedItineraries;
 }
 
-async function updateItinerary(itinerary: Itinerary): Promise<void> {
+async function updateItinerary(itineraryWithImage: ItineraryWithImage): Promise<void> {
     const response: Response = await fetch(`http://localhost:8080/updateitinerary`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(itinerary),
+        body: JSON.stringify(itineraryWithImage),
     });
     if (!response.ok) {
         throw new Error("Failed to update itinerary");

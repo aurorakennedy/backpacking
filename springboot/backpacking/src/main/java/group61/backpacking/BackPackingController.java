@@ -141,6 +141,7 @@ public class BackPackingController {
       @DeleteMapping("/deleteitinerary/{itineraryId}")
       public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
           itineraryRep.deleteItinerary(itineraryId);
+          itineraryRep.deleteImage(itineraryId);
       } 
   
     
@@ -211,8 +212,12 @@ public class BackPackingController {
 
     @CrossOrigin(origins = "*")
     @PutMapping("/updateitinerary")
-    public void updateItinerary(@RequestBody Itinerary itinerary) throws SQLException {
-            itineraryRep.updateItinerary(itinerary);
+    public void updateItinerary(@RequestBody ItineraryWithImage itineraryWithImage) throws SQLException {
+            itineraryRep.updateItinerary(itineraryWithImage.getItinerary());
+            if (itineraryWithImage.getImageByteArray() != null) {
+                itineraryRep.deleteImage(itineraryWithImage.getItinerary().getId());
+                itineraryRep.saveImageOnItinerary(itineraryWithImage.getImageByteArray(), itineraryWithImage.getItinerary().getId());
+            }
     }
 
     @CrossOrigin(origins = "*")
@@ -229,11 +234,11 @@ public class BackPackingController {
     }
 
 
-    @CrossOrigin(origins = "*")
+    /* @CrossOrigin(origins = "*")
     @PutMapping("/updateitineraryimage/{imageId}/{itineraryId}")
     public void updateImage(@PathVariable int imageId, @PathVariable int itineraryId, @RequestBody byte[] newImage) throws SQLException {
             itineraryRep.deleteImage(imageId);
             itineraryRep.saveImageOnItinerary(newImage, itineraryId);
-    }    
+    }   */  
 
 }
