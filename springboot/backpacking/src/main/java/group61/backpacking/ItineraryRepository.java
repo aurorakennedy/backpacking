@@ -208,8 +208,6 @@ public class ItineraryRepository {
 
     }
 
-    }
-
     public void saveImageOnItinerary(byte[] image, int itineraryId) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
