@@ -1,6 +1,5 @@
 package group61.backpacking;
 
-import org.springframework.jdbc.object.SqlQuery;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,7 +22,7 @@ public class ItineraryRepository {
 
     public static Connection connectToDB() {
         Connection conn = null;
-        String url = "jdbc:sqlite:bpDatabase.db";
+        String url = "jdbc:sqlite:bpAdvisorDatabase.db";
         
 
         try {
@@ -584,8 +583,8 @@ public class ItineraryRepository {
     ///////////////////////////////////////////////////////////////////////////
     // update / delete functions
 
-    // sletting basert på tittel og email
-    public void deleteItinerary_byEmail(User user, String title) throws SQLException{
+    // sletting basert på tittel og email 
+    public void deleteItinerary_byEmail(String email, String title) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -593,9 +592,9 @@ public class ItineraryRepository {
             conn = connectToDB();
             String sqlQuery = "DELETE FROM Itinerary WHERE title = ? AND writer_email = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setString(2, title);
-            
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, email);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -612,18 +611,20 @@ public class ItineraryRepository {
 
     }
 
-    public void deleteItinerary(Itinerary itinerary) throws RuntimeException, SQLException{
+    // Denne som brukes for sletting av Itinerarys
+    public void deleteItinerary(int itineraryId) throws SQLException{
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+
         try {
             conn = connectToDB();
-            String sqlQuery = "DELETE FROM Itinerary WHERE itinerary_description = ?;";
+            String sqlQuery = "DELETE FROM Itinerary WHERE id = ?";
             preparedStatement = conn.prepareStatement(sqlQuery);
             
-            preparedStatement.setString(1, itinerary.getTitle());
+            preparedStatement.setInt(1, itineraryId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new UserNotFoundException("Itinerary with name " + itinerary.getTitle() + " not found");  
+            throw new SQLException(e);  
         }
 
         finally {

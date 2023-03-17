@@ -88,6 +88,12 @@
     margin-top: 40px;
 }
 
+#closeAndDeleteColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 #itineraryBoxCloseButton {
     text-decoration: underline;
     color: dodgerblue;
@@ -133,3 +139,17 @@
     margin-top: 20px;
     font-size: 13px;
 }
+
+
+#itineraryDeleteButton {
+    background-color: #d65645ac;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #itineraryDeleteButton:hover {
+    background-color: #d65745;
+  }

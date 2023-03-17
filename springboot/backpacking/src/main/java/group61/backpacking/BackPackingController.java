@@ -45,6 +45,12 @@ public class BackPackingController {
         }
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/isadmin/{userEmail}")
+    public boolean isUserAdmin(@PathVariable String userEmail) throws RuntimeException, SQLException {
+        return userRep.isAdmin(userEmail);
+    }
+
     // Create a new user
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
@@ -132,6 +138,14 @@ public class BackPackingController {
     }
 
 
+
+      @CrossOrigin(origins = "*")
+      @DeleteMapping("/deleteitinerary/{itineraryId}")
+      public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
+          itineraryRep.deleteItinerary(itineraryId);
+      } 
+  
+    
     @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
@@ -230,6 +244,11 @@ public class BackPackingController {
     @PutMapping("/editcomment/{commentId}/{newContent}")
     public void editComment(@PathVariable int commentId, @PathVariable String newContent) throws SQLException {
         itineraryRep.updateComment(commentId, newContent);
+    }
+    
+    @GetMapping("/everyitinerary")
+    public List<Itinerary> getEveryItinerary() throws SQLException {
+        return itineraryRep.loadEveryItinerary();
     }
 
 }
