@@ -354,38 +354,25 @@ const ItineraryListBox = ({
                         circle3.style.marginBottom = "4px";
                         itineraryDestinationBox.appendChild(circle3);
                     }
-                });
-            });
-                                    let circle3 = document.createElement("div");
-                                    circle3.style.width = "4px";
-                                    circle3.style.height = "4px";
-                                    circle3.style.backgroundColor = "#d65745";
-                                    circle3.style.borderRadius = "50%";
-                                    circle3.style.margin = "auto";
-                                    circle3.style.marginTop = "4px";
-                                    circle3.style.marginBottom = "4px";
-                                    itineraryDestinationBox.appendChild(circle3);
-                                }
-                            }
-                        );
-
-                        comments.length = 0;
-
-                        const commentsList: ItineraryComment[] = await
-                            httpRequests.getComments(parseInt(itineraryId));
-                    
-                        console.log(commentsList);
-
-                        const updatedComments = commentsList.reverse().map(comment => ({
-                            id: comment.id,
-                            author: comment.author,
-                            content: comment.content,
-                            allowEditing: loggedInUser.username === comment.author,
-                          }));
-                          
-                        setComments(updatedComments);
-                    }
+                }
             );
+                comments.length = 0;
+
+                const commentsList: ItineraryComment[] = await
+                    httpRequests.getComments(parseInt(itineraryId));
+            
+                console.log(commentsList);
+
+                const updatedComments = commentsList.reverse().map(comment => ({
+                    id: comment.id,
+                    author: comment.author,
+                    content: comment.content,
+                    allowEditing: loggedInUser.username === comment.author,
+                    }));
+                    
+                setComments(updatedComments);
+            }
+        );
         } catch (error) {}
 
         setitineraryBoxExpanded(true);
