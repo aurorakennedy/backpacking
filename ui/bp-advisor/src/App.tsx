@@ -5,7 +5,7 @@ import LogInBox from "./components/LogInBox";
 import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
-import CreateNewItineraryForm from "./components/CreateNewItineraryForm";
+
 import SearchPageBox from "./components/SearchPage";
 import ItineraryForm from "./components/ItineraryForm";
 

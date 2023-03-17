@@ -70,6 +70,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"ratedItineraries"}
                         itinerariesBasedOn={"Rated itineraries"}
                         loggedInUser={loggedInUser}
+                        keyword={""}
                     />
                 </div>
                 <div id="allItineraries">
@@ -77,6 +78,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"allItineraries"}
                         itinerariesBasedOn={"All itineraries"}
                         loggedInUser={loggedInUser}
+                        keyword={""}
                     />
                 </div>
             </div>
