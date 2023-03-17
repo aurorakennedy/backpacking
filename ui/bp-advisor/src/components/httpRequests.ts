@@ -288,6 +288,17 @@ async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
     return ratedItineraries;
 }
 
+async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getitineraryimage/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get image of itinerary");
+    }
+    const buffer = await response.arrayBuffer();
+    return new Uint8Array(buffer);
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -311,6 +322,7 @@ const httpRequests = {
     getUserRatingOfItinerary,
     addRatingOfItinerary,
     getRatedItineraries,
+    getItineraryImage,
 };
 
 export default httpRequests;
