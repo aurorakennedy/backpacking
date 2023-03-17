@@ -4,6 +4,7 @@ import httpRequests from "./httpRequests";
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Nav from "./NavBar";
+import { useRef } from "react";
 
 type ItineraryFormProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -120,7 +121,9 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
      * Gets the information form the input fields and sends it as http-requests to the backend for saving
      * in the database.
      */
-    function submitItineraryInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+    async function submitItineraryInfo(): Promise<
+        React.MouseEventHandler<HTMLButtonElement> | any
+    > {
         const titleInputValue: string = (document.getElementById("titleInput") as HTMLInputElement)
             .value;
         const timeInputValue: string = (
@@ -173,28 +176,54 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
         if (!editMode) {
             try {
-                let formData = null;
+                let buttonTextOnSubmit: string = !editMode ? "Adding ..." : "Updating ...";
+                (document.getElementById("submitItineraryButton") as HTMLButtonElement).innerHTML =
+                    buttonTextOnSubmit;
+                let imageToSend: Uint8Array | null = null;
                 if (selectedImage) {
-                    formData = new FormData();
-                    formData.append("image", selectedImage);
+                    console.log("SELECTED IMAGE NOT NULL");
+                    const reader = new FileReader();
+                    reader.readAsArrayBuffer(selectedImage as File);
+                    reader.onload = async () => {
+                        const buffer = reader.result as ArrayBuffer;
+                        imageToSend = new Uint8Array(buffer);
+                        await httpRequests.addItineraryAndDestinationsWithimage({
+                            itinerary: {
+                                id: -1,
+                                writerEmail: loggedInUser?.email,
+                                writtenDate: "",
+                                title: titleInputValue,
+                                cost: +priceInputValue,
+                                estimatedTime: +timeInputValue,
+                                description: descriptionInputValue,
+                                image: "",
+                            },
+                            destinations: destinations,
+                            imageByteArray: Array.from(imageToSend),
+                        });
+                        alert("Your itinerary was added successfully!");
+                        window.location.reload();
+                        window.location.replace("/homePage");
+                    };
+                } else {
+                    await httpRequests.addItineraryAndDestinationsWithimage({
+                        itinerary: {
+                            id: -1,
+                            writerEmail: loggedInUser?.email,
+                            writtenDate: "",
+                            title: titleInputValue,
+                            cost: +priceInputValue,
+                            estimatedTime: +timeInputValue,
+                            description: descriptionInputValue,
+                            image: "",
+                        },
+                        destinations: destinations,
+                        imageByteArray: null,
+                    });
+                    alert("Your itinerary was added successfully!");
+                    window.location.reload();
+                    window.location.replace("/homePage");
                 }
-                httpRequests.addItineraryAndDestinations({
-                    itinerary: {
-                        id: -1,
-                        writerEmail: loggedInUser?.email,
-                        writtenDate: "",
-                        title: titleInputValue,
-                        cost: +priceInputValue,
-                        estimatedTime: +timeInputValue,
-                        description: descriptionInputValue,
-                        image: "",
-                    },
-                    destinations: destinations,
-                    // formData: formData,
-                });
-                alert("Your itinerary was added successfully!");
-                window.location.reload();
-                window.location.replace("/homePage");
             } catch (error) {
                 alert("There was an error when trying to add the route, please try again.");
             }
@@ -213,9 +242,15 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                 alert("Your itinerary has been updated!");
                 window.location.reload();
                 window.location.replace("/homePage");
-            } catch (error) {
-                alert("There was an error when trying to update the route, please try again.");
-            }
+            } catch (error) {}
+        }
+    }
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    function handleClearImage() {
+        if (inputRef.current) {
+            inputRef.current.value = "";
         }
     }
 
@@ -273,15 +308,26 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                         defaultValue={editMode ? desc : ""}
                     ></textarea>
                     <br></br>
-                    <label className="newRouteLabel">Upload image</label>
-                    <input
-                        type="file"
-                        className="newRouteInput"
-                        onChange={handleImageChange}
-                    ></input>
                     <br></br>
                     {editMode ? null : (
                         <div>
+                            <label className="newRouteLabel">Upload image</label>
+                            <input
+                                type="file"
+                                className="newRouteInput"
+                                onChange={handleImageChange}
+                                ref={inputRef}
+                            ></input>
+                            {selectedImage ? (
+                                <button
+                                    type="button"
+                                    onClick={handleClearImage}
+                                    id="clearImageButton"
+                                >
+                                    Clear image
+                                </button>
+                            ) : null}
+
                             <label className="newRouteLabel" id="destinationInputLabel">
                                 Add destination to itinerary
                             </label>
