@@ -107,14 +107,15 @@ public class ItineraryRepository {
     }
 
 
-    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations, byte[] image) throws SQLException, IOException {
+    public void saveItinerary(ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         Connection conn2 = null;
         PreparedStatement statement2 = null;
         ResultSet resultSet2 = null;
-        Itinerary itinerary = itineraryAndDestinations.getItinerary();
+        Itinerary itinerary = itineraryAndDestinationsWithImage.getItinerary();
+        int n = -1;
 
         try {
             if (validateItinerary(itinerary) == false) {
@@ -160,16 +161,22 @@ public class ItineraryRepository {
         System.out.println(itineraryOutput.toString());
 
         try {
-            int totalDestinations = itineraryAndDestinations.getDestinations().size();
+            int totalDestinations = itineraryAndDestinationsWithImage.getDestinations().size();
 
             for (int i = 0; i < totalDestinations; i++) {
-                saveItineraryAndDestinations(itineraryOutput, itineraryAndDestinations.getDestinations().get(i), i+1);
+                saveItineraryAndDestinations(itineraryOutput, itineraryAndDestinationsWithImage.getDestinations().get(i), i+1);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
 
+        byte[] image = itineraryAndDestinationsWithImage.getImageByteArray();
+
+        System.out.println("Image:" + image);
+
         if (image != null) {
+
+            System.out.println("Image not null");
 
             try {
                 conn2 = connectToDB();
@@ -180,13 +187,23 @@ public class ItineraryRepository {
 
                 resultSet2 = statement2.executeQuery();
 
-                resultSet2.next();
-                int i = resultSet2.getInt("id");
-
-                saveImageOnItinerary(image, i);
+                if (resultSet2.next()) {
+                    n = resultSet2.getInt("id");
+                }
             } catch (SQLException e) {
                 throw new SQLException(e);
+            } finally {
+                if (statement2 != null) {
+                    statement2.close();
+                }
+                if (resultSet2 != null) {
+                    resultSet2.close();
+                }
+                if (conn2 != null) {
+                    conn2.close();
+                }
             }
+            saveImageOnItinerary(image, n);
         }
 
     }
