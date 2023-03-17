@@ -1,7 +1,6 @@
 import {
     Itinerary,
     ItineraryAndDestinations,
-    ItineraryComment,
     ItineraryAndDestinationsWithImage,
     ItineraryDestination,
     ItineraryWithImage,
@@ -290,74 +289,6 @@ async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
     return ratedItineraries;
 }
 
-async function getComments(itineraryId: number): Promise<ItineraryComment[]> {
-    const response: Response = await fetch(
-        `http://localhost:8080/getitinerarycomments/${itineraryId}`
-    );
-    if (!response.ok) {
-        throw new Error("Failed to get comments with itinerary ID " + itineraryId);
-    }
-    const comments: ItineraryComment[] = await response.json();
-    return comments;
-}
-
-async function updateComment(commentId: number, newContent: string): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/editcomment/${commentId}/${newContent}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
-    if (!response.ok) {
-        throw new Error("Failed to update comment with comment ID " + commentId);
-    }
-}
-
-async function deleteComment(commentId: number): Promise<void> {
-    const response: Response = await fetch(`http://localhost:8080/deletecomment/${commentId}`, {
-        method: "DELETE",
-    });
-    if (!response.ok) {
-        throw new Error("Failed to delete comment with comment ID " + commentId);
-    }
-}
-
-async function addComment(comment: ItineraryComment): Promise<number> {
-    const response: Response = await fetch("http://localhost:8080/addcomment", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(comment),
-    });
-    if (!response.ok) {
-        throw new Error("Failed to add new comment");
-    }
-    const id: number = await response.json();
-    return id;
-}
-
-async function isAdmin(userEmail: string): Promise<Boolean> {
-    const response: Response = await fetch(`http://localhost:8080/isadmin/${userEmail}`);
-    if (!response.ok) {
-        throw new Error("Failed to check if user is admin");
-    }
-    const isAdmin: boolean = await response.json();
-    return isAdmin;
-}
-
-async function getEveryItinerary(): Promise<Itinerary[]> {
-    const response: Response = await fetch(`http://localhost:8080/everyitinerary`);
-    if (!response.ok) {
-        throw new Error("Failed to load every itinerary");
-    }
-    const everyItinerary: Itinerary[] = await response.json();
-    return everyItinerary;
-}
-
 async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     const response: Response = await fetch(
         `http://localhost:8080/getitineraryimage/${itineraryId}`
@@ -392,12 +323,6 @@ const httpRequests = {
     getUserRatingOfItinerary,
     addRatingOfItinerary,
     getRatedItineraries,
-    getComments,
-    updateComment,
-    deleteComment,
-    addComment,
-    isAdmin,
-    getEveryItinerary,
     getItineraryImage,
 };
 

@@ -16,11 +16,7 @@ type RatingBarProps = {
  * @param itineraryId number, the if of the itinerary
  * @returns HTML code for the rating bar component
  */
-const RatingBar = ({
-    loggedInUser,
-    itineraryId,
-    updateAverageRating,
-}: RatingBarProps) => {
+const RatingBar = ({ loggedInUser, itineraryId, updateAverageRating }: RatingBarProps) => {
     const [selectedRating, setSelectedRating] = useState<string>("");
 
     useEffect(() => {
@@ -33,16 +29,12 @@ const RatingBar = ({
      * @param loggedInUserEmail
      * @param itineraryId
      */
-    async function setUserRatingOfItinerary(
-        loggedInUserEmail: string,
-        itineraryId: number
-    ) {
+    async function setUserRatingOfItinerary(loggedInUserEmail: string, itineraryId: number) {
         try {
-            const ratingPromise: Promise<number> =
-                httpRequests.getUserRatingOfItinerary(
-                    loggedInUserEmail,
-                    itineraryId
-                );
+            const ratingPromise: Promise<number> = httpRequests.getUserRatingOfItinerary(
+                loggedInUserEmail,
+                itineraryId
+            );
             ratingPromise.then((rating: number) => {
                 setRating(rating);
             });
@@ -62,8 +54,7 @@ const RatingBar = ({
             return;
         }
 
-        const ratingInputs =
-            document.querySelectorAll<HTMLInputElement>(".rating input");
+        const ratingInputs = document.querySelectorAll<HTMLInputElement>(".rating input");
         ratingInputs.forEach((input) => {
             if (input.value === rating.toString()) {
                 input.checked = true;
@@ -79,9 +70,7 @@ const RatingBar = ({
      *
      * @param event
      */
-    async function handleRatingClick(
-        event: React.MouseEvent<HTMLInputElement>
-    ) {
+    async function handleRatingClick(event: React.MouseEvent<HTMLInputElement>) {
         removeRatingIfChecked(event);
         const target = event.target as HTMLInputElement;
         const rating = target.checked ? target.value : "0";
@@ -101,9 +90,7 @@ const RatingBar = ({
      *
      * @param event
      */
-    const removeRatingIfChecked = (
-        event: React.MouseEvent<HTMLInputElement>
-    ) => {
+    const removeRatingIfChecked = (event: React.MouseEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.checked && target.value === selectedRating) {
             setSelectedRating("");
@@ -115,45 +102,15 @@ const RatingBar = ({
 
     return (
         <div className="rating">
-            <input
-                type="radio"
-                onClick={handleRatingClick}
-                id="star5"
-                name="rating"
-                value="5"
-            />
+            <input type="radio" onClick={handleRatingClick} id="star5" name="rating" value="5" />
             <label htmlFor="star5"></label>
-            <input
-                type="radio"
-                onClick={handleRatingClick}
-                id="star4"
-                name="rating"
-                value="4"
-            />
+            <input type="radio" onClick={handleRatingClick} id="star4" name="rating" value="4" />
             <label htmlFor="star4"></label>
-            <input
-                type="radio"
-                onClick={handleRatingClick}
-                id="star3"
-                name="rating"
-                value="3"
-            />
+            <input type="radio" onClick={handleRatingClick} id="star3" name="rating" value="3" />
             <label htmlFor="star3"></label>
-            <input
-                type="radio"
-                onClick={handleRatingClick}
-                id="star2"
-                name="rating"
-                value="2"
-            />
+            <input type="radio" onClick={handleRatingClick} id="star2" name="rating" value="2" />
             <label htmlFor="star2"></label>
-            <input
-                type="radio"
-                onClick={handleRatingClick}
-                id="star1"
-                name="rating"
-                value="1"
-            />
+            <input type="radio" onClick={handleRatingClick} id="star1" name="rating" value="1" />
             <label htmlFor="star1"></label>
         </div>
     );

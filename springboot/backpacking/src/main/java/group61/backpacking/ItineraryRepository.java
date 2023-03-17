@@ -15,6 +15,7 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 @Repository
 public class ItineraryRepository {
@@ -726,6 +727,31 @@ public class ItineraryRepository {
             }
         }
 
+    }
+    
+    public void deleteItineraryDestinations(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary_Destination WHERE itinerary_id = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, itineraryId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
     }
 
     // Denne som brukes for sletting av Itinerarys
@@ -1890,130 +1916,6 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         return ratedItineraries;
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ITINERARY COMMENTS
-
-    public int saveComment(Comment comment) throws SQLException {
-        Connection conn = null;
-        PreparedStatement statement1 = null;
-        PreparedStatement statement2 = null;
-        int id = -1;
-
-    try {
-        conn = connectToDB();
-        String sqlQuery = "INSERT INTO Itinerary_Comment(username, itinerary_id, comment) VALUES (?, ?, ?)";
-        statement1 = conn.prepareStatement(sqlQuery);
-        statement1.setString(1, comment.getAuthor());
-        statement1.setInt(2, comment.getItineraryId());
-        statement1.setString(3, comment.getContent());
-
-        statement1.executeUpdate();
-
-        sqlQuery = "SELECT * FROM Itinerary_Comment WHERE username = ? ORDER BY written_date DESC LIMIT 1";
-        statement2 = conn.prepareStatement(sqlQuery);
-        statement2.setString(1, comment.getAuthor());
-
-        id = statement2.executeQuery().getInt("id");
-    } catch (SQLException e) {
-        throw new SQLException(e);
-    } finally {
-        if (statement1 != null) {
-            statement1.close();
-        }
-        if (statement2 != null) {
-            statement2.close();
-        }
-        if (conn != null) {
-            conn.close();
-        }
-    }
-    return id;
-    }
-
-    public List<Comment> loadItineraryComments(int itineraryId) throws SQLException {
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        List<Comment> commentList = new ArrayList<>();
-
-        try {
-            conn = connectToDB();
-            String sqlQuery = "SELECT * FROM Itinerary_Comment WHERE itinerary_id = ?";
-            statement = conn.prepareStatement(sqlQuery);
-            statement.setInt(1, itineraryId);
-            resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String author = resultSet.getString("username");
-                String content = resultSet.getString("comment");
-                Comment comment = new Comment(id, itineraryId, author, content);
-                commentList.add(comment);
-            }
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        } finally {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-
-        return commentList;
-    }
-
-    public void deleteComment(int commentId) throws SQLException {
-        Connection conn = null;
-        PreparedStatement statement = null;
-
-    try {
-        conn = connectToDB();
-        String sqlQuery = "DELETE FROM Itinerary_Comment WHERE id = ?";
-        statement = conn.prepareStatement(sqlQuery);
-        statement.setInt(1, commentId);
-
-        statement.executeUpdate();
-    } catch (SQLException e) {
-        throw new SQLException(e);
-    } finally {
-        if (statement != null) {
-            statement.close();
-        }
-        if (conn != null) {
-            conn.close();
-        }
-    }
-    }
-
-    public void updateComment(int commentId, String comment) throws SQLException {
-        Connection conn = null;
-        PreparedStatement statement = null;
-
-    try {
-        conn = connectToDB();
-        String sqlQuery = "UPDATE Itinerary_Comment SET comment = ? WHERE id = ?";
-        statement = conn.prepareStatement(sqlQuery);
-        statement.setString(1, comment);
-        statement.setInt(2, commentId);
-
-        statement.executeUpdate();
-    } catch (SQLException e) {
-        throw new SQLException(e);
-    } finally {
-        if (statement != null) {
-            statement.close();
-        }
-        if (conn != null) {
-            conn.close();
-        }
-    }
-    }
 }
 
 
