@@ -74,12 +74,12 @@
 #itineraryImage {
     border-radius: 5px;
     object-fit: cover;
-    height: 200px;
+    height: 240px;
     width: 100%;
 }
 
 #itineraryDestinationBox {
-    margin-top: 50px;
+    margin-top: 20px;
     width: 100%;
     background-color: #ececec;
     height: 600px;

@@ -138,16 +138,35 @@ const ItineraryListBox = ({
                 description = itinerary.description;
             }
 
-            let itinerarySummaryBox = (
-                <ItinerarySummaryBox
-                    title={itinerary.title}
-                    description={description}
-                    estimatedTime={itinerary.estimatedTime.toString()}
-                    cost={itinerary.cost.toString()}
-                />
-            );
+            let imgElement: HTMLImageElement | null = null;
 
-            createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+            try {
+                const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
+                    itinerary.id
+                );
+                imagePromise.then((imageArray: Uint8Array) => {
+                    if (imageArray.length != 0) {
+                        imgElement = document.createElement("img") as HTMLImageElement;
+                        const byteArray: Uint8Array = new Uint8Array(imageArray);
+                        const blob: Blob = new Blob([byteArray]);
+                        const url: string = URL.createObjectURL(blob);
+                        imgElement.src = url;
+                    }
+                    let itinerarySummaryBox = (
+                        <ItinerarySummaryBox
+                            title={itinerary.title}
+                            image={imgElement}
+                            description={description}
+                            estimatedTime={itinerary.estimatedTime.toString()}
+                            cost={itinerary.cost.toString()}
+                        />
+                    );
+                    createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
             expandableItineraryListDiv.appendChild(itinerarySummaryDiv);
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
