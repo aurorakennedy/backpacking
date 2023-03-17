@@ -727,31 +727,6 @@ public class ItineraryRepository {
         }
 
     }
-    
-    public void deleteItineraryDestinations(int itineraryId) throws SQLException {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            
-            conn = connectToDB();
-            String sqlQuery = "DELETE FROM Itinerary_Destination WHERE itinerary_id = ?";
-            preparedStatement = conn.prepareStatement(sqlQuery);
-            preparedStatement.setInt(1, itineraryId);
-
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        }
-
-        finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-    }
 
     // Denne som brukes for sletting av Itinerarys
     public void deleteItinerary(int itineraryId) throws SQLException{
