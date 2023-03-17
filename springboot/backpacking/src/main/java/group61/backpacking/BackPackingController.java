@@ -49,6 +49,12 @@ public class BackPackingController {
         }
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/isadmin/{userEmail}")
+    public boolean isUserAdmin(@PathVariable String userEmail) throws RuntimeException, SQLException {
+        return userRep.isAdmin(userEmail);
+    }
+
     // Create a new user
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
@@ -225,6 +231,35 @@ public class BackPackingController {
     @GetMapping("/getrateditineraries/{userEmail}")
     public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
         return itineraryRep.loadRatedItineraries(userEmail);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/addcomment")
+    public int addComment(@RequestBody Comment comment) throws SQLException {
+        return itineraryRep.saveComment(comment);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getitinerarycomments/{itineraryId}")
+    public List<Comment> getItineraryComments(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.loadItineraryComments(itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/deletecomment/{commentId}")
+    public void deleteComment(@PathVariable int commentId) throws SQLException {
+        itineraryRep.deleteComment(commentId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/editcomment/{commentId}/{newContent}")
+    public void editComment(@PathVariable int commentId, @PathVariable String newContent) throws SQLException {
+        itineraryRep.updateComment(commentId, newContent);
+    }
+    
+    @GetMapping("/everyitinerary")
+    public List<Itinerary> getEveryItinerary() throws SQLException {
+        return itineraryRep.loadEveryItinerary();
     }
 
     @CrossOrigin(origins = "*")

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import ItinerarySummaryBox from "./ItinerarySummaryBox";
 import "./itineraryListBoxStyle.css";
-import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
+import { Itinerary, ItineraryAndDestinations, ItineraryComment, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
 import DeleteItinerary from "./DeleteItinerary";
+import Comment from "./Comment";
+import AddComment from "./AddComment";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -15,7 +17,8 @@ type ItineraryListBoxProps = {
         | "Your itineraries"
         | "Recommended itineraries"
         | "Liked itineraries"
-        | "Rated itineraries";
+        | "Rated itineraries"
+        | "All itineraries";
     loggedInUser: LoggedInUser;
 };
 
@@ -24,8 +27,9 @@ type ItineraryListBoxProps = {
  *
  * @param itinerariesBasedOn String that defines what the itineraries in the list should be based on. Can be "Your itineraries",
  * which returns a list of the logged in users itineraries, "Recommended itineraries", which returns a list of recommended
- * itineraries for the logged in user, "Liked itineraries", which returns a list of itineraries the user has liked, or
- * "Rated itineraries, which returns a list of the itineraries that the user has rated."
+ * itineraries for the logged in user, "Liked itineraries", which returns a list of itineraries the user has liked,
+ * "Rated itineraries, which returns a list of the itineraries that the user has rated, or "All itineraries", which returns a
+ * list of all created itineraries if the logged in user is an admin.
  * @param loggedInUser A user object, the logged in user.
  * @returns HTML-code for a BP-Advisor list of itineraries.
  */
@@ -44,6 +48,9 @@ const ItineraryListBox = ({
     const [desc, setDesc] = useState("");
 
     const [sameUser, setSameUser] = useState(false);
+    const [comments, setComments] = useState([
+        {id: 1, author: "Test", content: "Test", allowEditing: false}
+    ]);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -96,12 +103,24 @@ const ItineraryListBox = ({
                     loggedInUser.email
                 );
                 promise.then((ratedItineraries: Itinerary[]) => {
-                    console.log(ratedItineraries);
                     displayItineraries(ratedItineraries, itinerariesBasedOn);
                 });
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
+        } else if (itinerariesBasedOn === "All itineraries") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                if (isAdmin) {
+                    try {
+                        const promise: Promise<Itinerary[]> = httpRequests.getEveryItinerary();
+                        promise.then((allItineraries: Itinerary[]) => {
+                            displayItineraries(allItineraries, itinerariesBasedOn);
+                        });
+                    } catch (error) {
+                        alert("Could not load itineraries. Please refresh the page");
+                    }
+                }
+            });
         }
     }
 
@@ -171,6 +190,19 @@ const ItineraryListBox = ({
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
         });
+    }
+
+    /**
+     * Function for checking whether the logged in user is an admin
+     */
+    async function checkIfUserIsAdmin(): Promise<Boolean> {
+        let result: Boolean = false;
+        try {
+            const isAdminPromise: Promise<Boolean> = httpRequests.isAdmin(loggedInUser.email);
+            result = await isAdminPromise;
+        } catch (error) {}
+
+        return result;
     }
 
     /**
@@ -282,10 +314,14 @@ const ItineraryListBox = ({
 
                 updateAverageRating(itineraryId);
 
-                if (loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail) {
-                    let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
-                        "closeAndDeleteColumn"
-                    ) as HTMLDivElement;
+                checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                    if (
+                        loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail ||
+                        isAdmin
+                    ) {
+                        let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
+                            "closeAndDeleteColumn"
+                        ) as HTMLDivElement;
 
                     let deleteButtonDiv: HTMLDivElement = document.createElement("div");
                     deleteButtonDiv.id = "itineraryDeleteButtonDiv";
@@ -360,8 +396,25 @@ const ItineraryListBox = ({
                         circle3.style.marginBottom = "4px";
                         itineraryDestinationBox.appendChild(circle3);
                     }
-                });
-            });
+                }
+            );
+                comments.length = 0;
+
+                const commentsList: ItineraryComment[] = await
+                    httpRequests.getComments(parseInt(itineraryId));
+            
+                console.log(commentsList);
+
+                const updatedComments = commentsList.reverse().map(comment => ({
+                    id: comment.id,
+                    author: comment.author,
+                    content: comment.content,
+                    allowEditing: loggedInUser.username === comment.author,
+                    }));
+                    
+                setComments(updatedComments);
+            }
+        );
         } catch (error) {}
 
         setitineraryBoxExpanded(true);
@@ -453,6 +506,48 @@ const ItineraryListBox = ({
                                 </Link>
                             </div>
                             <p id="itineraryBoxDescription"></p>
+                            <div style={{backgroundColor: '#eee', padding: '20px', marginTop: '50px',
+                            borderRadius: '0px', border: '1px solid black', width: '100%'}}>
+                                <div style={{padding: '20px'}}>
+                                    <AddComment onSubmit={async function (comment: string): Promise<void> {
+                                        const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(loggedInUser.email);
+                                        const username: string = await usernamePromise;
+                                        const id: number = await httpRequests.addComment({
+                                            id: -1,
+                                            itineraryId: itineraryId,
+                                            author: username,
+                                            content: comment,
+                                        });
+                                        setComments([
+                                            {
+                                                id: id,
+                                                author: username,
+                                                content: comment,
+                                                allowEditing: true,
+                                            },
+                                            ...comments
+                                        ])
+                                    } }></AddComment>
+                                </div>
+                                <div style={{padding: '10px', borderRadius: '10px'}}>
+                                    {comments.map(comment => (
+                                        <Comment 
+                                            key={comment.id}
+                                            author={comment.author}
+                                            content={comment.content}
+                                            allowEditing={comment.allowEditing}
+                                            onDelete={function (): void {
+                                                httpRequests.deleteComment(comment.id);
+                                                const updatedComments = comments.filter(c => c.id !== comment.id);
+                                                setComments(updatedComments);
+                                            } } 
+                                            onUpdate={function (updatedContent: string): void {
+                                                httpRequests.updateComment(comment.id, updatedContent);
+                                            } } 
+                                        />
+                                ))}
+                                </div>
+                            </div>
                         </div>
                         <div id="closeAndDeleteColumn">
                             <p id="itineraryBoxCloseButton" onClick={handleExpansionClose}>

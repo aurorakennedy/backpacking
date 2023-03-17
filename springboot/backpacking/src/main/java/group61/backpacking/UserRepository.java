@@ -200,28 +200,27 @@ public class UserRepository {
 
     }
 
-    public boolean isAdmin(User user) throws RuntimeException, SQLException {
+    public boolean isAdmin(String email) throws RuntimeException, SQLException {
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        User moderator = new User(null, null, null);
+
+        Boolean isAdmin = false;
 
         try {
             conn = connectToDB();
 
-            String sqlQuery = "SELECT User.email, User.password, User.username " +
-                    "FROM User " +
-                    "JOIN Moderator " +
-                    "ON User.email = Moderator.email " +
-                    "WHERE Moderator.email = ?";
+            String sqlQuery = "SELECT *" +
+                    "FROM Moderator " +
+                    "WHERE email = ?";
 
             preparedStatement = conn.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(1, email);
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                moderator.mapUserFromResultSet(resultSet);
+            if (resultSet.next()) {
+                isAdmin = true;
             }
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -240,13 +239,7 @@ public class UserRepository {
             }
         }
 
-        if (moderator != null) {
-            if (moderator.getPassword().equals(user.getPassword())) {
-                return true;
-            }
-        }
-
-        return false;
+        return isAdmin;
 
     }
 

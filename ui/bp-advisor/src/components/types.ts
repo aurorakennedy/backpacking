@@ -48,6 +48,13 @@ export interface ItineraryAndDestinations {
     destinations: Destination[];
 }
 
+export interface ItineraryComment {
+    id: number;
+    itineraryId: number;
+    author: string;
+    content: string;
+}
+
 export interface ItineraryAndDestinationsWithImage {
     itinerary: Itinerary;
     destinations: Destination[];
