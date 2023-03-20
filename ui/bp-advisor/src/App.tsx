@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
 import ItineraryForm from "./components/ItineraryForm";
+import AdvertiserLogInBox from "./components/AdvertiserLogInBox";
+import AdvertiserSingUpBox from "./components/AvertiserSignUpBox";
 
 function App() {
     // Keeps track of the logged in user.
@@ -52,6 +54,7 @@ function App() {
                                     />
                                 }
                             />
+                            
                             <Route
                                 path="/homePage"
                                 element={
@@ -100,6 +103,19 @@ function App() {
                                 <LogInBox setLoggedInUser={setLoggedInUser} />
                             }
                         />
+                        <Route
+                            path="/advertiserSignUp"
+                            element={
+                                <AdvertiserSingUpBox setLoggedInUser={setLoggedInUser} />
+                            }
+                        />
+                        <Route
+                            path="/advertiserLogIn"
+                            element={
+                                <AdvertiserLogInBox setLoggedInUser={setLoggedInUser} />
+                            }
+                        />
+                        
                     </Routes>
                 )}
             </div>

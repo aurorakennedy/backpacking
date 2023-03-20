@@ -15,7 +15,7 @@ type LogInBoxProps = {
  *
  * @returns HTML-code for a BP-Advisor login box and functions to support login.
  */
-const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
+const AdvertiserLogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
     console.log("LoginBox mounted");
 
     return (
@@ -23,7 +23,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
             <Header />
             <div id="logInBox">
                 <form>
-                    <h2 id="logInBoxTitle"> Welcome back, backpacker!</h2>
+                    <h2 id="logInBoxTitle"> Welcome back, advertiser!</h2>
                     <label id="emailInputLabel">E-mail</label>
                     <input
                         id="emailInput"
@@ -40,7 +40,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                     ></input>
                     <button
                         id="logInButton"
-                        onClick={submitLogInInfo}
+                        onClick={submitAdvertiserLogInInfo}
                         type="button"
                     >
                         {" "}
@@ -49,12 +49,14 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                 </form>
                 {/*  <p id='signUpButton'>Sign up</p> */}
 
-                <Link id="signUpButton" to="/signUp">
-                    Sign Up
+                <Link id="signUpButton" to="/advertiserSignUp">
+                    Sign Up Advertiser
                 </Link>
-                <Link id="advertiserSignUpButton" to="/advertiserLogin">
-                    Advertiser Login
+
+                <Link id="backToLogInButton" to="/logIn">
+                        Back to user Log In
                 </Link>
+
             </div>
         </>
     );
@@ -64,7 +66,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
      * backend for processing. If a user with the corresponding emal and password is found, it
      * is returned and saved in the browser storage.
      */
-    function submitLogInInfo():
+    function submitAdvertiserLogInInfo():
         | React.MouseEventHandler<HTMLButtonElement>
         | any {
         const emailInputValue: string = (
@@ -82,7 +84,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
         try {
             console.log(emailInputValue);
             console.log(passwordInputValue);
-            const promise: Promise<User> = httpRequests.login({
+            const promise: Promise<User> = httpRequests.advertiserLogin({
                 username: "", //MUST BE AN EMPTY STRING TO ENSURE THE FORM OF A USER OBJECT
                 email: emailInputValue,
                 password: passwordInputValue,
@@ -103,5 +105,4 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
     }
 };
 
-export default LogInBox;
-
+export default AdvertiserLogInBox;

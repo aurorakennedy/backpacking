@@ -1,5 +1,5 @@
 #logInBox {
-    height: 400px;
+    height: 450px;
     width: 400px;
     background-color: #ECECEC;
     border-radius: 10%;
@@ -68,6 +68,13 @@
 }
 
 #signUpButton {
+    position: absolute;
+    bottom: 45px;
+    color: #4AA8FF;
+    text-decoration: underline;
+}
+
+#advertiserSignUpButton {
     position: absolute;
     bottom: 20px;
     color: #4AA8FF;

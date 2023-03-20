@@ -38,8 +38,56 @@ async function register(user: User): Promise<User> {
     }
 }
 
+
 async function login(user: User): Promise<User> {
     const response: Response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
+    console.log("Response: " + response.status);
+    if (!response.ok) {
+        throw new Error("Failed to log in");
+    }
+    try {
+        const loggedInUser: User = await response.json();
+        return loggedInUser;
+    } catch (error) {
+        return {
+            username: "failed",
+            email: "failed",
+            password: "failed",
+        };
+    }
+}
+
+async function advertiserRegister(user: User): Promise<User> {
+    const response: Response = await fetch("http://localhost:8080/advertiserRegister", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to register user");
+    }
+    try {
+        const loggedInUser: User = await response.json();
+        return loggedInUser;
+    } catch (error) {
+        return {
+            username: "failed",
+            email: "failed",
+            password: "failed",
+        };
+    }
+}
+
+async function advertiserLogin(user: User): Promise<User> {
+    const response: Response = await fetch("http://localhost:8080/advertiserLogin", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -387,6 +435,9 @@ const httpRequests = {
     addComment,
     isAdmin,
     getEveryItinerary,
+    advertiserLogin,
+    advertiserRegister,
+
 };
 
 export default httpRequests;
