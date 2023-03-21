@@ -59,7 +59,22 @@ const ItineraryListBox = ({
         { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
 
-    const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
+    useEffect(() => {
+        async function fetchComments() {
+          const commentsList: ItineraryComment[] = await httpRequests.getComments(itineraryId);
+          const updatedComments = commentsList.reverse().map(comment => ({
+            id: comment.id,
+            author: comment.author,
+            content: comment.content,
+            allowEditing: loggedInUser.username === comment.author,
+          }));
+    
+          setComments(updatedComments);
+        }
+    
+        fetchComments();
+      }, [itineraryId, loggedInUser.username]);
+      
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -431,23 +446,10 @@ const ItineraryListBox = ({
                         circle3.style.marginBottom = "4px";
                         itineraryDestinationBox.appendChild(circle3);
                     }
-                });
-
-                const commentsList: ItineraryComment[] = await httpRequests.getComments(
-                    parseInt(itineraryId)
-                );
-
-                console.log(commentsList);
-
-                const updatedComments = commentsList.reverse().map((comment) => ({
-                    id: comment.id,
-                    author: comment.author,
-                    content: comment.content,
-                    allowEditing: loggedInUser.username === comment.author,
-                }));
-
-                setComments(updatedComments);
-            });
+                }
+            );
+            }
+        );
         } catch (error) {}
 
         setitineraryBoxExpanded(true);
