@@ -49,7 +49,7 @@ const ItineraryListBox = ({
 
     const [sameUser, setSameUser] = useState(false);
     const [comments, setComments] = useState([
-        {id: 1, author: "Test", content: "Test", allowEditing: false}
+        { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
 
     // Updates the list when the component is loaded on a page.
@@ -157,16 +157,35 @@ const ItineraryListBox = ({
                 description = itinerary.description;
             }
 
-            let itinerarySummaryBox = (
-                <ItinerarySummaryBox
-                    title={itinerary.title}
-                    description={description}
-                    estimatedTime={itinerary.estimatedTime.toString()}
-                    cost={itinerary.cost.toString()}
-                />
-            );
+            let imgElement: HTMLImageElement | null = null;
 
-            createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+            try {
+                const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
+                    itinerary.id
+                );
+                imagePromise.then((imageArray: Uint8Array) => {
+                    if (imageArray.length != 0) {
+                        imgElement = document.createElement("img") as HTMLImageElement;
+                        const byteArray: Uint8Array = new Uint8Array(imageArray);
+                        const blob: Blob = new Blob([byteArray]);
+                        const url: string = URL.createObjectURL(blob);
+                        imgElement.src = url;
+                    }
+                    let itinerarySummaryBox = (
+                        <ItinerarySummaryBox
+                            title={itinerary.title}
+                            image={imgElement}
+                            description={description}
+                            estimatedTime={itinerary.estimatedTime.toString()}
+                            cost={itinerary.cost.toString()}
+                        />
+                    );
+                    createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
             expandableItineraryListDiv.appendChild(itinerarySummaryDiv);
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
@@ -315,6 +334,30 @@ const ItineraryListBox = ({
                     }
                 });
 
+                try {
+                    const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
+                        itineraryAndDestinations.itinerary.id
+                    );
+                    imagePromise.then((imageArray: Uint8Array) => {
+                        const imgAndDestinationsWrapper: HTMLDivElement = document.getElementById(
+                            "imageAndDestinationWrapper"
+                        ) as HTMLDivElement;
+                        if (imageArray.length != 0) {
+                            const imgElement: HTMLImageElement = document.createElement(
+                                "img"
+                            ) as HTMLImageElement;
+                            imgElement.id = "itineraryImage";
+                            const byteArray: Uint8Array = new Uint8Array(imageArray);
+                            const blob: Blob = new Blob([byteArray]);
+                            const url: string = URL.createObjectURL(blob);
+                            imgElement.src = url;
+                            imgAndDestinationsWrapper.prepend(imgElement);
+                        }
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+
                 let counterOfDestinations: number = 0;
                 itineraryAndDestinations.destinations.forEach((destination) => {
                     let p = document.createElement("p");
@@ -354,25 +397,24 @@ const ItineraryListBox = ({
                         circle3.style.marginBottom = "4px";
                         itineraryDestinationBox.appendChild(circle3);
                     }
-                }
-            );
+                });
                 comments.length = 0;
 
-                const commentsList: ItineraryComment[] = await
-                    httpRequests.getComments(parseInt(itineraryId));
-            
+                const commentsList: ItineraryComment[] = await httpRequests.getComments(
+                    parseInt(itineraryId)
+                );
+
                 console.log(commentsList);
 
-                const updatedComments = commentsList.reverse().map(comment => ({
+                const updatedComments = commentsList.reverse().map((comment) => ({
                     id: comment.id,
                     author: comment.author,
                     content: comment.content,
                     allowEditing: loggedInUser.username === comment.author,
-                    }));
-                    
+                }));
+
                 setComments(updatedComments);
-            }
-        );
+            });
         } catch (error) {}
 
         setitineraryBoxExpanded(true);
@@ -428,8 +470,10 @@ const ItineraryListBox = ({
             ) : (
                 <>
                     <div id="itineraryBox">
-                        <div id="itineraryDestinationBox">
-                            <p id="itineraryDestinationBoxTitle">Destinations:</p>
+                        <div id="imageAndDestinationWrapper">
+                            <div id="itineraryDestinationBox">
+                                <p id="itineraryDestinationBoxTitle">Destinations:</p>
+                            </div>
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
@@ -462,46 +506,63 @@ const ItineraryListBox = ({
                                 </Link>
                             </div>
                             <p id="itineraryBoxDescription"></p>
-                            <div style={{backgroundColor: '#eee', padding: '20px', marginTop: '50px',
-                            borderRadius: '0px', border: '1px solid black', width: '100%'}}>
-                                <div style={{padding: '20px'}}>
-                                    <AddComment onSubmit={async function (comment: string): Promise<void> {
-                                        const usernamePromise: Promise<string> = httpRequests.getUsernameByEmail(loggedInUser.email);
-                                        const username: string = await usernamePromise;
-                                        const id: number = await httpRequests.addComment({
-                                            id: -1,
-                                            itineraryId: itineraryId,
-                                            author: username,
-                                            content: comment,
-                                        });
-                                        setComments([
-                                            {
-                                                id: id,
+
+                            <div
+                                style={{
+                                    backgroundColor: "#eee",
+                                    padding: "20px",
+                                    marginTop: "50px",
+                                    borderRadius: "0px",
+                                    border: "1px solid black",
+                                    width: "100%",
+                                }}
+                            >
+                                <div style={{ padding: "20px" }}>
+                                    <AddComment
+                                        onSubmit={async function (comment: string): Promise<void> {
+                                            const usernamePromise: Promise<string> =
+                                                httpRequests.getUsernameByEmail(loggedInUser.email);
+                                            const username: string = await usernamePromise;
+                                            const id: number = await httpRequests.addComment({
+                                                id: -1,
+                                                itineraryId: itineraryId,
                                                 author: username,
                                                 content: comment,
-                                                allowEditing: true,
-                                            },
-                                            ...comments
-                                        ])
-                                    } }></AddComment>
+                                            });
+                                            setComments([
+                                                {
+                                                    id: id,
+                                                    author: username,
+                                                    content: comment,
+                                                    allowEditing: true,
+                                                },
+                                                ...comments,
+                                            ]);
+                                        }}
+                                    ></AddComment>
                                 </div>
-                                <div style={{padding: '10px', borderRadius: '10px'}}>
-                                    {comments.map(comment => (
-                                        <Comment 
+                                <div style={{ padding: "10px", borderRadius: "10px" }}>
+                                    {comments.map((comment) => (
+                                        <Comment
                                             key={comment.id}
                                             author={comment.author}
                                             content={comment.content}
                                             allowEditing={comment.allowEditing}
                                             onDelete={function (): void {
                                                 httpRequests.deleteComment(comment.id);
-                                                const updatedComments = comments.filter(c => c.id !== comment.id);
+                                                const updatedComments = comments.filter(
+                                                    (c) => c.id !== comment.id
+                                                );
                                                 setComments(updatedComments);
-                                            } } 
+                                            }}
                                             onUpdate={function (updatedContent: string): void {
-                                                httpRequests.updateComment(comment.id, updatedContent);
-                                            } } 
+                                                httpRequests.updateComment(
+                                                    comment.id,
+                                                    updatedContent
+                                                );
+                                            }}
                                         />
-                                ))}
+                                    ))}
                                 </div>
                             </div>
                         </div>

@@ -1,9 +1,11 @@
 package group61.backpacking;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -143,16 +147,26 @@ public class BackPackingController {
       @DeleteMapping("/deleteitinerary/{itineraryId}")
       public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
           itineraryRep.deleteItinerary(itineraryId);
+          itineraryRep.deleteItineraryDestinations(itineraryId);
+          itineraryRep.deleteImage(itineraryId);
       } 
   
     
-    @CrossOrigin(origins = "*")
+    /* @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
     ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
         itineraryRep.saveItinerary(itineraryAndDestinations);
         System.out.println(itineraryAndDestinations.getItinerary());
         System.out.println(itineraryAndDestinations.getDestinations());
+    } */
+
+    // ALSO ADDS IMAGE
+    @CrossOrigin(origins = "*")
+    @PostMapping("/additineraryanddestinationswithimage")
+    public void addItineraryAndDestinations(@RequestBody 
+    ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
+        itineraryRep.saveItinerary(itineraryAndDestinationsWithImage);
     }
 
     @CrossOrigin(origins = "*")
@@ -210,11 +224,29 @@ public class BackPackingController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    /* @CrossOrigin(origins = "*")
     @PutMapping("/updateitinerary")
     public void updateItinerary(@RequestBody Itinerary itinerary) throws SQLException {
             itineraryRep.updateItinerary(itinerary);
+    } */
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/updateitinerary")
+    public void updateItinerary(@RequestBody ItineraryWithImage itineraryWithImage) throws SQLException {
+            itineraryRep.updateItinerary(itineraryWithImage.getItinerary());
+            if (itineraryWithImage.getImageByteArray() != null) {
+                itineraryRep.deleteImage(itineraryWithImage.getItinerary().getId());
+                itineraryRep.saveImageOnItinerary(itineraryWithImage.getImageByteArray(), itineraryWithImage.getItinerary().getId());
+            }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getitineraryimage/{itineraryId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public byte[] getItineraryImage(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.loadItineraryImage(itineraryId);
+    }
+
 
     @CrossOrigin(origins = "*")
     @GetMapping("/getrateditineraries/{userEmail}")

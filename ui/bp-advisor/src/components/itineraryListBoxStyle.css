@@ -64,11 +64,26 @@
     margin-right: 20px;
 }
 
-#itineraryDestinationBox {
-    width: 25%;
-    background-color: #ececec;
-    border-radius: 25px;
+#imageAndDestinationWrapper {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
     margin-right: 50px;
+}
+
+#itineraryImage {
+    border-radius: 5px;
+    object-fit: cover;
+    height: 240px;
+    width: 100%;
+}
+
+#itineraryDestinationBox {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #ececec;
+    height: 600px;
+    border-radius: 25px;
     overflow-y: scroll;
     padding-bottom: 30px;
 }
@@ -140,7 +155,6 @@
     font-size: 13px;
 }
 
-
 #itineraryDeleteButton {
     background-color: #d65645ac;
     color: white;
@@ -148,8 +162,8 @@
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  #itineraryDeleteButton:hover {
+}
+
+#itineraryDeleteButton:hover {
     background-color: #d65745;
-  }
+}
