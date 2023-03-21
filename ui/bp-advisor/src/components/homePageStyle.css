@@ -30,7 +30,8 @@
 #recommendedItineraries,
 #likedItineraries,
 #ratedItineraries,
-#allItineraries {
+#allItineraries,
+#searchedItineraries {
     display: flex;
     flex-direction: row;
 }

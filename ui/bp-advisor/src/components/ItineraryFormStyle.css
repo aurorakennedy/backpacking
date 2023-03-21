@@ -116,3 +116,7 @@
 .destinationCountryPair button:hover {
     color: orangered;
 }
+
+#clearImageButton {
+    float: right;
+}

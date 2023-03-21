@@ -54,3 +54,14 @@ export interface ItineraryComment {
     author: string;
     content: string;
 }
+
+export interface ItineraryAndDestinationsWithImage {
+    itinerary: Itinerary;
+    destinations: Destination[];
+    imageByteArray: number[] | null;
+}
+
+export interface ItineraryWithImage {
+    itinerary: Itinerary;
+    imageByteArray: number[] | null;
+}
