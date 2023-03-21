@@ -5,6 +5,8 @@ import LogInBox from "./components/LogInBox";
 import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
+
+import SearchPageBox from "./components/SearchPage";
 import ItineraryForm from "./components/ItineraryForm";
 
 function App() {
@@ -62,6 +64,15 @@ function App() {
                                 }
                             />
                             <Route
+                                path="/SearchPage"
+                                element={
+                                    <SearchPageBox
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser} 
+                                 />
+                                }
+                            />
+                            <Route
                                 path="/createItinerary"
                                 element={
                                     <ItineraryForm
@@ -94,6 +105,7 @@ function App() {
                                 <SignUpBox setLoggedInUser={setLoggedInUser} />
                             }
                         />
+                        
                         <Route
                             path="/logIn"
                             element={

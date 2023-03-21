@@ -165,8 +165,12 @@ async function addItineraryAndDestinations(
     }
 }
 
-async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
-    const response: Response = await fetch(`http://localhost:8080/itineraries/`);
+async function searchByKeyword(
+    keyword: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/searchItineraries/${keyword}`
+    );
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries by keyword");
     }

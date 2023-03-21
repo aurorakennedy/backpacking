@@ -21,20 +21,28 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
     }
 
     return (
-        <nav id='nav'>
-            <h1 id='logo'>BP-Advisor</h1>
-
+        <div id="navContainer">
+            <nav id='nav'>
             <Link to='/createItinerary'>
                 <button id='addRoute'> + Add  new itinerary</button>
             </Link>
-
+          
+            <h1 id='logo'>BP-Advisor</h1>
             {/* <button id="profilIconButton">
                 <img src={profilIcon} id='profilIcon' />
             </button> */}
-
+            
+            <Link to='/SearchPage'>
+                <button id='switchPages'> Search Page</button>
+            </Link>
+            
+            <Link to='/homePage'>
+                <button id='switchPages'> Home Page</button>
+            </Link>
+            
             <p id='logOutButton' onClick={logOut}> Log out </p> {/* Temporary logout button */}
-
-        </nav>
+            </nav>
+        </div>
     );
 }
 
