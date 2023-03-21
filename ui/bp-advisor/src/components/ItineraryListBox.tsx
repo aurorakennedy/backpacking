@@ -387,7 +387,6 @@ const ItineraryListBox = ({
                     }
                 }
             );
-                comments.length = 0;
 
                 const commentsList: ItineraryComment[] = await
                     httpRequests.getComments(parseInt(itineraryId));
