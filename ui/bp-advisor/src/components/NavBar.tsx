@@ -28,7 +28,7 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
                 {/* <button id="profilIconButton">
                 <img src={profilIcon} id='profilIcon' />
             </button> */}
-                <Link to="/SearchPage">
+                <Link to={`/SearchPage`}>
                     <button id="switchPages"> Search Page</button>
                 </Link>
                 <Link to="/homePage">

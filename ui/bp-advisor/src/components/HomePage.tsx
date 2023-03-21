@@ -11,8 +11,13 @@ type HomePageProps = {
     loggedInUser: LoggedInUser;
 };
 
-const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
+function goToSearchPageWithSearch() {
+    let keyword = (document.getElementById("searchBar") as HTMLInputElement).value;
+    console.log(keyword);
+    window.location.replace(`/searchPage/${keyword}`);
+}
 
+const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
@@ -26,21 +31,24 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                     />
                 </div> */}
 
-                
-                
-                <div id='search'>
-                    <input id='searchBar' type='text' placeholder='Type here to search for an itinerary' /* onChange={} */ />
+                <div id="search">
+                    <input
+                        id="searchBar"
+                        type="text"
+                        placeholder="Type here to search for an itinerary" /* onChange={} */
+                    />
                 </div>
-                <Link to='/SearchPage'>
-                <button id='searchButton'> Search</button>
-                </Link>
+
+                <button id="searchButton" onClick={goToSearchPageWithSearch} type="button">
+                    {" "}
+                    Search
+                </button>
 
                 <div id="userItineraries">
                     <ItineraryListBox
                         idOfWrappingDiv={"userItineraries"}
                         itinerariesBasedOn={"Your itineraries"}
                         loggedInUser={loggedInUser}
-                        
                         //what if i want nothing
                         keyword={""}
                     />
@@ -50,7 +58,6 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"recommendedItineraries"}
                         itinerariesBasedOn={"Recommended itineraries"}
                         loggedInUser={loggedInUser}
-
                         //added this
                         keyword={""}
                     />
@@ -60,7 +67,6 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"likedItineraries"}
                         itinerariesBasedOn={"Liked itineraries"}
                         loggedInUser={loggedInUser}
-
                         //added this
                         keyword={""}
                     />
