@@ -6,6 +6,7 @@ import { LoggedInUser } from "./types";
 type RatingBarProps = {
     loggedInUser: LoggedInUser;
     itineraryId: number;
+    updateHasLikedOrRated: () => void;
     updateAverageRating: () => void;
 };
 
@@ -16,7 +17,12 @@ type RatingBarProps = {
  * @param itineraryId number, the if of the itinerary
  * @returns HTML code for the rating bar component
  */
-const RatingBar = ({ loggedInUser, itineraryId, updateAverageRating }: RatingBarProps) => {
+const RatingBar = ({
+    loggedInUser,
+    itineraryId,
+    updateHasLikedOrRated,
+    updateAverageRating,
+}: RatingBarProps) => {
     const [selectedRating, setSelectedRating] = useState<string>("");
 
     useEffect(() => {
@@ -81,6 +87,7 @@ const RatingBar = ({ loggedInUser, itineraryId, updateAverageRating }: RatingBar
                 parseInt(rating)
             );
             updateAverageRating();
+            updateHasLikedOrRated();
         } catch (error) {}
     }
 

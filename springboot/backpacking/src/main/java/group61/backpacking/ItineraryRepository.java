@@ -660,36 +660,74 @@ public class ItineraryRepository {
     public List<Itinerary> searchByKeyword(String keyword) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
+        //PreparedStatement statement2 = null;
         ResultSet resultSet = null;
-        ResultSet resultSet2 = null;
+        //ResultSet resultSet2 = null;
         List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
         try  {
             conn = connectToDB();
-            String sqlQuery = "SELECT * FROM Itinerary WHERE "
-            + "title LIKE '%' || :keyword || '%' "
-            + "OR description LIKE '%' || :keyword || '%'";
+
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            + "title LIKE ?"
+            + "OR itinerary_description LIKE ?"
+            + "OR destination_name LIKE ?"
+            + "OR country LIKE ?";
+
             statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, "%" + keyword + "%");
+            statement.setString(2, "%" + keyword + "%");
+            statement.setString(3, "%" + keyword + "%");
+            statement.setString(4, "%" + keyword + "%");
+            
+
+            // //start testing 14th march
+            // String sqlQuery_test = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            // + "title LIKE %:keyword%"
+            // + " OR itinerary_description LIKE %keyword%"
+            // + " OR destination_name LIKE %keyword%"
+            // + " OR country LIKE %keyword%";
+            // statement = conn.prepareStatement(sqlQuery_test);
+            
+            //statement.setString(1, "'%" + keyword + "%'");
+           // statement.setString(2, "'%" + keyword + "%'");
+          //  statement.setString(3, "'%" + keyword + "%'");
+          //  statement.setString(4, "'%" + keyword + "%'");
+
             resultSet = statement.executeQuery();
+            
+            //end testing 14th march
+
+            
+            //resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
                 Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
-                itinerary.mapItineraryFromResultSet(resultSet);
-                itineraryList.add(itinerary);
+               // if (!itineraryList.contains(itinerary)){
+                    itinerary.mapItineraryFromResultSet(resultSet);
+                    itineraryList.add(itinerary);
+                //}
             }
             
-            String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id) "
-            + "WHERE destination_name LIKE '%' || :keyword || '%' "
-            + "OR country LIKE '%' || :keyword || '%'";
-            statement2 = conn.prepareStatement(sqlQuery2);
-            resultSet2 = statement.executeQuery();
+        //    String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
+        //    + "WHERE destination_name LIKE '%' || :keyword || '%' "
+        //    + "OR country LIKE '%' || :keyword || '%'";
+
+        
+            // String sqlQuery2 = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
+            // + "WHERE destination_name LIKE ? "
+            // + "OR country LIKE ?";
+            // statement2 = conn.prepareStatement(sqlQuery2);
+
+            // statement2.setString(1, keyword);
+            // statement2.setString(2, keyword);
+            // resultSet2 = statement.executeQuery();
             
-            while (resultSet2.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
-                itinerary.mapItineraryFromResultSet(resultSet2);
-                itineraryList.add(itinerary);
-            }
+            // while (resultSet2.next()) {
+            //     Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
+            //     itinerary.mapItineraryFromResultSet(resultSet2);
+            //     itineraryList.add(itinerary);
+            // }
 
         } catch (SQLException exception) {
             throw new SQLException(exception);
@@ -698,12 +736,12 @@ public class ItineraryRepository {
             if (statement != null) {
                 statement.close();
             }
-            if (statement2 != null) {
-                statement2.close();
-            }
-            if (resultSet2 != null) {
-                resultSet2.close();
-            }
+            //if (statement2 != null) {
+            //    statement2.close();
+            //}
+            //if (resultSet2 != null) {
+            //    resultSet2.close();
+            //}
             if (resultSet != null) {
                 resultSet.close();
             }

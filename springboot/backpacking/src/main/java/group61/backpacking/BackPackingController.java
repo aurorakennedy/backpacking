@@ -136,9 +136,24 @@ public class BackPackingController {
             
     }
 
-    @GetMapping("/itineraries") 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/searchItineraries/{keyword}") 
     public List<Itinerary> search(@PathVariable String keyword) throws SQLException {
-            return itineraryRep.searchByKeyword(keyword);
+            List<Itinerary> returnList = new ArrayList<>();
+            List<Itinerary> listReturnedFromQuery = itineraryRep.searchByKeyword(keyword);
+            Boolean itineraryInList;
+            for (Itinerary itineraryFromQuery : listReturnedFromQuery) {
+                itineraryInList = false;
+                for (Itinerary itineraryInReturnList : returnList) {
+                    if (itineraryFromQuery.getId() == itineraryInReturnList.getId()) {
+                        itineraryInList = true;
+                    }
+                }
+                if (!itineraryInList) {
+                    returnList.add(itineraryFromQuery);
+                }
+            }
+            return returnList;
     }
 
 

@@ -9,6 +9,19 @@
     overflow-x: auto;
 }
 
+.expandableSearchItineraryList{
+    width: 1000px;
+    margin-top: 5px;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    row-gap: 30px;
+    column-gap: 10px;
+}
+
 .itinerarySummaryDiv {
     flex: 0 0 auto;
     margin-right: 14px;

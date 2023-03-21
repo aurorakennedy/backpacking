@@ -17,9 +17,13 @@ type ItineraryListBoxProps = {
         | "Your itineraries"
         | "Recommended itineraries"
         | "Liked itineraries"
+        | "Searched itineraries"
         | "Rated itineraries"
         | "All itineraries";
     loggedInUser: LoggedInUser;
+
+    //added keyword
+    keyword: string;
 };
 
 /**
@@ -37,6 +41,9 @@ const ItineraryListBox = ({
     itinerariesBasedOn,
     loggedInUser,
     idOfWrappingDiv,
+
+    //10th March: added keyword
+    keyword,
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] = useState<Boolean>(false);
     const [buttonLiked, setButtonLiked] = useState(false);
@@ -51,6 +58,8 @@ const ItineraryListBox = ({
     const [comments, setComments] = useState([
         { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
+
+    const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -97,6 +106,20 @@ const ItineraryListBox = ({
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
+
+            //March 10th: Added another searched itineraries
+            //Need help here. I think it messed up all ItineraryListBox
+        } else if (itinerariesBasedOn === "Searched itineraries") {
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keyword);
+                //Takes in keyword string
+
+                promise.then((searchedItineraries: Itinerary[]) => {
+                    displayItineraries(searchedItineraries, itinerariesBasedOn);
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "Rated itineraries") {
             try {
                 const promise: Promise<Itinerary[]> = httpRequests.getRatedItineraries(
@@ -122,6 +145,8 @@ const ItineraryListBox = ({
                 }
             });
         }
+
+        //10th march, marisa, adding another paranthesis
     }
 
     function displayItineraries(itineraries: Itinerary[], itinerariesBasedOn: string) {
@@ -135,7 +160,11 @@ const ItineraryListBox = ({
             listContainerDiv.appendChild(title);
         }
         let expandableItineraryListDiv: HTMLDivElement = document.createElement("div");
-        expandableItineraryListDiv.classList.add("expandableItineraryList");
+        if (itinerariesBasedOn === "Searched itineraries") {
+            expandableItineraryListDiv.classList.add("expandableSearchItineraryList");
+        } else {
+            expandableItineraryListDiv.classList.add("expandableItineraryList");
+        }
         itineraries.reverse().forEach((itinerary) => {
             let itinerarySummaryDiv: HTMLDivElement = document.createElement("div");
             itinerarySummaryDiv.classList.add("itinerarySummaryDiv");
@@ -214,6 +243,7 @@ const ItineraryListBox = ({
         itineraryId: string
     ): Promise<React.MouseEventHandler<HTMLElement> | any> {
         try {
+            console.log("Itinerary ID: " + itineraryId);
             const promise: Promise<ItineraryAndDestinations> =
                 httpRequests.getItineraryAndDestinationsById(parseInt(itineraryId));
             promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
@@ -289,6 +319,7 @@ const ItineraryListBox = ({
                             parseInt(itineraryId)
                         );
                         setButtonLiked(!buttonLiked);
+                        setHasLikedOrRated(!hasLikedOrRated);
                     } catch (error) {
                         alert("Could not update like");
                     }
@@ -306,6 +337,9 @@ const ItineraryListBox = ({
                         itineraryId={parseInt(itineraryId)}
                         updateAverageRating={function (): void {
                             updateAverageRating(itineraryId);
+                        }}
+                        updateHasLikedOrRated={function (): void {
+                            setHasLikedOrRated(!hasLikedOrRated);
                         }}
                     />
                 );
@@ -398,7 +432,6 @@ const ItineraryListBox = ({
                         itineraryDestinationBox.appendChild(circle3);
                     }
                 });
-                comments.length = 0;
 
                 const commentsList: ItineraryComment[] = await httpRequests.getComments(
                     parseInt(itineraryId)
@@ -460,7 +493,13 @@ const ItineraryListBox = ({
      */
     const handleExpansionClose = () => {
         setitineraryBoxExpanded(false);
-        window.location.reload();
+        if (hasLikedOrRated) {
+            window.location.reload();
+        }
+    };
+
+    const goToEditForm = () => {
+        window.location.replace(`/editItinerary/${itineraryId}/${title}/${time}/${cost}/${desc}`);
     };
 
     return (
@@ -496,14 +535,14 @@ const ItineraryListBox = ({
                                     />
                                 </div>
 
-                                <Link
-                                    to={`/editItinerary/${itineraryId}/${title}/${time}/${cost}/${desc}`}
+                                <button
+                                    id="editButton"
+                                    type="button"
+                                    hidden={!sameUser}
+                                    onClick={goToEditForm}
                                 >
-                                    <button id="editButton" type="button" hidden={!sameUser}>
-                                        {" "}
-                                        Edit
-                                    </button>
-                                </Link>
+                                    Edit
+                                </button>
                             </div>
                             <p id="itineraryBoxDescription"></p>
 
