@@ -59,6 +59,8 @@ const ItineraryListBox = ({
         { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
 
+    const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
+
     useEffect(() => {
         async function fetchComments() {
             const commentsList: ItineraryComment[] = await httpRequests.getComments(itineraryId);
