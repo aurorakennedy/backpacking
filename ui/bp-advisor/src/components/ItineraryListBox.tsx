@@ -62,21 +62,18 @@ const ItineraryListBox = ({
     useEffect(() => {
         async function fetchComments() {
           const commentsList: ItineraryComment[] = await httpRequests.getComments(itineraryId);
-      
-          console.log(commentsList);
-      
           const updatedComments = commentsList.reverse().map(comment => ({
             id: comment.id,
             author: comment.author,
             content: comment.content,
             allowEditing: loggedInUser.username === comment.author,
           }));
-      
+    
           setComments(updatedComments);
         }
-      
+    
         fetchComments();
-      }, [comments]);
+      }, [itineraryId, loggedInUser.username]);
       
 
     // Updates the list when the component is loaded on a page.
