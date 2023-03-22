@@ -30,11 +30,6 @@
     cursor: pointer;
 }
 
-.itinerarySummaryDiv:hover {
-    background-color: lightgreen;
-    border-radius: 10px;
-}
-
 #itineraryBox {
     margin: auto;
     width: 70%;

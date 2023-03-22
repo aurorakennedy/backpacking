@@ -12,35 +12,48 @@ import "./navBarStyle.css";
 type searchPage = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
     loggedInUser: LoggedInUser;
-
+    
     //set keyword somehow
     //keywordInputValue:
 };
 
+function goToSearchPageWithSearch() {
+    let keyword = (document.getElementById("searchBar") as HTMLInputElement).value;
+    console.log(keyword);
+    window.location.replace(`/searchPage/${keyword}`);
+}
+
 const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
     const { keyword } = useParams();
+
+    const handleKeyDown = (event: { key: string; preventDefault: () => void }) => {
+        // Check if the "Enter" key was pressed
+        if (event.key === 'Enter') {
+            goToSearchPageWithSearch();
+            event.preventDefault();
+        }
+    };
+
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
-            <form>
                 <div id="searchpage">
                     <br></br>
                     <br></br>
                     <br></br>
                     <div id="search">
-                        <input
-                            id="searchBar"
-                            type="text"
-                            placeholder="Type here to search for an itinerary"
-                        />
+                        <input id="searchBar" type="text" 
+                            defaultValue={keyword}
+                            placeholder={"Type here to search for an itinerary"} /* onChange={} */ 
+                            onKeyDown={handleKeyDown}/>
+                        <button
+                            id="searchButton"
+                            onClick={goToSearchPageWithSearch}
+                            type="button"
+                        >
+                            Search
+                        </button>
                     </div>
-                    <button
-                        id="searchButton"
-                        onClick={(async) => enterKeywordInfo(loggedInUser)}
-                        type="button"
-                    >
-                        Search
-                    </button>
                     <h2>Your search results: </h2>
                     <div id="searchItinerariesWrapped"></div>
                     <div id="searchedItineraries">
@@ -54,46 +67,9 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                         )}
                     </div>
                 </div>
-            </form>
         </>
     );
 };
 
-async function enterKeywordInfo(loggedInUser: LoggedInUser) {
-    console.log("Function called");
-    const keywordInputValue: string = (document.getElementById("searchBar") as HTMLInputElement)
-        .value;
-
-    if (keywordInputValue.includes(".") && keywordInputValue.includes("@")) {
-        alert("The keyword is invalid.");
-        return;
-    }
-    //window.location.reload();
-    document.getElementById("searchedItineraries")?.remove();
-    try {
-        console.log(keywordInputValue);
-        const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
-        promise.then((itineraries: Itinerary[]) => {
-            let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById(
-                "searchItinerariesWrapped"
-            ) as HTMLDivElement;
-            let searchedItinerariesdiv = document.createElement("div");
-            searchedItinerariesdiv.id = "searchedItineraries";
-            let searchedItinerariesListBox = (
-                <ItineraryListBox
-                    idOfWrappingDiv={"searchedItineraries"}
-                    itinerariesBasedOn={"Searched itineraries"}
-                    loggedInUser={loggedInUser}
-                    keyword={keywordInputValue}
-                />
-            );
-            createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
-            searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
-        });
-    } catch (error) {
-        //TODO: Error handling
-        alert("There was an error when searching for an itinerary, please try again.");
-    }
-}
 
 export default SearchPageBox;

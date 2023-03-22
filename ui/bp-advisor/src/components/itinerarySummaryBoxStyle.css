@@ -1,53 +1,77 @@
-.itinerarySummaryDiv {
-    background-color: #d4eac9cc;
-    width: 170px;
-    height: 240px;
+.itinerarySummaryBox {
     border-radius: 10px;
-    box-shadow: 0 2px 4px #0000001a;
-    padding: 20px;
-    padding-top: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 300px;
+    height: 330px;
     display: flex;
     flex-direction: column;
-    color: #393838;
-    position: relative;
-    white-space: pre-line;
-}
-
-#routeName {
-    letter-spacing: 0.05em;
-    font-family: "Bubbler One";
-    font-size: 20px;
-    margin-bottom: 0px;
-    color: #d65745;
-    height: 50px;
-}
-
-#routeDescription {
-    font-family: "Cabin Condensed";
-    font-size: 12px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    word-wrap: break-word;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 15px;
-    height: 92px;
-}
-
-.itinerarySummaryImage {
-    margin-top: 30px;
-    border-radius: 5px;
-    object-fit: cover;
-    height: 90px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .itinerarySummaryBox__title {
+    height: 70px;
+    font-size: 24px;
+    margin: 0;
+    text-align: center;
+    color: #333;
+    padding: 10px;
+    background-color: #c9ead7cc;
+  }
+  
+  .itinerarySummaryBox__image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .itinerarySummaryBox__image {
     width: 100%;
-}
+    height: 200px;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .itinerarySummaryBox__description {
+    font-size: 18px;
+    margin: 0;
+    background-color: #eaf2edcc;
+    color: #555;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .itinerarySummaryBox__details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #c9ead7cc;
+  }
+  
+  .itinerarySummaryBox__duration,
+  .itinerarySummaryBox__price {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .itinerarySummaryBox__price {
+    color: #d65745;
+  } 
 
-#routeDuration {
-    margin-right: 10px;
-    margin-top: 6px;
-}
-
-#routePrice {
-    margin-right: 10px;
-    margin-top: -5px;
-}
+  .itinerarySummaryBox:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+    background-color: #aadcc0cc;
+  }
+  
