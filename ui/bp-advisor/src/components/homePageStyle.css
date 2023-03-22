@@ -11,6 +11,18 @@
     margin-bottom: 50px;
 }
 
+#dark-mode.searchBar {
+    height: 40px;
+    font-family: "Cabin Condensed";
+    font-weight: 40;
+    font-size: 25px;
+    color: #4b4b4b;
+    background-color: aqua;
+    border-radius: 10px;
+    border: none;
+    width: 700px;
+}
+
 #searchBar {
     height: 40px;
     font-family: "Cabin Condensed";
@@ -20,7 +32,7 @@
     border-radius: 10px;
     border: none;
     width: 700px;
-}
+} 
 
 #searchBar::placeholder {
     text-align: center;
@@ -35,3 +47,8 @@
     display: flex;
     flex-direction: row;
 }
+
+
+#homePage.dark-mode{
+    background-color: blue;
+  }

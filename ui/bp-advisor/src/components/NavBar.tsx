@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import "./navBarStyle.css";
+import "./darkMode.css";
 import profilIcon from "../img/profilIcon.png";
 import { Link } from "react-router-dom";
 import { LoggedInUser } from "./types";
+import DarkMode from "./DarkMode";
+
 
 type NavBarProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -21,6 +24,8 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
     return (
         <div id="navContainer">
             <nav id="nav">
+                
+                <DarkMode/>
                 <Link to="/createItinerary">
                     <button id="addRoute"> + Add new itinerary</button>
                 </Link>

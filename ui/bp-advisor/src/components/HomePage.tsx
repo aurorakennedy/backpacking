@@ -5,11 +5,14 @@ import ItineraryListBox from "./ItineraryListBox";
 import NavBar from "./NavBar";
 import { LoggedInUser } from "./types";
 import SearchPage from "./SearchPage";
+import "./darkMode.css";
 
 type HomePageProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
     loggedInUser: LoggedInUser;
 };
+
+
 
 function goToSearchPageWithSearch() {
     let keyword = (document.getElementById("searchBar") as HTMLInputElement).value;
@@ -22,7 +25,9 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
             {/*  <ViewItineraryBox destinations={["Trondheim", "Bergen"]} /> */}
-            <div id="homePage">
+            <div id="homePage" className="homePage">
+                
+
                 {/* <div id="search">
                     <input
                         id="searchBar"
@@ -33,7 +38,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
 
                 <div id="search">
                     <input
-                        id="searchBar"
+                        id="searchBar" className="serchBar"
                         type="text"
                         placeholder="Type here to search for an itinerary" /* onChange={} */
                     />
@@ -43,6 +48,8 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                     {" "}
                     Search
                 </button>
+
+
 
                 <div id="userItineraries">
                     <ItineraryListBox

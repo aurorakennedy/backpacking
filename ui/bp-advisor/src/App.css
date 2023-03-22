@@ -8,14 +8,14 @@
 }
 
 body {
-    background-color: #FFF3E9;
-}
+/*     background-color: #FFF3E9;
+ */}
 
 #title {
     margin-top: 120px;
     font-family: "Knewave";
     font-size: 70px;
-    color: #D65745;
+   /*  color: #D65745; */
     margin-bottom: 0px;
 }
 

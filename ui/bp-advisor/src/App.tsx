@@ -9,6 +9,7 @@ import HomePage from "./components/HomePage";
 import SearchPageBox from "./components/SearchPage";
 import ItineraryForm from "./components/ItineraryForm";
 
+
 function App() {
     // Keeps track of the logged in user.
     // When the page is loaded, checks the browsers storage to see whether a user is already logged in.
@@ -24,6 +25,7 @@ function App() {
     return (
         <Router>
             <div className="App">
+             
                 {loggedInUser ? (
                     <>
                         <Routes>
