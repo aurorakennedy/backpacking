@@ -299,8 +299,9 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/everyitinerary")
-    public List<Itinerary> getTopRatedItinerariesOnContinent(@RequestBody String continent) throws SQLException {
+    @GetMapping("/toplist/{continent}")
+    public List<Itinerary> getTopRatedItinerariesOnContinent(@PathVariable String continent) throws SQLException {
+        System.out.println(itineraryRep.loadTopRatedItinerariesByContinent(continent)); 
         return itineraryRep.loadTopRatedItinerariesByContinent(continent);
     }
 

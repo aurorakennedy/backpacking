@@ -186,12 +186,8 @@ async function addItineraryAndDestinationsWithimage(
     }
 } */
 
-async function searchByKeyword(
-    keyword: string
-  ): Promise<Itinerary[]> {
-      const response: Response = await fetch(
-      `http://localhost:8080/searchItineraries/${keyword}`
-    );
+async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/searchItineraries/${keyword}`);
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries by keyword");
     }
@@ -401,6 +397,15 @@ async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     return new Uint8Array(buffer);
 }
 
+async function getTopList(continent: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/toplist/${continent}`);
+    if (!response.ok) {
+        throw new Error("Failed to get top list");
+    }
+    const toplist: Itinerary[] = await response.json();
+    return toplist;
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -431,6 +436,7 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
+    getTopList,
 };
 
 export default httpRequests;
