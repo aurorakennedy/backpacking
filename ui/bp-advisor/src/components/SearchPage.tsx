@@ -55,7 +55,7 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                             <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Africa')} type="button">Africa</button>
                             <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'North America')} type="button">N. America</button>
                             <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'South America')} type="button">S. America</button>
-                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Australia')} type="button">Australia</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Oceania')} type="button">Oceania</button>
                         </div>
                     </div>
 
