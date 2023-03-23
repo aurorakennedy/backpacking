@@ -1733,14 +1733,20 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     if(recommendedItineraries.isEmpty()) {
         recommendedItineraries = getRandomItineraries(10, userEmail);
     } else if (recommendedItineraries.size() < 10) {
-        Set<Itinerary> holdingSet = new HashSet<>();
-        holdingSet.addAll(recommendedItineraries);
         int i = 0;
-        while (holdingSet.size() < 10 && i != 5) {
-            holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+        while (recommendedItineraries.size() < 10 && i != 5) {
+            List<Itinerary> moreItineraries = new ArrayList<>();
+            List<Integer> itineraryIds = new ArrayList<>();
+            for (Itinerary itinerary : recommendedItineraries) {
+                itineraryIds.add(itinerary.getId());
+            }
+            moreItineraries.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+            for (Itinerary itinerary : moreItineraries) {
+                if (!itineraryIds.contains(itinerary.getId())) {
+                    recommendedItineraries.add(itinerary);
+                }
+            }
             i++;
-            recommendedItineraries.clear();
-            recommendedItineraries.addAll(holdingSet);
         }
     }
     return recommendedItineraries;  
