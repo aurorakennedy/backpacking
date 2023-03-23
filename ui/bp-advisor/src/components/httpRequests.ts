@@ -195,6 +195,7 @@ async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
     return itineraries;
 }
 
+
 async function getRecommendedItineraries(userEmail: string): Promise<Itinerary[]> {
     const response: Response = await fetch(
         `http://localhost:8080/getrecommendeditineraries/${userEmail}`
@@ -401,6 +402,20 @@ async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     return new Uint8Array(buffer);
 }
 
+async function searchByPrice(
+    price: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/searchItineraries/Price/${price}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by price");
+    }
+    const itineraries: Itinerary[] = await response.json();
+    return itineraries;
+}
+
+
 async function getTopList(continent: string): Promise<Itinerary[]> {
     const response: Response = await fetch(`http://localhost:8080/toplist/${continent}`);
     if (!response.ok) {
@@ -460,6 +475,7 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
+    searchByPrice,
     getTopList,
     getProfilepicture,
     addProfilePicture,

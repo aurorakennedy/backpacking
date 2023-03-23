@@ -156,6 +156,28 @@ public class BackPackingController {
             return returnList;
     }
 
+    @CrossOrigin(origins ="*")
+    @GetMapping("/searchItineraries/Price/{price}") 
+    public List<Itinerary> searchPrice(@PathVariable String price) throws SQLException {
+            List<Itinerary> returnList = new ArrayList<>();
+            List<Itinerary> listReturnedFromQuery = itineraryRep.searchByPrice(price);
+            Boolean itineraryInList;
+            for (Itinerary itineraryFromQuery : listReturnedFromQuery) {
+                itineraryInList = false;
+                for (Itinerary itineraryInReturnList : returnList) {
+                    if (itineraryFromQuery.getId() == itineraryInReturnList.getId()) {
+                        itineraryInList = true;
+                    }
+                }
+                if (!itineraryInList) {
+                    returnList.add(itineraryFromQuery);
+                }
+            }
+            System.out.println(returnList);
+            return returnList;
+            
+        
+    }
 
 
       @CrossOrigin(origins = "*")
