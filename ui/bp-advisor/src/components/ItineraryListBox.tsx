@@ -19,7 +19,14 @@ type ItineraryListBoxProps = {
         | "Liked itineraries"
         | "Searched itineraries"
         | "Rated itineraries"
-        | "All itineraries";
+        | "All itineraries"
+        | "Europe"
+        | "Asia"
+        | "Africa"
+        | "South America"
+        | "North America"
+        | "Oceania";
+
     loggedInUser: LoggedInUser;
 
     //added keyword
@@ -158,6 +165,78 @@ const ItineraryListBox = ({
                     } catch (error) {
                         alert("Could not load itineraries. Please refresh the page");
                     }
+                }
+            });
+        } else if (itinerariesBasedOn === "Europe") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list Europe");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
+            });
+        } else if (itinerariesBasedOn === "Asia") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list Asia");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
+            });
+        } else if (itinerariesBasedOn === "Africa") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list Africa");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
+            });
+        } else if (itinerariesBasedOn === "North America") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list North America");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
+            });
+        } else if (itinerariesBasedOn === "South America") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list South America");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
+            });
+        } else if (itinerariesBasedOn === "Oceania") {
+            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+                try {
+                    const promise: Promise<Itinerary[]> =
+                        httpRequests.getTopList(itinerariesBasedOn);
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, "Top list Oceania");
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
                 }
             });
         }
