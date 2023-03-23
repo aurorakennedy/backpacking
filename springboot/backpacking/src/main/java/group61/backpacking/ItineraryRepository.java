@@ -2101,7 +2101,7 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         try {
             conn = connectToDB();
             String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN (SELECT itinerary_id FROM Itinerary_Destination NATURAL JOIN "
-                            + "(SELECT destination_name, country FROM Destinations INNER JOIN Countries WHERE continent = ?)) ON Itinerary.id = itinerary_id LIMIT 10";
+                            + "(SELECT destination_name, country FROM Destinations INNER JOIN Countries ON country = country_name WHERE continent = ?)) ON Itinerary.id = itinerary_id LIMIT 10";
             
             statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, continent);
