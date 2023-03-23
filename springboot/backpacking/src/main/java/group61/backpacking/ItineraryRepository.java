@@ -4,6 +4,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -1821,14 +1823,20 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
     if(recommendedItineraries.isEmpty()) {
         recommendedItineraries = getRandomItineraries(10, userEmail);
     } else if (recommendedItineraries.size() < 10) {
-        Set<Itinerary> holdingSet = new HashSet<>();
-        holdingSet.addAll(recommendedItineraries);
         int i = 0;
-        while (holdingSet.size() < 10 && i != 5) {
-            holdingSet.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+        while (recommendedItineraries.size() < 10 && i != 5) {
+            List<Itinerary> moreItineraries = new ArrayList<>();
+            List<Integer> itineraryIds = new ArrayList<>();
+            for (Itinerary itinerary : recommendedItineraries) {
+                itineraryIds.add(itinerary.getId());
+            }
+            moreItineraries.addAll(getRandomItineraries(10 - recommendedItineraries.size(), userEmail));
+            for (Itinerary itinerary : moreItineraries) {
+                if (!itineraryIds.contains(itinerary.getId())) {
+                    recommendedItineraries.add(itinerary);
+                }
+            }
             i++;
-            recommendedItineraries.clear();
-            recommendedItineraries.addAll(holdingSet);
         }
     }
     return recommendedItineraries;  
@@ -2167,6 +2175,56 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         }
     }
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    // TOP LISTS
+
+    public List<Itinerary> loadTopRatedItinerariesByContinent(String continent) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> topItineraries = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN (SELECT itinerary_id FROM Itinerary_Destination NATURAL JOIN "
+                            + "(SELECT destination_name, country FROM Destinations INNER JOIN Countries ON country = country_name WHERE continent = ?)) ON Itinerary.id = itinerary_id LIMIT 10";
+            
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, continent);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                topItineraries.add(itinerary);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        HashMap<Integer,Double> mappedRating = new HashMap<>();
+        for (Itinerary itinerary : topItineraries) {
+            double rating = getItineraryAverageRating(itinerary.getId());
+            mappedRating.put(itinerary.getId(), rating);
+        }
+        Collections.sort(topItineraries, new Comparator<Itinerary>() {
+            @Override
+            public int compare(Itinerary i1, Itinerary i2) {
+                Double rating1 = mappedRating.get(i1.getId());
+                Double rating2 = mappedRating.get(i2.getId());
+                return rating2.compareTo(rating1);
+            }
+        });
+
+        Collections.reverse(topItineraries);
+        
+        return topItineraries;
+    }
+
+
+
 }
 
 

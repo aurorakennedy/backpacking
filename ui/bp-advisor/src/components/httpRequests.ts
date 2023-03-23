@@ -330,15 +330,19 @@ async function getComments(itineraryId: number): Promise<ItineraryComment[]> {
 }
 
 async function updateComment(commentId: number, newContent: string): Promise<void> {
-    const response: Response = await fetch(
-        `http://localhost:8080/editcomment/${commentId}/${newContent}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
+    const comment: ItineraryComment = {
+        id: commentId,
+        itineraryId: -1,
+        author: "",
+        content: newContent,
+    };
+    const response: Response = await fetch(`http://localhost:8080/editcomment`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comment),
+    });
     if (!response.ok) {
         throw new Error("Failed to update comment with comment ID " + commentId);
     }
@@ -397,6 +401,15 @@ async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     return new Uint8Array(buffer);
 }
 
+async function getTopList(continent: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/toplist/${continent}`);
+    if (!response.ok) {
+        throw new Error("Failed to get top list");
+    }
+    const toplist: Itinerary[] = await response.json();
+    return toplist;
+}
+
 async function getProfilepicture(username: string): Promise<Uint8Array> {
     const response: Response = await fetch(`http://localhost:8080/profilepicture/${username}`);
     if (!response.ok) {
@@ -447,8 +460,6 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
-    getProfilepicture,
-    addProfilePicture,
 };
 
 export default httpRequests;
