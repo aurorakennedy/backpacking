@@ -68,6 +68,15 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                         </div>
                     </div>
 
+                    <div className="dropdown">
+                        <button className="dropbtn">Duration</button>
+                        <div className="dropdown-content">
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(estimated_time >= 0 AND estimated_time <= 8)')} type="button">Under a Week</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(estimated_time >= 9 AND estimated_time <= 30)')} type="button">Under a Month</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(estimated_time >= 31 AND estimated_time <= 100)')} type="button">Over a Month</button>
+                        </div>
+                    </div>
+
                 
                         <button
                             id="searchButton"
