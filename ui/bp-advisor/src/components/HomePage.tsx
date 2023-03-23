@@ -18,6 +18,14 @@ function goToSearchPageWithSearch() {
 }
 
 const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
+
+    const handleKeyDown = (event: { key: string; }) => {
+        // Check if the "Enter" key was pressed
+        if (event.key === 'Enter') {
+          goToSearchPageWithSearch();
+        }
+    };
+      
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
@@ -32,17 +40,14 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                 </div> */}
 
                 <div id="search">
-                    <input
-                        id="searchBar"
-                        type="text"
-                        placeholder="Type here to search for an itinerary" /* onChange={} */
-                    />
+                    <input id="searchBar" type="text" 
+                        placeholder="Type here to search for an itinerary" /* onChange={} */ 
+                        onKeyDown={handleKeyDown} />
+                    <button id="searchButton" onClick={goToSearchPageWithSearch} type="button">
+                        Search
+                    </button>
                 </div>
 
-                <button id="searchButton" onClick={goToSearchPageWithSearch} type="button">
-                    {" "}
-                    Search
-                </button>
 
                 <div id="userItineraries">
                     <ItineraryListBox

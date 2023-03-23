@@ -7,12 +7,10 @@
   
   .commentTextarea {
     width: 100%;
-    height: 100px;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid black;
     border-radius: 10px;
-    resize: vertical;
   }
   
   .submitButton {

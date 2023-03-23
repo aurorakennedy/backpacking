@@ -18,6 +18,13 @@ type LogInBoxProps = {
 const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
     console.log("LoginBox mounted");
 
+    const handleKeyDown = (event: { key: string; }) => {
+        // Check if the "Enter" key was pressed
+        if (event.key === 'Enter') {
+          submitLogInInfo();
+        }
+    };
+
     return (
         <>
             <Header />
@@ -30,6 +37,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                         type="email"
                         placeholder="   ..."
                         required
+                        onKeyDown={handleKeyDown}
                     ></input>
                     <label id="passwordInputLabel">Password</label>
                     <input
@@ -37,6 +45,7 @@ const LogInBox = ({ setLoggedInUser }: LogInBoxProps) => {
                         type="password"
                         placeholder="   ..."
                         required
+                        onKeyDown={handleKeyDown}
                     ></input>
                     <button
                         id="logInButton"

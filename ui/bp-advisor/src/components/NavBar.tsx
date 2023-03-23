@@ -24,15 +24,8 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
                 <Link to="/createItinerary">
                     <button id="addRoute"> + Add new itinerary</button>
                 </Link>
-                <h1 id="logo">BP-Advisor</h1>
-                {/* <button id="profilIconButton">
-                <img src={profilIcon} id='profilIcon' />
-            </button> */}
-                <Link to={`/SearchPage`}>
-                    <button id="switchPages"> Search Page</button>
-                </Link>
-                <Link to="/homePage">
-                    <button id="switchPages"> Home Page</button>
+                <Link to="/homePage" id="homeLink" style={{ textDecoration: 'none' }}>
+                    <h1 id="logo">BP-Advisor</h1>
                 </Link>
                 <p id="logOutButton" onClick={logOut}>
                     {" "}

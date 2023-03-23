@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styles from './AddComment.module.css';
 
 interface AddCommentProps {
@@ -7,9 +7,15 @@ interface AddCommentProps {
 
 const AddComment: React.FC<AddCommentProps> = ({ onSubmit }) => {
   const [comment, setComment] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(event.target.value);
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -24,7 +30,13 @@ const AddComment: React.FC<AddCommentProps> = ({ onSubmit }) => {
     <form className={styles.addComment} onSubmit={handleSubmit}>
       <label>
         Add a comment:
-        <textarea className={styles.commentTextarea} value={comment} onChange={handleChange} />
+        <textarea
+          className={styles.commentTextarea}
+          value={comment}
+          onChange={handleChange}
+          ref={textareaRef}
+          style={{ height: '50px' }}
+        />
       </label>
       <button
         className={styles.submitButton}

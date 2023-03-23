@@ -7,7 +7,6 @@ import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
-import DeleteItinerary from "./DeleteItinerary";
 import Comment from "./Comment";
 import AddComment from "./AddComment";
 
@@ -61,7 +60,30 @@ const ItineraryListBox = ({
         { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
+
+    useEffect(() => {
+            /**
+         * Function for checking whether the logged in user is an admin
+         */
+        async function checkIfUserIsAdmin(): Promise<Boolean> {
+            let result: Boolean = false;
+            try {
+                const isAdminPromise: Promise<Boolean> = httpRequests.isAdmin(loggedInUser.email);
+                result = await isAdminPromise;
+            } catch (error) {}
+
+            return result;
+        }
+
+        checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+            const isAdminBool: boolean = !!isAdmin;
+            setIsAdmin(isAdminBool);
+        });
+
+    }, [isAdmin]);
 
     useEffect(() => {
         async function fetchComments() {
@@ -70,7 +92,7 @@ const ItineraryListBox = ({
                 id: comment.id,
                 author: comment.author,
                 content: comment.content,
-                allowEditing: loggedInUser.username === comment.author,
+                allowEditing: loggedInUser.username === comment.author || isAdmin,
             }));
 
             setComments(updatedComments);
@@ -162,18 +184,16 @@ const ItineraryListBox = ({
                 alert("Could not load itineraries. Please refresh the page");
             }
         } else if (itinerariesBasedOn === "All itineraries") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                if (isAdmin) {
-                    try {
-                        const promise: Promise<Itinerary[]> = httpRequests.getEveryItinerary();
-                        promise.then((allItineraries: Itinerary[]) => {
-                            displayItineraries(allItineraries, itinerariesBasedOn);
-                        });
-                    } catch (error) {
-                        alert("Could not load itineraries. Please refresh the page");
-                    }
+            if (isAdmin) {
+                try {
+                    const promise: Promise<Itinerary[]> = httpRequests.getEveryItinerary();
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, itinerariesBasedOn);
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
                 }
-            });
+            }
         }
 
         //10th march, marisa, adding another paranthesis
@@ -210,8 +230,8 @@ const ItineraryListBox = ({
             });
 
             let description: string = "";
-            if (itinerary.description.length > 150) {
-                description = itinerary.description.substring(0, 65) + " ...";
+            if (itinerary.description.length > 120) {
+                description = itinerary.description.substring(0, 120) + "...";
             } else {
                 description = itinerary.description;
             }
@@ -249,19 +269,6 @@ const ItineraryListBox = ({
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
         });
-    }
-
-    /**
-     * Function for checking whether the logged in user is an admin
-     */
-    async function checkIfUserIsAdmin(): Promise<Boolean> {
-        let result: Boolean = false;
-        try {
-            const isAdminPromise: Promise<Boolean> = httpRequests.isAdmin(loggedInUser.email);
-            result = await isAdminPromise;
-        } catch (error) {}
-
-        return result;
     }
 
     /**
@@ -378,25 +385,14 @@ const ItineraryListBox = ({
 
                 updateAverageRating(itineraryId);
 
-                checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                    if (
-                        loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail ||
-                        isAdmin
-                    ) {
-                        let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
-                            "closeAndDeleteColumn"
-                        ) as HTMLDivElement;
-
-                        let deleteButtonDiv: HTMLDivElement = document.createElement("div");
-                        deleteButtonDiv.id = "itineraryDeleteButtonDiv";
-
-                        let deleteButton = (
-                            <DeleteItinerary itineraryID={itineraryAndDestinations.itinerary.id} />
-                        );
-                        createRoot(deleteButtonDiv).render(deleteButton);
-                        closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
-                    }
-                });
+                if (
+                    loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail ||
+                    isAdmin
+                ) {
+                    let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
+                        "closeAndDeleteColumn"
+                    ) as HTMLDivElement;
+                }
 
                 try {
                     const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
@@ -531,7 +527,12 @@ const ItineraryListBox = ({
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
-                            <div id="itineraryDetailsFlexBox">
+                            <div id="itineraryDetailsFlexBox" style={{
+                                    backgroundColor: "#ececec",
+                                    width: "100%",
+                                    border: "1px solid black",
+                                    borderRadius: "5px",
+                                }}>
                                 <p
                                     id="itineraryDetailsAuthor"
                                     className="itineraryDetailElement"
@@ -553,21 +554,17 @@ const ItineraryListBox = ({
                                 <button
                                     id="editButton"
                                     type="button"
-                                    hidden={!sameUser}
+                                    hidden={!sameUser && !isAdmin}
                                     onClick={goToEditForm}
                                 >
                                     Edit
                                 </button>
                             </div>
                             <p id="itineraryBoxDescription"></p>
-
+                            <hr/>
                             <div
                                 style={{
-                                    backgroundColor: "#eee",
                                     padding: "20px",
-                                    marginTop: "50px",
-                                    borderRadius: "0px",
-                                    border: "1px solid black",
                                     width: "100%",
                                 }}
                             >
@@ -595,7 +592,7 @@ const ItineraryListBox = ({
                                         }}
                                     ></AddComment>
                                 </div>
-                                <div style={{ padding: "10px", borderRadius: "10px" }}>
+                                <div>
                                     {comments.map((comment) => (
                                         <Comment
                                             key={comment.id}
@@ -610,6 +607,7 @@ const ItineraryListBox = ({
                                                 setComments(updatedComments);
                                             }}
                                             onUpdate={function (updatedContent: string): void {
+                                                console.log(updatedContent);
                                                 httpRequests.updateComment(
                                                     comment.id,
                                                     updatedContent
