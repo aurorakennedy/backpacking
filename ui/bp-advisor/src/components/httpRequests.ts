@@ -186,12 +186,8 @@ async function addItineraryAndDestinationsWithimage(
     }
 } */
 
-async function searchByKeyword(
-    keyword: string
-  ): Promise<Itinerary[]> {
-      const response: Response = await fetch(
-      `http://localhost:8080/searchItineraries/${keyword}`
-    );
+async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
+    const response: Response = await fetch(`http://localhost:8080/searchItineraries/${keyword}`);
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries by keyword");
     }
@@ -401,6 +397,26 @@ async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     return new Uint8Array(buffer);
 }
 
+async function getProfilepicture(username: string): Promise<Uint8Array> {
+    const response: Response = await fetch(`http://localhost:8080/profilepicture/${username}`);
+    if (!response.ok) {
+        throw new Error("Failed to get image of profile");
+    }
+    const buffer = await response.arrayBuffer();
+    return new Uint8Array(buffer);
+}
+
+async function addProfilePicture(username: string, imageByteArray: Uint8Array): Promise<void> {
+    const blob = new Blob([imageByteArray], { type: "image/jpeg" });
+    const response = await fetch(`http://localhost:8080/updateprofilepicture/${username}`, {
+        method: "POST",
+        body: blob,
+    });
+    if (!response.ok) {
+        throw new Error("Failed to add profile page image");
+    }
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -431,6 +447,8 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
+    getProfilepicture,
+    addProfilePicture,
 };
 
 export default httpRequests;
