@@ -50,16 +50,6 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                     </button>
                 </div>
 
-                <div id="userItineraries">
-                    <ItineraryListBox
-                        idOfWrappingDiv={"userItineraries"}
-                        itinerariesBasedOn={"Your itineraries"}
-                        loggedInUser={loggedInUser}
-                        //what if i want nothing
-                        keyword={""}
-                 
-                    />
-                </div>
                 <div id="recommendedItineraries">
                     <ItineraryListBox
                         idOfWrappingDiv={"recommendedItineraries"}
@@ -67,7 +57,6 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         loggedInUser={loggedInUser}
                         //added this
                         keyword={""}
-              
                     />
                 </div>
                 <div id="topListEurope">
@@ -118,32 +107,13 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         keyword={""}
                     />
                 </div>
-                <div id="likedItineraries">
-                    <ItineraryListBox
-                        idOfWrappingDiv={"likedItineraries"}
-                        itinerariesBasedOn={"Liked itineraries"}
-                        loggedInUser={loggedInUser}
-                        //added this
-                        keyword={""}
-                    
-                    />
-                </div>
-                <div id="ratedItineraries">
-                    <ItineraryListBox
-                        idOfWrappingDiv={"ratedItineraries"}
-                        itinerariesBasedOn={"Rated itineraries"}
-                        loggedInUser={loggedInUser}
-                        keyword={""}
-           
-                    />
-                </div>
+
                 <div id="allItineraries">
                     <ItineraryListBox
                         idOfWrappingDiv={"allItineraries"}
                         itinerariesBasedOn={"All itineraries"}
                         loggedInUser={loggedInUser}
                         keyword={""}
-             
                     />
                 </div>
             </div>

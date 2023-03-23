@@ -136,6 +136,15 @@ const ProfilePage = ({ setLoggedInUser, loggedInUser }: ProfilePageProps) => {
                         keyword={""}
                     />
                 </div>
+
+                <div id="ratedItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"ratedItineraries"}
+                        itinerariesBasedOn={"Rated itineraries"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
             </div>
         </>
     );
