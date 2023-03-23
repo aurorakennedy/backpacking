@@ -24,7 +24,7 @@ import "./itineraryListBoxStyle.css";
             // Send a request to delete the itinerary
             await httpRequests.deleteItinerary(itineraryID);
             // Reloads window after deletion 
-            window.location.reload(); 
+            window.location.replace(`/homePage`); 
             } catch (error) {
             console.error(error);
             alert("Deletion unsuccessfull"); }
