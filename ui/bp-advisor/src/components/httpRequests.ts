@@ -335,17 +335,14 @@ async function updateComment(commentId: number, newContent: string): Promise<voi
         itineraryId: -1,
         author: "",
         content: newContent,
-    }
-    const response: Response = await fetch(
-        `http://localhost:8080/editcomment`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(comment),
-        }
-    );
+    };
+    const response: Response = await fetch(`http://localhost:8080/editcomment`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comment),
+    });
     if (!response.ok) {
         throw new Error("Failed to update comment with comment ID " + commentId);
     }
@@ -413,6 +410,26 @@ async function getTopList(continent: string): Promise<Itinerary[]> {
     return toplist;
 }
 
+async function getProfilepicture(username: string): Promise<Uint8Array> {
+    const response: Response = await fetch(`http://localhost:8080/profilepicture/${username}`);
+    if (!response.ok) {
+        throw new Error("Failed to get image of profile");
+    }
+    const buffer = await response.arrayBuffer();
+    return new Uint8Array(buffer);
+}
+
+async function addProfilePicture(username: string, imageByteArray: Uint8Array): Promise<void> {
+    const blob = new Blob([imageByteArray], { type: "image/jpeg" });
+    const response = await fetch(`http://localhost:8080/updateprofilepicture/${username}`, {
+        method: "POST",
+        body: blob,
+    });
+    if (!response.ok) {
+        throw new Error("Failed to add profile page image");
+    }
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -443,7 +460,6 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
-    getTopList,
 };
 
 export default httpRequests;
