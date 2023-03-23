@@ -9,17 +9,25 @@
     overflow-x: auto;
 }
 
+.expandableSearchItineraryList{
+    width: 1000px;
+    margin-top: 5px;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    row-gap: 30px;
+    column-gap: 10px;
+}
+
 .itinerarySummaryDiv {
     flex: 0 0 auto;
     margin-right: 14px;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-}
-
-.itinerarySummaryDiv:hover {
-    background-color: lightgreen;
-    border-radius: 10px;
 }
 
 #itineraryBox {
@@ -64,12 +72,26 @@
     margin-right: 20px;
 }
 
+#imageAndDestinationWrapper {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+
+#itineraryImage {
+    border-radius: 5px;
+    object-fit: cover;
+    height: 240px;
+    width: 100%;
+}
+
 #itineraryDestinationBox {
-    width: 25%;
+    margin-top: 20px;
+    width: 100%;
     background-color: #ececec;
     height: 600px;
     border-radius: 25px;
-    margin-right: 50px;
     overflow-y: scroll;
     padding-bottom: 30px;
 }
@@ -141,7 +163,6 @@
     font-size: 13px;
 }
 
-
 #itineraryDeleteButton {
     background-color: #d65645ac;
     color: white;
@@ -149,8 +170,8 @@
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  #itineraryDeleteButton:hover {
+}
+
+#itineraryDeleteButton:hover {
     background-color: #d65745;
-  }
+}

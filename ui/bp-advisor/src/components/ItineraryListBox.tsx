@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import ItinerarySummaryBox from "./ItinerarySummaryBox";
 import "./itineraryListBoxStyle.css";
-import { Itinerary, ItineraryAndDestinations, LoggedInUser } from "./types";
+import { Itinerary, ItineraryAndDestinations, ItineraryComment, LoggedInUser } from "./types";
 import httpRequests from "./httpRequests";
 import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
 import DeleteItinerary from "./DeleteItinerary";
+import Comment from "./Comment";
+import AddComment from "./AddComment";
 
 type ItineraryListBoxProps = {
     idOfWrappingDiv: string;
@@ -15,9 +17,13 @@ type ItineraryListBoxProps = {
         | "Your itineraries"
         | "Recommended itineraries"
         | "Liked itineraries"
+        | "Searched itineraries"
         | "Rated itineraries"
         | "All itineraries";
     loggedInUser: LoggedInUser;
+
+    //added keyword
+    keyword: string;
 };
 
 /**
@@ -35,6 +41,9 @@ const ItineraryListBox = ({
     itinerariesBasedOn,
     loggedInUser,
     idOfWrappingDiv,
+
+    //10th March: added keyword
+    keyword,
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] = useState<Boolean>(false);
     const [buttonLiked, setButtonLiked] = useState(false);
@@ -46,6 +55,27 @@ const ItineraryListBox = ({
     const [desc, setDesc] = useState("");
 
     const [sameUser, setSameUser] = useState(false);
+    const [comments, setComments] = useState([
+        { id: 1, author: "Test", content: "Test", allowEditing: false },
+    ]);
+
+    const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
+
+    useEffect(() => {
+        async function fetchComments() {
+            const commentsList: ItineraryComment[] = await httpRequests.getComments(itineraryId);
+            const updatedComments = commentsList.reverse().map((comment) => ({
+                id: comment.id,
+                author: comment.author,
+                content: comment.content,
+                allowEditing: loggedInUser.username === comment.author,
+            }));
+
+            setComments(updatedComments);
+        }
+
+        fetchComments();
+    }, [itineraryId, loggedInUser.username]);
 
     // Updates the list when the component is loaded on a page.
     useEffect(() => {
@@ -92,6 +122,20 @@ const ItineraryListBox = ({
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
+
+            //March 10th: Added another searched itineraries
+            //Need help here. I think it messed up all ItineraryListBox
+        } else if (itinerariesBasedOn === "Searched itineraries") {
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keyword);
+                //Takes in keyword string
+
+                promise.then((searchedItineraries: Itinerary[]) => {
+                    displayItineraries(searchedItineraries, itinerariesBasedOn);
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "Rated itineraries") {
             try {
                 const promise: Promise<Itinerary[]> = httpRequests.getRatedItineraries(
@@ -117,6 +161,8 @@ const ItineraryListBox = ({
                 }
             });
         }
+
+        //10th march, marisa, adding another paranthesis
     }
 
     function displayItineraries(itineraries: Itinerary[], itinerariesBasedOn: string) {
@@ -130,7 +176,11 @@ const ItineraryListBox = ({
             listContainerDiv.appendChild(title);
         }
         let expandableItineraryListDiv: HTMLDivElement = document.createElement("div");
-        expandableItineraryListDiv.classList.add("expandableItineraryList");
+        if (itinerariesBasedOn === "Searched itineraries") {
+            expandableItineraryListDiv.classList.add("expandableSearchItineraryList");
+        } else {
+            expandableItineraryListDiv.classList.add("expandableItineraryList");
+        }
         itineraries.reverse().forEach((itinerary) => {
             let itinerarySummaryDiv: HTMLDivElement = document.createElement("div");
             itinerarySummaryDiv.classList.add("itinerarySummaryDiv");
@@ -152,16 +202,35 @@ const ItineraryListBox = ({
                 description = itinerary.description;
             }
 
-            let itinerarySummaryBox = (
-                <ItinerarySummaryBox
-                    title={itinerary.title}
-                    description={description}
-                    estimatedTime={itinerary.estimatedTime.toString()}
-                    cost={itinerary.cost.toString()}
-                />
-            );
+            let imgElement: HTMLImageElement | null = null;
 
-            createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+            try {
+                const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
+                    itinerary.id
+                );
+                imagePromise.then((imageArray: Uint8Array) => {
+                    if (imageArray.length != 0) {
+                        imgElement = document.createElement("img") as HTMLImageElement;
+                        const byteArray: Uint8Array = new Uint8Array(imageArray);
+                        const blob: Blob = new Blob([byteArray]);
+                        const url: string = URL.createObjectURL(blob);
+                        imgElement.src = url;
+                    }
+                    let itinerarySummaryBox = (
+                        <ItinerarySummaryBox
+                            title={itinerary.title}
+                            image={imgElement}
+                            description={description}
+                            estimatedTime={itinerary.estimatedTime.toString()}
+                            cost={itinerary.cost.toString()}
+                        />
+                    );
+                    createRoot(itinerarySummaryDiv).render(itinerarySummaryBox);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
             expandableItineraryListDiv.appendChild(itinerarySummaryDiv);
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
@@ -190,6 +259,7 @@ const ItineraryListBox = ({
         itineraryId: string
     ): Promise<React.MouseEventHandler<HTMLElement> | any> {
         try {
+            console.log("Itinerary ID: " + itineraryId);
             const promise: Promise<ItineraryAndDestinations> =
                 httpRequests.getItineraryAndDestinationsById(parseInt(itineraryId));
             promise.then(async (itineraryAndDestinations: ItineraryAndDestinations) => {
@@ -265,6 +335,7 @@ const ItineraryListBox = ({
                             parseInt(itineraryId)
                         );
                         setButtonLiked(!buttonLiked);
+                        setHasLikedOrRated(!hasLikedOrRated);
                     } catch (error) {
                         alert("Could not update like");
                     }
@@ -282,6 +353,9 @@ const ItineraryListBox = ({
                         itineraryId={parseInt(itineraryId)}
                         updateAverageRating={function (): void {
                             updateAverageRating(itineraryId);
+                        }}
+                        updateHasLikedOrRated={function (): void {
+                            setHasLikedOrRated(!hasLikedOrRated);
                         }}
                     />
                 );
@@ -309,6 +383,30 @@ const ItineraryListBox = ({
                         closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
                     }
                 });
+
+                try {
+                    const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
+                        itineraryAndDestinations.itinerary.id
+                    );
+                    imagePromise.then((imageArray: Uint8Array) => {
+                        const imgAndDestinationsWrapper: HTMLDivElement = document.getElementById(
+                            "imageAndDestinationWrapper"
+                        ) as HTMLDivElement;
+                        if (imageArray.length != 0) {
+                            const imgElement: HTMLImageElement = document.createElement(
+                                "img"
+                            ) as HTMLImageElement;
+                            imgElement.id = "itineraryImage";
+                            const byteArray: Uint8Array = new Uint8Array(imageArray);
+                            const blob: Blob = new Blob([byteArray]);
+                            const url: string = URL.createObjectURL(blob);
+                            imgElement.src = url;
+                            imgAndDestinationsWrapper.prepend(imgElement);
+                        }
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
 
                 let counterOfDestinations: number = 0;
                 itineraryAndDestinations.destinations.forEach((destination) => {
@@ -396,7 +494,13 @@ const ItineraryListBox = ({
      */
     const handleExpansionClose = () => {
         setitineraryBoxExpanded(false);
-        window.location.reload();
+        if (hasLikedOrRated) {
+            window.location.reload();
+        }
+    };
+
+    const goToEditForm = () => {
+        window.location.replace(`/editItinerary/${itineraryId}/${title}/${time}/${cost}/${desc}`);
     };
 
     return (
@@ -406,8 +510,10 @@ const ItineraryListBox = ({
             ) : (
                 <>
                     <div id="itineraryBox">
-                        <div id="itineraryDestinationBox">
-                            <p id="itineraryDestinationBoxTitle">Destinations:</p>
+                        <div id="imageAndDestinationWrapper">
+                            <div id="itineraryDestinationBox">
+                                <p id="itineraryDestinationBoxTitle">Destinations:</p>
+                            </div>
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
@@ -430,16 +536,75 @@ const ItineraryListBox = ({
                                     />
                                 </div>
 
-                                <Link
-                                    to={`/editItinerary/${itineraryId}/${title}/${time}/${cost}/${desc}`}
+                                <button
+                                    id="editButton"
+                                    type="button"
+                                    hidden={!sameUser}
+                                    onClick={goToEditForm}
                                 >
-                                    <button id="editButton" type="button" hidden={!sameUser}>
-                                        {" "}
-                                        Edit
-                                    </button>
-                                </Link>
+                                    Edit
+                                </button>
                             </div>
                             <p id="itineraryBoxDescription"></p>
+
+                            <div
+                                style={{
+                                    backgroundColor: "#eee",
+                                    padding: "20px",
+                                    marginTop: "50px",
+                                    borderRadius: "0px",
+                                    border: "1px solid black",
+                                    width: "100%",
+                                }}
+                            >
+                                <div style={{ padding: "20px" }}>
+                                    <AddComment
+                                        onSubmit={async function (comment: string): Promise<void> {
+                                            const usernamePromise: Promise<string> =
+                                                httpRequests.getUsernameByEmail(loggedInUser.email);
+                                            const username: string = await usernamePromise;
+                                            const id: number = await httpRequests.addComment({
+                                                id: -1,
+                                                itineraryId: itineraryId,
+                                                author: username,
+                                                content: comment,
+                                            });
+                                            setComments([
+                                                {
+                                                    id: id,
+                                                    author: username,
+                                                    content: comment,
+                                                    allowEditing: true,
+                                                },
+                                                ...comments,
+                                            ]);
+                                        }}
+                                    ></AddComment>
+                                </div>
+                                <div style={{ padding: "10px", borderRadius: "10px" }}>
+                                    {comments.map((comment) => (
+                                        <Comment
+                                            key={comment.id}
+                                            author={comment.author}
+                                            content={comment.content}
+                                            allowEditing={comment.allowEditing}
+                                            onDelete={function (): void {
+                                                httpRequests.deleteComment(comment.id);
+                                                const updatedComments = comments.filter(
+                                                    (c) => c.id !== comment.id
+                                                );
+                                                setComments(updatedComments);
+                                            }}
+                                            onUpdate={function (updatedContent: string): void {
+                                                httpRequests.updateComment(
+                                                    comment.id,
+                                                    updatedContent
+                                                );
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                         <div id="closeAndDeleteColumn">
                             <p id="itineraryBoxCloseButton" onClick={handleExpansionClose}>

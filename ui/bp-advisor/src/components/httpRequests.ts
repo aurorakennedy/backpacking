@@ -1,4 +1,12 @@
-import { Itinerary, ItineraryAndDestinations, ItineraryDestination, User } from "./types";
+import {
+    Itinerary,
+    ItineraryAndDestinations,
+    ItineraryComment,
+    ItineraryDestination,
+    User,
+    ItineraryAndDestinationsWithImage,
+    ItineraryWithImage,
+} from "./types";
 
 async function getUser(userId: number): Promise<User> {
     const response: Response = await fetch(`http://localhost:8080/users/${userId}`);
@@ -144,7 +152,26 @@ async function getItineraryDestinations(itineraryID: number): Promise<ItineraryD
     return itineraryDestinations;
 }
 
-async function addItineraryAndDestinations(
+async function addItineraryAndDestinationsWithimage(
+    ItineraryAndDestinationsWithImage: ItineraryAndDestinationsWithImage
+): Promise<void> {
+    console.log("httpRequest called in frontend");
+    const response: Response = await fetch(
+        "http://localhost:8080/additineraryanddestinationswithimage",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(ItineraryAndDestinationsWithImage),
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to add itinerary and destinations with image");
+    }
+}
+
+/* async function addItineraryAndDestinations(
     itineraryAndDestinations: ItineraryAndDestinations
 ): Promise<void> {
     const response: Response = await fetch("http://localhost:8080/additineraryanddestinations", {
@@ -157,10 +184,14 @@ async function addItineraryAndDestinations(
     if (!response.ok) {
         throw new Error("Failed to add itinerary and destinations");
     }
-}
+} */
 
-async function searchByKeyword(keyword: string): Promise<Itinerary[]> {
-    const response: Response = await fetch(`http://localhost:8080/itineraries/`);
+async function searchByKeyword(
+    keyword: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/searchItineraries/${keyword}`
+    );
     if (!response.ok) {
         throw new Error("Failed to fetch itineraries by keyword");
     }
@@ -211,13 +242,26 @@ async function getLikedItineraries(userEmail: string): Promise<Itinerary[]> {
     return likedItineraries;
 }
 
-async function updateItinerary(itinerary: Itinerary): Promise<void> {
+/* async function updateItinerary(itinerary: Itinerary): Promise<void> {
     const response: Response = await fetch(`http://localhost:8080/updateitinerary`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(itinerary),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to update itinerary");
+    }
+} */
+
+async function updateItinerary(itineraryWithImage: ItineraryWithImage): Promise<void> {
+    const response: Response = await fetch(`http://localhost:8080/updateitinerary`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itineraryWithImage),
     });
     if (!response.ok) {
         throw new Error("Failed to update itinerary");
@@ -278,6 +322,56 @@ async function getRatedItineraries(userEmail: string): Promise<Itinerary[]> {
     return ratedItineraries;
 }
 
+async function getComments(itineraryId: number): Promise<ItineraryComment[]> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getitinerarycomments/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get comments with itinerary ID " + itineraryId);
+    }
+    const comments: ItineraryComment[] = await response.json();
+    return comments;
+}
+
+async function updateComment(commentId: number, newContent: string): Promise<void> {
+    const response: Response = await fetch(
+        `http://localhost:8080/editcomment/${commentId}/${newContent}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Failed to update comment with comment ID " + commentId);
+    }
+}
+
+async function deleteComment(commentId: number): Promise<void> {
+    const response: Response = await fetch(`http://localhost:8080/deletecomment/${commentId}`, {
+        method: "DELETE",
+    });
+    if (!response.ok) {
+        throw new Error("Failed to delete comment with comment ID " + commentId);
+    }
+}
+
+async function addComment(comment: ItineraryComment): Promise<number> {
+    const response: Response = await fetch("http://localhost:8080/addcomment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comment),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to add new comment");
+    }
+    const id: number = await response.json();
+    return id;
+}
+
 async function isAdmin(userEmail: string): Promise<Boolean> {
     const response: Response = await fetch(`http://localhost:8080/isadmin/${userEmail}`);
     if (!response.ok) {
@@ -296,6 +390,17 @@ async function getEveryItinerary(): Promise<Itinerary[]> {
     return everyItinerary;
 }
 
+async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
+    const response: Response = await fetch(
+        `http://localhost:8080/getitineraryimage/${itineraryId}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to get image of itinerary");
+    }
+    const buffer = await response.arrayBuffer();
+    return new Uint8Array(buffer);
+}
+
 const httpRequests = {
     getUser,
     register,
@@ -309,7 +414,7 @@ const httpRequests = {
     getItinerariesByUserEmail,
     getItineraryDestinations,
     searchByKeyword,
-    addItineraryAndDestinations,
+    addItineraryAndDestinationsWithimage,
     getRecommendedItineraries,
     updateLikeOnItinerary,
     itineraryIsLiked,
@@ -319,8 +424,13 @@ const httpRequests = {
     getUserRatingOfItinerary,
     addRatingOfItinerary,
     getRatedItineraries,
+    getComments,
+    updateComment,
+    deleteComment,
+    addComment,
     isAdmin,
     getEveryItinerary,
+    getItineraryImage,
 };
 
 export default httpRequests;

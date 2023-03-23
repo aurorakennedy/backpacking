@@ -2,31 +2,44 @@ import React, { FC } from "react";
 import "./itinerarySummaryBoxStyle.css";
 
 interface TravelRouteProps {
-    title: string;
-    description: string;
-    estimatedTime: string;
-    cost: string;
+  title: string;
+  image: HTMLImageElement | null;
+  description: string;
+  estimatedTime: string;
+  cost: string;
 }
 
 const ItinerarySummaryBox: FC<TravelRouteProps> = ({
-    title,
-    description,
-    estimatedTime,
-    cost,
+  title,
+  image,
+  description,
+  estimatedTime,
+  cost,
 }) => {
-    return (
-        <div id="itinerarySummaryBoxDiv">
-            {/* <img src={image} alt={title} /> */}
-            <h2 id="routeName">{title}</h2>
-            <div id="routeDescription">{description}</div>
-            <p id="routeDuration">
-                <b>{estimatedTime} days</b>
-            </p>
-            <p id="routePrice">
-                $ <b>{cost}</b>
-            </p>
-        </div>
-    );
+  return (
+    <div className="itinerarySummaryBox">
+      <h2 className="itinerarySummaryBox__title">{title}</h2>
+      <div className="itinerarySummaryBox__image-container">
+        {image ? (
+          <img
+            className="itinerarySummaryBox__image"
+            src={image.src}
+            alt={title}
+          />
+        ) : (
+          <div className="itinerarySummaryBox__description">{description}</div>
+        )}
+      </div>
+      <div className="itinerarySummaryBox__details">
+        <p className="itinerarySummaryBox__duration">
+          <b>{estimatedTime} days</b>
+        </p>
+        <p className="itinerarySummaryBox__price">
+          $<b>{cost}</b>
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default ItinerarySummaryBox;

@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.IOException;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 
 @Repository
 public class ItineraryRepository {
@@ -103,11 +103,15 @@ public class ItineraryRepository {
     }
 
 
-    public void saveItinerary(ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
+    public void saveItinerary(ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
         Connection conn = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Itinerary itinerary = itineraryAndDestinations.getItinerary();
+        Connection conn2 = null;
+        PreparedStatement statement2 = null;
+        ResultSet resultSet2 = null;
+        Itinerary itinerary = itineraryAndDestinationsWithImage.getItinerary();
+        int n = -1;
 
         try {
             if (validateItinerary(itinerary) == false) {
@@ -115,18 +119,17 @@ public class ItineraryRepository {
             }
 
             conn = connectToDB();
-            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, image, title, cost ) VALUES (?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            String sqlQuery = "INSERT INTO Itinerary ( writer_email, estimated_time, itinerary_description, title, cost ) VALUES (?,?,?,?,?)";
+            statement = conn.prepareStatement(sqlQuery);
             // db.update(preparedStatement, user.getUserName(), user.getPassword(),
             // user.getEmail());
-            preparedStatement.setString(1, itinerary.getWriterEmail());
-            preparedStatement.setInt(2, itinerary.getEstimatedTime());
-            preparedStatement.setString(3, itinerary.getDescription());
-            preparedStatement.setString(4, itinerary.getImage());
-            preparedStatement.setString(5, itinerary.getTitle());
-            preparedStatement.setDouble(6, itinerary.getCost());
+            statement.setString(1, itinerary.getWriterEmail());
+            statement.setInt(2, itinerary.getEstimatedTime());
+            statement.setString(3, itinerary.getDescription());
+            statement.setString(4, itinerary.getTitle());
+            statement.setDouble(5, itinerary.getCost());
 
-            preparedStatement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
             // throw new DuplicateUserException("User with email " + user.getEmail() + "
@@ -154,17 +157,157 @@ public class ItineraryRepository {
         System.out.println(itineraryOutput.toString());
 
         try {
-            int totalDestinations = itineraryAndDestinations.getDestinations().size();
+            int totalDestinations = itineraryAndDestinationsWithImage.getDestinations().size();
 
             for (int i = 0; i < totalDestinations; i++) {
-                saveItineraryAndDestinations(itineraryOutput, itineraryAndDestinations.getDestinations().get(i), i+1);
+                saveItineraryAndDestinations(itineraryOutput, itineraryAndDestinationsWithImage.getDestinations().get(i), i+1);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
 
+        byte[] image = itineraryAndDestinationsWithImage.getImageByteArray();
+
+        System.out.println("Image:" + image);
+
+        if (image != null) {
+
+            System.out.println("Image not null");
+
+        try {
+            conn2 = connectToDB();
+            String sqlQuery = "SELECT id FROM Itinerary WHERE writer_email = ? AND title = ?";
+            statement2 = conn2.prepareStatement(sqlQuery);
+            statement2.setString(1, itinerary.getWriterEmail());
+            statement2.setString(2, itinerary.getTitle());
+
+            resultSet2 = statement2.executeQuery();
+
+                if (resultSet2.next()) {
+                    n = resultSet2.getInt("id");
+                }
+            } catch (SQLException e) {
+                throw new SQLException(e);
+            } finally {
+                if (statement2 != null) {
+                    statement2.close();
+                }
+                if (resultSet2 != null) {
+                    resultSet2.close();
+                }
+                if (conn2 != null) {
+                    conn2.close();
+                }
+            }
+            saveImageOnItinerary(image, n);
+        }
+
     }
 
+
+    public void saveImageOnItinerary(byte[] image, int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        if (image != null) {
+
+            try {
+                conn = connectToDB();
+                String sqlQuery = "INSERT INTO Itinerary_Image (itinerary_id, data) VALUES (?,?)";
+                statement = conn.prepareStatement(sqlQuery);
+                statement.setInt(1, itineraryId);
+                statement.setBytes(2, image);
+
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new SQLException(e);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            }
+        }
+    }
+
+
+    public byte[] loadItineraryImage(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        byte[] image = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary_Image WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                image = resultSet.getBytes("data");
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return image;
+    }
+
+
+    public void deleteImage(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary_Image WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+
+    public void deleteItineraryDestinations(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM Itinerary_Destination WHERE itinerary_id = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, itineraryId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
 
     
 
@@ -517,36 +660,74 @@ public class ItineraryRepository {
     public List<Itinerary> searchByKeyword(String keyword) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
+        //PreparedStatement statement2 = null;
         ResultSet resultSet = null;
-        ResultSet resultSet2 = null;
+        //ResultSet resultSet2 = null;
         List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
         try  {
             conn = connectToDB();
-            String sqlQuery = "SELECT * FROM Itinerary WHERE "
-            + "title LIKE '%' || :keyword || '%' "
-            + "OR description LIKE '%' || :keyword || '%'";
+
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            + "title LIKE ?"
+            + "OR itinerary_description LIKE ?"
+            + "OR destination_name LIKE ?"
+            + "OR country LIKE ?";
+
             statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, "%" + keyword + "%");
+            statement.setString(2, "%" + keyword + "%");
+            statement.setString(3, "%" + keyword + "%");
+            statement.setString(4, "%" + keyword + "%");
+            
+
+            // //start testing 14th march
+            // String sqlQuery_test = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            // + "title LIKE %:keyword%"
+            // + " OR itinerary_description LIKE %keyword%"
+            // + " OR destination_name LIKE %keyword%"
+            // + " OR country LIKE %keyword%";
+            // statement = conn.prepareStatement(sqlQuery_test);
+            
+            //statement.setString(1, "'%" + keyword + "%'");
+           // statement.setString(2, "'%" + keyword + "%'");
+          //  statement.setString(3, "'%" + keyword + "%'");
+          //  statement.setString(4, "'%" + keyword + "%'");
+
             resultSet = statement.executeQuery();
+            
+            //end testing 14th march
+
+            
+            //resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
                 Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
-                itinerary.mapItineraryFromResultSet(resultSet);
-                itineraryList.add(itinerary);
+               // if (!itineraryList.contains(itinerary)){
+                    itinerary.mapItineraryFromResultSet(resultSet);
+                    itineraryList.add(itinerary);
+                //}
             }
             
-            String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_destination ON (id = itinerary_id) "
-            + "WHERE destination_name LIKE '%' || :keyword || '%' "
-            + "OR country LIKE '%' || :keyword || '%'";
-            statement2 = conn.prepareStatement(sqlQuery2);
-            resultSet2 = statement.executeQuery();
+        //    String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
+        //    + "WHERE destination_name LIKE '%' || :keyword || '%' "
+        //    + "OR country LIKE '%' || :keyword || '%'";
+
+        
+            // String sqlQuery2 = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
+            // + "WHERE destination_name LIKE ? "
+            // + "OR country LIKE ?";
+            // statement2 = conn.prepareStatement(sqlQuery2);
+
+            // statement2.setString(1, keyword);
+            // statement2.setString(2, keyword);
+            // resultSet2 = statement.executeQuery();
             
-            while (resultSet2.next()) {
-                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
-                itinerary.mapItineraryFromResultSet(resultSet2);
-                itineraryList.add(itinerary);
-            }
+            // while (resultSet2.next()) {
+            //     Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
+            //     itinerary.mapItineraryFromResultSet(resultSet2);
+            //     itineraryList.add(itinerary);
+            // }
 
         } catch (SQLException exception) {
             throw new SQLException(exception);
@@ -555,12 +736,12 @@ public class ItineraryRepository {
             if (statement != null) {
                 statement.close();
             }
-            if (statement2 != null) {
-                statement2.close();
-            }
-            if (resultSet2 != null) {
-                resultSet2.close();
-            }
+            //if (statement2 != null) {
+            //    statement2.close();
+            //}
+            //if (resultSet2 != null) {
+            //    resultSet2.close();
+            //}
             if (resultSet != null) {
                 resultSet.close();
             }
@@ -1774,6 +1955,130 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         return ratedItineraries;
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ITINERARY COMMENTS
+
+    public int saveComment(Comment comment) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement1 = null;
+        PreparedStatement statement2 = null;
+        int id = -1;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "INSERT INTO Itinerary_Comment(username, itinerary_id, comment) VALUES (?, ?, ?)";
+        statement1 = conn.prepareStatement(sqlQuery);
+        statement1.setString(1, comment.getAuthor());
+        statement1.setInt(2, comment.getItineraryId());
+        statement1.setString(3, comment.getContent());
+
+        statement1.executeUpdate();
+
+        sqlQuery = "SELECT * FROM Itinerary_Comment WHERE username = ? ORDER BY written_date DESC LIMIT 1";
+        statement2 = conn.prepareStatement(sqlQuery);
+        statement2.setString(1, comment.getAuthor());
+
+        id = statement2.executeQuery().getInt("id");
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement1 != null) {
+            statement1.close();
+        }
+        if (statement2 != null) {
+            statement2.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    return id;
+    }
+
+    public List<Comment> loadItineraryComments(int itineraryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Comment> commentList = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM Itinerary_Comment WHERE itinerary_id = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setInt(1, itineraryId);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String author = resultSet.getString("username");
+                String content = resultSet.getString("comment");
+                Comment comment = new Comment(id, itineraryId, author, content);
+                commentList.add(comment);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return commentList;
+    }
+
+    public void deleteComment(int commentId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "DELETE FROM Itinerary_Comment WHERE id = ?";
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setInt(1, commentId);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    }
+
+    public void updateComment(int commentId, String comment) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+    try {
+        conn = connectToDB();
+        String sqlQuery = "UPDATE Itinerary_Comment SET comment = ? WHERE id = ?";
+        statement = conn.prepareStatement(sqlQuery);
+        statement.setString(1, comment);
+        statement.setInt(2, commentId);
+
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        throw new SQLException(e);
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    }
 }
 
 
