@@ -18,14 +18,19 @@ const Nav = ({ setLoggedInUser }: NavBarProps) => {
         window.location.replace("/logIn");
     };
 
+    const toProfilePage: React.MouseEventHandler<HTMLParagraphElement> | undefined = () => {};
+
     return (
         <div id="navContainer">
             <nav id="nav">
                 <Link to="/createItinerary">
                     <button id="addRoute"> + Add new itinerary</button>
                 </Link>
-                <Link to="/homePage" id="homeLink" style={{ textDecoration: 'none' }}>
+                <Link to="/homePage" id="homeLink" style={{ textDecoration: "none" }}>
                     <h1 id="logo">BP-Advisor</h1>
+                </Link>
+                <Link to="/profilePage">
+                    <button id="profilePageButton"> My Profile</button>
                 </Link>
                 <p id="logOutButton" onClick={logOut}>
                     {" "}

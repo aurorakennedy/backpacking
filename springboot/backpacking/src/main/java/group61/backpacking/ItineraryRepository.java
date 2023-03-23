@@ -4,6 +4,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +103,87 @@ public class ItineraryRepository {
         }
 
     }
+
+    public void saveProfilePicture(String username, byte[] imageByteArray) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        try {
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO User_Image VALUES (?,?)";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+            statement.setBytes(2, imageByteArray);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
+
+    public void deleteProfilePicture(String username) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM User_Image WHERE username = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    } 
+
+
+    public byte[] loadProfilePageImage(String username) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        byte[] image = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM User_Image WHERE username = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                image = resultSet.getBytes("data");
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return image;
+    }
+        
 
 
     public void saveItinerary(ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
@@ -280,6 +363,13 @@ public class ItineraryRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
     }
 
@@ -2083,6 +2173,56 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
         }
     }
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    // TOP LISTS
+
+    public List<Itinerary> loadTopRatedItinerariesByContinent(String continent) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> topItineraries = new ArrayList<>();
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN (SELECT itinerary_id FROM Itinerary_Destination NATURAL JOIN "
+                            + "(SELECT destination_name, country FROM Destinations INNER JOIN Countries ON country = country_name WHERE continent = ?)) ON Itinerary.id = itinerary_id LIMIT 10";
+            
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, continent);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(-1, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                topItineraries.add(itinerary);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
+        HashMap<Integer,Double> mappedRating = new HashMap<>();
+        for (Itinerary itinerary : topItineraries) {
+            double rating = getItineraryAverageRating(itinerary.getId());
+            mappedRating.put(itinerary.getId(), rating);
+        }
+        Collections.sort(topItineraries, new Comparator<Itinerary>() {
+            @Override
+            public int compare(Itinerary i1, Itinerary i2) {
+                Double rating1 = mappedRating.get(i1.getId());
+                Double rating2 = mappedRating.get(i2.getId());
+                return rating2.compareTo(rating1);
+            }
+        });
+
+        Collections.reverse(topItineraries);
+        
+        return topItineraries;
+    }
+
+
+
 }
 
 

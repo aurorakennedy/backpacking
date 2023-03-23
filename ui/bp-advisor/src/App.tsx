@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage";
 
 import SearchPageBox from "./components/SearchPage";
 import ItineraryForm from "./components/ItineraryForm";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
     // Keeps track of the logged in user.
@@ -99,7 +100,18 @@ function App() {
                                     />
                                 }
                             />
+                            <Route
+                                path={`/profilePage`}
+                                element={
+                                    <ProfilePage
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}                                  />
+                                }
+                            />
+
                         </Routes>
+
+                        
                     </>
                 ) : (
                     <Routes>

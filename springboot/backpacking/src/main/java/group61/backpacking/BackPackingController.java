@@ -320,4 +320,24 @@ public class BackPackingController {
         return itineraryRep.loadEveryItinerary();
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/toplist/{continent}")
+    public List<Itinerary> getTopRatedItinerariesOnContinent(@PathVariable String continent) throws SQLException {
+        System.out.println(itineraryRep.loadTopRatedItinerariesByContinent(continent)); 
+        return itineraryRep.loadTopRatedItinerariesByContinent(continent);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/updateprofilepicture/{username}")
+    public void updateProfilePicture(@PathVariable String username, @RequestBody byte[] imageByteArray) throws SQLException {
+        itineraryRep.deleteProfilePicture(username);
+        itineraryRep.saveProfilePicture(username, imageByteArray);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/profilepicture/{username}")
+    public byte[] getProfilePicture(@PathVariable String username) throws SQLException {
+        return itineraryRep.loadProfilePageImage(username);
+    }
+
 }
