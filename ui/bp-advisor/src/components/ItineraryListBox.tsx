@@ -70,7 +70,7 @@ const ItineraryListBox = ({
     const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
 
     useEffect(() => {
-            /**
+        /**
          * Function for checking whether the logged in user is an admin
          */
         async function checkIfUserIsAdmin(): Promise<Boolean> {
@@ -87,7 +87,6 @@ const ItineraryListBox = ({
             const isAdminBool: boolean = !!isAdmin;
             setIsAdmin(isAdminBool);
         });
-
     }, [isAdmin]);
 
     useEffect(() => {
@@ -186,79 +185,61 @@ const ItineraryListBox = ({
                 } catch (error) {
                     alert("Could not load itineraries. Please refresh the page");
                 }
-            });
+            }
         } else if (itinerariesBasedOn === "Europe") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list Europe");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list Europe");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "Asia") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list Asia");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list Asia");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "Africa") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list Africa");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list Africa");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "North America") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list North America");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list North America");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "South America") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list South America");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list South America");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         } else if (itinerariesBasedOn === "Oceania") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                try {
-                    const promise: Promise<Itinerary[]> =
-                        httpRequests.getTopList(itinerariesBasedOn);
-                    promise.then((allItineraries: Itinerary[]) => {
-                        displayItineraries(allItineraries, "Top list Oceania");
-                    });
-                } catch (error) {
-                    alert("Could not load itineraries. Please refresh the page");
-                }
-            });
+            try {
+                const promise: Promise<Itinerary[]> = httpRequests.getTopList(itinerariesBasedOn);
+                promise.then((allItineraries: Itinerary[]) => {
+                    displayItineraries(allItineraries, "Top list Oceania");
+                });
+            } catch (error) {
+                alert("Could not load itineraries. Please refresh the page");
+            }
         }
 
         //10th march, marisa, adding another paranthesis
@@ -592,12 +573,15 @@ const ItineraryListBox = ({
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
-                            <div id="itineraryDetailsFlexBox" style={{
+                            <div
+                                id="itineraryDetailsFlexBox"
+                                style={{
                                     backgroundColor: "#ececec",
                                     width: "100%",
                                     border: "1px solid black",
                                     borderRadius: "5px",
-                                }}>
+                                }}
+                            >
                                 <p
                                     id="itineraryDetailsAuthor"
                                     className="itineraryDetailElement"
@@ -626,7 +610,7 @@ const ItineraryListBox = ({
                                 </button>
                             </div>
                             <p id="itineraryBoxDescription"></p>
-                            <hr/>
+                            <hr />
                             <div
                                 style={{
                                     padding: "20px",

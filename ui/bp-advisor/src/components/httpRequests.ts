@@ -460,6 +460,9 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
+    getTopList,
+    getProfilepicture,
+    addProfilePicture,
 };
 
 export default httpRequests;
