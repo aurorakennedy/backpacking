@@ -288,9 +288,9 @@ public class BackPackingController {
     }
 
     @CrossOrigin(origins = "*")
-    @PutMapping("/editcomment/{commentId}/{newContent}")
-    public void editComment(@PathVariable int commentId, @PathVariable String newContent) throws SQLException {
-        itineraryRep.updateComment(commentId, newContent);
+    @PutMapping("/editcomment")
+    public void editComment(@RequestBody Comment comment) throws SQLException {
+        itineraryRep.updateComment(comment.getId(), comment.getContent());
     }
     
     @GetMapping("/everyitinerary")

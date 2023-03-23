@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Nav from "./NavBar";
 import { useRef } from "react";
+import DeleteItinerary from "./DeleteItinerary";
 
 type ItineraryFormProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -402,15 +403,20 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                             </div>
                         </div>
                     )}
-                    {editMode ? (
-                        <button
-                            id="submitItineraryButton"
-                            onClick={submitItineraryInfo}
-                            type="button"
-                        >
-                            {" "}
-                            Update itinerary
-                        </button>
+                    {editMode && itineraryId !== undefined ? (
+                        <div>
+                            <div style={{ float: "left", marginTop: "28px" }}>
+                                <DeleteItinerary itineraryID={parseInt(itineraryId)} />
+                            </div>
+                            <button
+                                id="submitItineraryButton"
+                                onClick={submitItineraryInfo}
+                                type="button"
+                            >
+                                {" "}
+                                Update itinerary
+                            </button>
+                        </div>
                     ) : (
                         <button
                             id="submitItineraryButton"
