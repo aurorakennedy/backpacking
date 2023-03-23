@@ -6,17 +6,17 @@
     padding-top: 100px;
 }
 
-#userInfo{
+#userInfo {
     padding-top: 80px;
     font-family: "Cabin Condensed";
     font-size: large;
 }
 
-#profilePicture{
+#profilePicture {
     width: 200px;
     height: 200px;
+    border-radius: 50%;
 }
-
 
 #userItineraries,
 #recommendedItineraries,
