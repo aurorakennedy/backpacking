@@ -173,6 +173,7 @@ public class BackPackingController {
                     returnList.add(itineraryFromQuery);
                 }
             }
+            System.out.println(returnList);
             return returnList;
             
         

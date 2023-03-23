@@ -50,7 +50,7 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                     <div className="dropdown">
                         <button className="dropbtn">Price</button>
                         <div className="dropdown-content">
-                            <button id="button" onClick={(async) => enterKeywordPrice(loggedInUser, '(cost >= 0 AND cost <= 500)')} type="button">Low</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost >= 0 AND cost <= 500)')} type="button">Low</button>
                             <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost >= 501 AND cost <= 2000)')} type="button">Medium</button>
                             <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost >= 2001 AND cost <= 10000)')} type="button">High</button>
                         </div>
@@ -74,7 +74,7 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                     <h2>Your search results: </h2>
                     <div id="searchItinerariesWrapped"></div>
                     <div id="searchedItineraries">
-                        {keyword != undefined && (
+                        {keyword != undefined  && (
                             <ItineraryListBox
                                 idOfWrappingDiv={"searchedItineraries"}
                                 itinerariesBasedOn={"Searched itineraries"}
@@ -116,6 +116,7 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
                     itinerariesBasedOn={"Searched itineraries"}
                     loggedInUser={loggedInUser}
                     keyword={keywordInputValue}
+
         
                 />
             );
@@ -168,6 +169,7 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
             console.log(keywordInputValue);
             const promise: Promise<Itinerary[]> = httpRequests.searchByPrice(keywordInputValue);
             promise.then((itineraries: Itinerary[]) => {
+                
                 let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById(
                     "searchItinerariesWrapped"
                 ) as HTMLDivElement;
@@ -177,13 +179,14 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
                 let searchedItinerariesListBox = (
                     <ItineraryListBox
                         idOfWrappingDiv={"searchedItineraries"}
-                        itinerariesBasedOn={"Searched itineraries"}
+                        itinerariesBasedOn={"Searched itineraries Price"}
                         loggedInUser={loggedInUser}
                         keyword={keywordInputValue}
                     />
                 );
                 createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
                 searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
+                
             });
         } catch (error) {
             alert("There was an error when searching for an itinerary, please try again.");

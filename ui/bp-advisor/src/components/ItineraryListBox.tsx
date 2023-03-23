@@ -18,6 +18,7 @@ type ItineraryListBoxProps = {
         | "Recommended itineraries"
         | "Liked itineraries"
         | "Searched itineraries"
+        | "Searched itineraries Price"
         | "Rated itineraries"
         | "All itineraries";
     loggedInUser: LoggedInUser;
@@ -44,6 +45,7 @@ const ItineraryListBox = ({
 
     //10th March: added keyword
     keyword,
+
 }: ItineraryListBoxProps) => {
     const [itineraryBoxExpanded, setitineraryBoxExpanded] = useState<Boolean>(false);
     const [buttonLiked, setButtonLiked] = useState(false);
@@ -136,6 +138,18 @@ const ItineraryListBox = ({
             } catch (error) {
                 alert("Could not load itineraries. Please refresh the page");
             }
+
+          }  else if (itinerariesBasedOn === "Searched itineraries Price") {
+                try {
+                    const promise: Promise<Itinerary[]> = httpRequests.searchByPrice(keyword);
+                    //Takes in keyword string
+    
+                    promise.then((searchedItineraries: Itinerary[]) => {
+                        displayItineraries(searchedItineraries, itinerariesBasedOn);
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
+                }
         } else if (itinerariesBasedOn === "Rated itineraries") {
             try {
                 const promise: Promise<Itinerary[]> = httpRequests.getRatedItineraries(
