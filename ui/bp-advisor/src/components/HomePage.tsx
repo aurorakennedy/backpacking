@@ -1,15 +1,31 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./homePageStyle.css";
 import ItineraryListBox from "./ItineraryListBox";
 import NavBar from "./NavBar";
 import { LoggedInUser } from "./types";
+import SearchPage from "./SearchPage";
 
 type HomePageProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
     loggedInUser: LoggedInUser;
 };
 
+function goToSearchPageWithSearch() {
+    let keyword = (document.getElementById("searchBar") as HTMLInputElement).value;
+    console.log(keyword);
+    window.location.replace(`/searchPage/${keyword}`);
+}
+
 const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
+
+    const handleKeyDown = (event: { key: string; }) => {
+        // Check if the "Enter" key was pressed
+        if (event.key === 'Enter') {
+          goToSearchPageWithSearch();
+        }
+    };
+      
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
@@ -23,15 +39,23 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                     />
                 </div> */}
 
-                <br></br>
-                <br></br>
-                <br></br>
+                <div id="search">
+                    <input id="searchBar" type="text" 
+                        placeholder="Type here to search for an itinerary" /* onChange={} */ 
+                        onKeyDown={handleKeyDown} />
+                    <button id="searchButton" onClick={goToSearchPageWithSearch} type="button">
+                        Search
+                    </button>
+                </div>
+
 
                 <div id="userItineraries">
                     <ItineraryListBox
                         idOfWrappingDiv={"userItineraries"}
                         itinerariesBasedOn={"Your itineraries"}
                         loggedInUser={loggedInUser}
+                        //what if i want nothing
+                        keyword={""}
                     />
                 </div>
                 <div id="recommendedItineraries">
@@ -39,6 +63,8 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"recommendedItineraries"}
                         itinerariesBasedOn={"Recommended itineraries"}
                         loggedInUser={loggedInUser}
+                        //added this
+                        keyword={""}
                     />
                 </div>
                 <div id="likedItineraries">
@@ -46,6 +72,8 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"likedItineraries"}
                         itinerariesBasedOn={"Liked itineraries"}
                         loggedInUser={loggedInUser}
+                        //added this
+                        keyword={""}
                     />
                 </div>
                 <div id="ratedItineraries">
@@ -53,6 +81,15 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         idOfWrappingDiv={"ratedItineraries"}
                         itinerariesBasedOn={"Rated itineraries"}
                         loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="allItineraries">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"allItineraries"}
+                        itinerariesBasedOn={"All itineraries"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
                     />
                 </div>
             </div>

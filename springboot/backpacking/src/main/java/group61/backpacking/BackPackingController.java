@@ -1,9 +1,11 @@
 package group61.backpacking;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -43,6 +47,12 @@ public class BackPackingController {
             // TODO: handle exception
             return null;
         }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/isadmin/{userEmail}")
+    public boolean isUserAdmin(@PathVariable String userEmail) throws RuntimeException, SQLException {
+        return userRep.isAdmin(userEmail);
     }
 
     // Create a new user
@@ -126,9 +136,24 @@ public class BackPackingController {
             
     }
 
-    @GetMapping("/itineraries") 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/searchItineraries/{keyword}") 
     public List<Itinerary> search(@PathVariable String keyword) throws SQLException {
-            return itineraryRep.searchByKeyword(keyword);
+            List<Itinerary> returnList = new ArrayList<>();
+            List<Itinerary> listReturnedFromQuery = itineraryRep.searchByKeyword(keyword);
+            Boolean itineraryInList;
+            for (Itinerary itineraryFromQuery : listReturnedFromQuery) {
+                itineraryInList = false;
+                for (Itinerary itineraryInReturnList : returnList) {
+                    if (itineraryFromQuery.getId() == itineraryInReturnList.getId()) {
+                        itineraryInList = true;
+                    }
+                }
+                if (!itineraryInList) {
+                    returnList.add(itineraryFromQuery);
+                }
+            }
+            return returnList;
     }
 
 
@@ -137,16 +162,26 @@ public class BackPackingController {
       @DeleteMapping("/deleteitinerary/{itineraryId}")
       public void deleteItinerary(@PathVariable int itineraryId) throws SQLException {
           itineraryRep.deleteItinerary(itineraryId);
+          itineraryRep.deleteItineraryDestinations(itineraryId);
+          itineraryRep.deleteImage(itineraryId);
       } 
   
     
-    @CrossOrigin(origins = "*")
+    /* @CrossOrigin(origins = "*")
     @PostMapping("/additineraryanddestinations")
     public void addItineraryAndDestinations(@RequestBody 
     ItineraryAndDestinations itineraryAndDestinations) throws SQLException {
         itineraryRep.saveItinerary(itineraryAndDestinations);
         System.out.println(itineraryAndDestinations.getItinerary());
         System.out.println(itineraryAndDestinations.getDestinations());
+    } */
+
+    // ALSO ADDS IMAGE
+    @CrossOrigin(origins = "*")
+    @PostMapping("/additineraryanddestinationswithimage")
+    public void addItineraryAndDestinations(@RequestBody 
+    ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
+        itineraryRep.saveItinerary(itineraryAndDestinationsWithImage);
     }
 
     @CrossOrigin(origins = "*")
@@ -204,16 +239,63 @@ public class BackPackingController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    /* @CrossOrigin(origins = "*")
     @PutMapping("/updateitinerary")
     public void updateItinerary(@RequestBody Itinerary itinerary) throws SQLException {
             itineraryRep.updateItinerary(itinerary);
+    } */
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/updateitinerary")
+    public void updateItinerary(@RequestBody ItineraryWithImage itineraryWithImage) throws SQLException {
+            itineraryRep.updateItinerary(itineraryWithImage.getItinerary());
+            if (itineraryWithImage.getImageByteArray() != null) {
+                itineraryRep.deleteImage(itineraryWithImage.getItinerary().getId());
+                itineraryRep.saveImageOnItinerary(itineraryWithImage.getImageByteArray(), itineraryWithImage.getItinerary().getId());
+            }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getitineraryimage/{itineraryId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public byte[] getItineraryImage(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.loadItineraryImage(itineraryId);
+    }
+
 
     @CrossOrigin(origins = "*")
     @GetMapping("/getrateditineraries/{userEmail}")
     public List<Itinerary> getRatedItineraries(@PathVariable String userEmail) throws SQLException {
         return itineraryRep.loadRatedItineraries(userEmail);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/addcomment")
+    public int addComment(@RequestBody Comment comment) throws SQLException {
+        return itineraryRep.saveComment(comment);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getitinerarycomments/{itineraryId}")
+    public List<Comment> getItineraryComments(@PathVariable int itineraryId) throws SQLException {
+        return itineraryRep.loadItineraryComments(itineraryId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/deletecomment/{commentId}")
+    public void deleteComment(@PathVariable int commentId) throws SQLException {
+        itineraryRep.deleteComment(commentId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/editcomment/{commentId}/{newContent}")
+    public void editComment(@PathVariable int commentId, @PathVariable String newContent) throws SQLException {
+        itineraryRep.updateComment(commentId, newContent);
+    }
+    
+    @GetMapping("/everyitinerary")
+    public List<Itinerary> getEveryItinerary() throws SQLException {
+        return itineraryRep.loadEveryItinerary();
     }
 
 }

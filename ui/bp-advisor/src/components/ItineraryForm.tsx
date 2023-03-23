@@ -4,7 +4,7 @@ import httpRequests from "./httpRequests";
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Nav from "./NavBar";
-import { count } from "console";
+import { useRef } from "react";
 
 type ItineraryFormProps = {
     setLoggedInUser: React.Dispatch<React.SetStateAction<LoggedInUser | null>>;
@@ -28,6 +28,18 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
     //Saves a list of the destinations added
     const [destinations] = useState<Destination[]>([]);
+
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            setSelectedImage(event.target.files[0]);
+        }
+    };
+
+    function isJpeg(file: File): boolean {
+        return file.type === "image/jpeg";
+    }
 
     /**
      * Adds a destination type from the state
@@ -102,14 +114,16 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
 
         destinationsAsHTML.appendChild(div);
 
-        console.log(destinations);
+        (document.getElementById("destinationNameInput") as HTMLInputElement).value = "";
     }
 
     /**
      * Gets the information form the input fields and sends it as http-requests to the backend for saving
      * in the database.
      */
-    function submitDestinationInfo(): React.MouseEventHandler<HTMLButtonElement> | any {
+    async function submitItineraryInfo(): Promise<
+        React.MouseEventHandler<HTMLButtonElement> | any
+    > {
         const titleInputValue: string = (document.getElementById("titleInput") as HTMLInputElement)
             .value;
         const timeInputValue: string = (
@@ -152,45 +166,123 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
             return;
         }
 
+        if (selectedImage !== null && !isJpeg(selectedImage)) {
+            alert(
+                `The uploaded image must be a JPEG file, and have one of 
+                the following file extensions: .jpeg, .jpg, .jpe, .jfif`
+            );
+            return;
+        }
+
         if (!editMode) {
             try {
-                httpRequests.addItineraryAndDestinations({
-                    itinerary: {
-                        id: -1,
-                        writerEmail: loggedInUser?.email,
-                        writtenDate: "",
-                        title: titleInputValue,
-                        cost: +priceInputValue,
-                        estimatedTime: +timeInputValue,
-                        description: descriptionInputValue,
-                        image: "",
-                    },
-                    destinations: destinations,
-                });
-                alert("Your itinerary was added successfully!");
-                window.location.reload();
-                window.location.replace("/homePage");
+                let buttonTextOnSubmit: string = !editMode ? "Adding ..." : "Updating ...";
+                (document.getElementById("submitItineraryButton") as HTMLButtonElement).innerHTML =
+                    buttonTextOnSubmit;
+                let imageToSend: Uint8Array | null = null;
+                if (selectedImage) {
+                    const reader = new FileReader();
+                    reader.readAsArrayBuffer(selectedImage as File);
+                    reader.onload = async () => {
+                        const buffer = reader.result as ArrayBuffer;
+                        imageToSend = new Uint8Array(buffer);
+                        await httpRequests.addItineraryAndDestinationsWithimage({
+                            itinerary: {
+                                id: -1,
+                                writerEmail: loggedInUser?.email,
+                                writtenDate: "",
+                                title: titleInputValue,
+                                cost: +priceInputValue,
+                                estimatedTime: +timeInputValue,
+                                description: descriptionInputValue,
+                                image: "",
+                            },
+                            destinations: destinations,
+                            imageByteArray: Array.from(imageToSend),
+                        });
+                        alert("Your itinerary was added successfully!");
+                        window.location.reload();
+                        window.location.replace("/homePage");
+                    };
+                } else {
+                    await httpRequests.addItineraryAndDestinationsWithimage({
+                        itinerary: {
+                            id: -1,
+                            writerEmail: loggedInUser?.email,
+                            writtenDate: "",
+                            title: titleInputValue,
+                            cost: +priceInputValue,
+                            estimatedTime: +timeInputValue,
+                            description: descriptionInputValue,
+                            image: "",
+                        },
+                        destinations: destinations,
+                        imageByteArray: null,
+                    });
+                    alert("Your itinerary was added successfully!");
+                    window.location.reload();
+                    window.location.replace("/homePage");
+                }
             } catch (error) {
                 alert("There was an error when trying to add the route, please try again.");
             }
         } else if (itineraryId !== undefined) {
             try {
-                httpRequests.updateItinerary({
-                    id: parseInt(itineraryId),
-                    writerEmail: "",
-                    writtenDate: "",
-                    title: titleInputValue,
-                    cost: +priceInputValue,
-                    estimatedTime: +timeInputValue,
-                    description: descriptionInputValue,
-                    image: "",
-                });
-                alert("Your itinerary has been updated!");
-                window.location.reload();
-                window.location.replace("/homePage");
-            } catch (error) {
-                alert("There was an error when trying to update the route, please try again.");
-            }
+                let buttonTextOnSubmit: string = !editMode ? "Updating ..." : "Updating ...";
+                (document.getElementById("submitItineraryButton") as HTMLButtonElement).innerHTML =
+                    buttonTextOnSubmit;
+                let imageToSend: Uint8Array | null = null;
+                if (selectedImage) {
+                    const reader = new FileReader();
+                    reader.readAsArrayBuffer(selectedImage as File);
+                    reader.onload = async () => {
+                        const buffer = reader.result as ArrayBuffer;
+                        imageToSend = new Uint8Array(buffer);
+
+                        await httpRequests.updateItinerary({
+                            itinerary: {
+                                id: parseInt(itineraryId),
+                                writerEmail: "",
+                                writtenDate: "",
+                                title: titleInputValue,
+                                cost: +priceInputValue,
+                                estimatedTime: +timeInputValue,
+                                description: descriptionInputValue,
+                                image: "",
+                            },
+                            imageByteArray: Array.from(imageToSend),
+                        });
+                        alert("Your itinerary has been updated!");
+                        window.location.reload();
+                        window.location.replace("/homePage");
+                    };
+                } else {
+                    await httpRequests.updateItinerary({
+                        itinerary: {
+                            id: parseInt(itineraryId),
+                            writerEmail: "",
+                            writtenDate: "",
+                            title: titleInputValue,
+                            cost: +priceInputValue,
+                            estimatedTime: +timeInputValue,
+                            description: descriptionInputValue,
+                            image: "",
+                        },
+                        imageByteArray: null,
+                    });
+                    alert("Your itinerary has been updated!");
+                    window.location.reload();
+                    window.location.replace("/homePage");
+                }
+            } catch (error) {}
+        }
+    }
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    function handleClearImage() {
+        if (inputRef.current) {
+            inputRef.current.value = "";
         }
     }
 
@@ -249,6 +341,18 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                     ></textarea>
                     <br></br>
                     <br></br>
+                    <label className="newRouteLabel">Upload image</label>
+                    <input
+                        type="file"
+                        className="newRouteInput"
+                        onChange={handleImageChange}
+                        ref={inputRef}
+                    ></input>
+                    {selectedImage ? (
+                        <button type="button" onClick={handleClearImage} id="clearImageButton">
+                            Clear image
+                        </button>
+                    ) : null}
                     {editMode ? null : (
                         <div>
                             <label className="newRouteLabel" id="destinationInputLabel">
@@ -301,7 +405,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                     {editMode ? (
                         <button
                             id="submitItineraryButton"
-                            onClick={submitDestinationInfo}
+                            onClick={submitItineraryInfo}
                             type="button"
                         >
                             {" "}
@@ -310,7 +414,7 @@ const ItineraryForm = ({ loggedInUser, setLoggedInUser }: ItineraryFormProps) =>
                     ) : (
                         <button
                             id="submitItineraryButton"
-                            onClick={submitDestinationInfo}
+                            onClick={submitItineraryInfo}
                             type="button"
                         >
                             {" "}

@@ -5,6 +5,8 @@ import LogInBox from "./components/LogInBox";
 import React, { useEffect, useState } from "react";
 import SignUpBox from "./components/SignUpBox";
 import HomePage from "./components/HomePage";
+
+import SearchPageBox from "./components/SearchPage";
 import ItineraryForm from "./components/ItineraryForm";
 
 function App() {
@@ -62,12 +64,30 @@ function App() {
                                 }
                             />
                             <Route
+                                path="/SearchPage/:keyword"
+                                element={
+                                    <SearchPageBox
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="/SearchPage"
+                                element={
+                                    <SearchPageBox
+                                        setLoggedInUser={setLoggedInUser}
+                                        loggedInUser={loggedInUser}
+                                    />
+                                }
+                            />
+                            <Route
                                 path="/createItinerary"
                                 element={
                                     <ItineraryForm
                                         setLoggedInUser={setLoggedInUser}
-                                        loggedInUser={loggedInUser} 
-                                 />
+                                        loggedInUser={loggedInUser}
+                                    />
                                 }
                             />
                             <Route
@@ -75,30 +95,23 @@ function App() {
                                 element={
                                     <ItineraryForm
                                         setLoggedInUser={setLoggedInUser}
-                                        loggedInUser={loggedInUser}                                  />
+                                        loggedInUser={loggedInUser}
+                                    />
                                 }
                             />
                         </Routes>
                     </>
                 ) : (
                     <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <LogInBox setLoggedInUser={setLoggedInUser} />
-                            }
-                        />
+                        <Route path="/" element={<LogInBox setLoggedInUser={setLoggedInUser} />} />
                         <Route
                             path="/signUp"
-                            element={
-                                <SignUpBox setLoggedInUser={setLoggedInUser} />
-                            }
+                            element={<SignUpBox setLoggedInUser={setLoggedInUser} />}
                         />
+
                         <Route
                             path="/logIn"
-                            element={
-                                <LogInBox setLoggedInUser={setLoggedInUser} />
-                            }
+                            element={<LogInBox setLoggedInUser={setLoggedInUser} />}
                         />
                     </Routes>
                 )}
