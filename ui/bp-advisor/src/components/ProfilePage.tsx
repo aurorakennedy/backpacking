@@ -99,20 +99,28 @@ const ProfilePage = ({ setLoggedInUser, loggedInUser }: ProfilePageProps) => {
                         </button>
                     )}
                     {editProfilePictureOpen && (
-                        <div>
-                            <label className="newRouteLabel">Upload image</label>
+                        <div id="editProfilePictureWrapper">
+                            <label>Upload image</label>
                             <input
                                 type="file"
-                                className="newRouteInput"
+                                id="profilePictureInput"
                                 onChange={handleImageChange}
                                 ref={inputRef}
                             ></input>{" "}
                             {selectedImage && (
-                                <button type="button" onClick={submitImageProfilePictureChange}>
+                                <button
+                                    type="button"
+                                    className="profilePictureButton"
+                                    onClick={submitImageProfilePictureChange}
+                                >
                                     Upload
                                 </button>
                             )}
-                            <button type="button" onClick={closeEditProfilePicture}>
+                            <button
+                                type="button"
+                                className="profilePictureButton"
+                                onClick={closeEditProfilePicture}
+                            >
                                 Cancel
                             </button>
                         </div>
