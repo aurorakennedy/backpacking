@@ -12,19 +12,19 @@
     align-items: center;
     margin-top: 100px;
     margin-bottom: 50px;
-  }
-  
-  #searchBar {
+}
+
+#searchBar {
     padding: 10px;
     border: 2px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
     width: 400px;
     margin-right: 10px;
-  }
-  
-  #searchButton {
-    background-color: #A1C88E;
+}
+
+#searchButton {
+    background-color: #a1c88e;
     border: none;
     color: white;
     padding: 10px;
@@ -34,15 +34,13 @@
     font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  #searchButton:hover {
-    background-color: #3e8e41;
-  }
-  
-  
+}
 
-  /* rgb(87, 148, 92); 
+#searchButton:hover {
+    background-color: #3e8e41;
+}
+
+/* rgb(87, 148, 92); 
   margin-top: 100px;
     margin-bottom: 50px;*/
 
@@ -51,7 +49,13 @@
 #likedItineraries,
 #ratedItineraries,
 #allItineraries,
-#searchedItineraries {
+#searchedItineraries,
+#topListEurope,
+#topListAsia,
+#topListNorthAmerica,
+#topListSouthAmerica,
+#topListAfrica,
+#topListOceania {
     display: flex;
     flex-direction: row;
 }
