@@ -268,7 +268,10 @@ const ItineraryListBox = ({
             listContainerDiv.appendChild(title);
         }
         let expandableItineraryListDiv: HTMLDivElement = document.createElement("div");
-        if (itinerariesBasedOn === "Searched itineraries") {
+        if (
+            itinerariesBasedOn === "Searched itineraries" ||
+            itinerariesBasedOn === "Searched itineraries Price"
+        ) {
             expandableItineraryListDiv.classList.add("expandableSearchItineraryList");
         } else {
             expandableItineraryListDiv.classList.add("expandableItineraryList");
