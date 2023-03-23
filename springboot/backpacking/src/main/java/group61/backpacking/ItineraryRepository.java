@@ -102,6 +102,87 @@ public class ItineraryRepository {
 
     }
 
+    public void saveProfilePicture(String username, byte[] imageByteArray) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        try {
+            conn = connectToDB();
+            String sqlQuery = "INSERT INTO User_Image VALUES (?,?)";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+            statement.setBytes(2, imageByteArray);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
+
+    public void deleteProfilePicture(String username) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "DELETE FROM User_Image WHERE username = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    } 
+
+
+    public byte[] loadProfilePageImage(String username) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        byte[] image = null;
+
+        try {
+            conn = connectToDB();
+            String sqlQuery = "SELECT * FROM User_Image WHERE username = ?";
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, username);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                image = resultSet.getBytes("data");
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return image;
+    }
+        
+
 
     public void saveItinerary(ItineraryAndDestinationsWithImage itineraryAndDestinationsWithImage) throws SQLException, IOException {
         Connection conn = null;
@@ -280,6 +361,13 @@ public class ItineraryRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
         }
     }
 
