@@ -1,9 +1,8 @@
 .comment-container {
     border: 1px solid gray;
-    border-radius: 5px;
     padding: 10px;
     margin-bottom: 20px;
-    background-color: white;
+    background-color: #ececec;
   }
   
   .comment-header {

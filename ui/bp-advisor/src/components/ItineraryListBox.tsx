@@ -7,7 +7,6 @@ import { createRoot } from "react-dom/client";
 import LikeButton from "./LikeButton";
 import { Link } from "react-router-dom";
 import RatingBar from "./RatingBar";
-import DeleteItinerary from "./DeleteItinerary";
 import Comment from "./Comment";
 import AddComment from "./AddComment";
 
@@ -196,8 +195,8 @@ const ItineraryListBox = ({
             });
 
             let description: string = "";
-            if (itinerary.description.length > 150) {
-                description = itinerary.description.substring(0, 65) + " ...";
+            if (itinerary.description.length > 120) {
+                description = itinerary.description.substring(0, 120) + "...";
             } else {
                 description = itinerary.description;
             }
@@ -372,15 +371,6 @@ const ItineraryListBox = ({
                         let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
                             "closeAndDeleteColumn"
                         ) as HTMLDivElement;
-
-                        let deleteButtonDiv: HTMLDivElement = document.createElement("div");
-                        deleteButtonDiv.id = "itineraryDeleteButtonDiv";
-
-                        let deleteButton = (
-                            <DeleteItinerary itineraryID={itineraryAndDestinations.itinerary.id} />
-                        );
-                        createRoot(deleteButtonDiv).render(deleteButton);
-                        closeAndDeleteColumnDiv.appendChild(deleteButtonDiv);
                     }
                 });
 
@@ -517,7 +507,12 @@ const ItineraryListBox = ({
                         </div>
                         <div id="itineraryColumnFlexBox">
                             <h2 id="itineraryBoxTitle"></h2>
-                            <div id="itineraryDetailsFlexBox">
+                            <div id="itineraryDetailsFlexBox" style={{
+                                    backgroundColor: "#ececec",
+                                    width: "100%",
+                                    border: "1px solid black",
+                                    borderRadius: "5px",
+                                }}>
                                 <p
                                     id="itineraryDetailsAuthor"
                                     className="itineraryDetailElement"
@@ -546,14 +541,10 @@ const ItineraryListBox = ({
                                 </button>
                             </div>
                             <p id="itineraryBoxDescription"></p>
-
+                            <hr/>
                             <div
                                 style={{
-                                    backgroundColor: "#eee",
                                     padding: "20px",
-                                    marginTop: "50px",
-                                    borderRadius: "0px",
-                                    border: "1px solid black",
                                     width: "100%",
                                 }}
                             >
@@ -581,7 +572,7 @@ const ItineraryListBox = ({
                                         }}
                                     ></AddComment>
                                 </div>
-                                <div style={{ padding: "10px", borderRadius: "10px" }}>
+                                <div>
                                     {comments.map((comment) => (
                                         <Comment
                                             key={comment.id}
@@ -596,6 +587,7 @@ const ItineraryListBox = ({
                                                 setComments(updatedComments);
                                             }}
                                             onUpdate={function (updatedContent: string): void {
+                                                console.log(updatedContent);
                                                 httpRequests.updateComment(
                                                     comment.id,
                                                     updatedContent
