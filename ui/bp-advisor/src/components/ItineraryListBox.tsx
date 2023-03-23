@@ -58,7 +58,30 @@ const ItineraryListBox = ({
         { id: 1, author: "Test", content: "Test", allowEditing: false },
     ]);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const [hasLikedOrRated, setHasLikedOrRated] = useState(false);
+
+    useEffect(() => {
+            /**
+         * Function for checking whether the logged in user is an admin
+         */
+        async function checkIfUserIsAdmin(): Promise<Boolean> {
+            let result: Boolean = false;
+            try {
+                const isAdminPromise: Promise<Boolean> = httpRequests.isAdmin(loggedInUser.email);
+                result = await isAdminPromise;
+            } catch (error) {}
+
+            return result;
+        }
+
+        checkIfUserIsAdmin().then((isAdmin: Boolean) => {
+            const isAdminBool: boolean = !!isAdmin;
+            setIsAdmin(isAdminBool);
+        });
+
+    }, [isAdmin]);
 
     useEffect(() => {
         async function fetchComments() {
@@ -67,7 +90,7 @@ const ItineraryListBox = ({
                 id: comment.id,
                 author: comment.author,
                 content: comment.content,
-                allowEditing: loggedInUser.username === comment.author,
+                allowEditing: loggedInUser.username === comment.author || isAdmin,
             }));
 
             setComments(updatedComments);
@@ -147,18 +170,16 @@ const ItineraryListBox = ({
                 alert("Could not load itineraries. Please refresh the page");
             }
         } else if (itinerariesBasedOn === "All itineraries") {
-            checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                if (isAdmin) {
-                    try {
-                        const promise: Promise<Itinerary[]> = httpRequests.getEveryItinerary();
-                        promise.then((allItineraries: Itinerary[]) => {
-                            displayItineraries(allItineraries, itinerariesBasedOn);
-                        });
-                    } catch (error) {
-                        alert("Could not load itineraries. Please refresh the page");
-                    }
+            if (isAdmin) {
+                try {
+                    const promise: Promise<Itinerary[]> = httpRequests.getEveryItinerary();
+                    promise.then((allItineraries: Itinerary[]) => {
+                        displayItineraries(allItineraries, itinerariesBasedOn);
+                    });
+                } catch (error) {
+                    alert("Could not load itineraries. Please refresh the page");
                 }
-            });
+            }
         }
 
         //10th march, marisa, adding another paranthesis
@@ -234,19 +255,6 @@ const ItineraryListBox = ({
 
             listContainerDiv.appendChild(expandableItineraryListDiv);
         });
-    }
-
-    /**
-     * Function for checking whether the logged in user is an admin
-     */
-    async function checkIfUserIsAdmin(): Promise<Boolean> {
-        let result: Boolean = false;
-        try {
-            const isAdminPromise: Promise<Boolean> = httpRequests.isAdmin(loggedInUser.email);
-            result = await isAdminPromise;
-        } catch (error) {}
-
-        return result;
     }
 
     /**
@@ -363,16 +371,14 @@ const ItineraryListBox = ({
 
                 updateAverageRating(itineraryId);
 
-                checkIfUserIsAdmin().then((isAdmin: Boolean) => {
-                    if (
-                        loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail ||
-                        isAdmin
-                    ) {
-                        let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
-                            "closeAndDeleteColumn"
-                        ) as HTMLDivElement;
-                    }
-                });
+                if (
+                    loggedInUser.email === itineraryAndDestinations.itinerary.writerEmail ||
+                    isAdmin
+                ) {
+                    let closeAndDeleteColumnDiv: HTMLDivElement = document.getElementById(
+                        "closeAndDeleteColumn"
+                    ) as HTMLDivElement;
+                }
 
                 try {
                     const imagePromise: Promise<Uint8Array> = httpRequests.getItineraryImage(
@@ -534,7 +540,7 @@ const ItineraryListBox = ({
                                 <button
                                     id="editButton"
                                     type="button"
-                                    hidden={!sameUser}
+                                    hidden={!sameUser && !isAdmin}
                                     onClick={goToEditForm}
                                 >
                                     Edit
