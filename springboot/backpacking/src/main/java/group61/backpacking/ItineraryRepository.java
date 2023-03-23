@@ -718,11 +718,12 @@ public class ItineraryRepository {
         try  {
             conn = connectToDB();
 
-            String sqlQuery = "SELECT DISTINCT * FROM Itinerary WHERE "
-            + "?";
-
+            String sqlQuery = String.format("SELECT DISTINCT * FROM Itinerary WHERE %s", price);
+            System.out.println(sqlQuery);
+            //String sqlQuery = "SELECT * FROM Itinerary WHERE "
+           // + "?";
             statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, "%" + price + "%");
+           // statement.setString(1, price);
         
             resultSet = statement.executeQuery();
 
@@ -730,6 +731,7 @@ public class ItineraryRepository {
                 Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
                 itinerary.mapItineraryFromResultSet(resultSet);
                 itineraryList.add(itinerary);
+                
             }
             
 

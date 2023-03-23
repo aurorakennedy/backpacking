@@ -406,10 +406,10 @@ async function searchByPrice(
     price: string
   ): Promise<Itinerary[]> {
       const response: Response = await fetch(
-      `http://localhost:8080/searchItineraries/${price}`
+      `http://localhost:8080/searchItineraries/Price/${price}`
     );
     if (!response.ok) {
-        throw new Error("Failed to fetch itineraries by keyword");
+        throw new Error("Failed to fetch itineraries by price");
     }
     const itineraries: Itinerary[] = await response.json();
     return itineraries;

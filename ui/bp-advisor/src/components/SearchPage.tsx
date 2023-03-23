@@ -50,9 +50,9 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                     <div className="dropdown">
                         <button className="dropbtn">Price</button>
                         <div className="dropdown-content">
-                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost BETWEEN 0 AND 100)')} type="button">Low</button>
-                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost BETWEEN 101 AND 1000)')} type="button">Medium</button>
-                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, 'cost BETWEEN 1001 AND 5000')} type="button">High</button>
+                            <button id="button" onClick={(async) => enterKeywordPrice(loggedInUser, '(cost >= 0 AND cost <= 500)')} type="button">Low</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost >= 501 AND cost <= 2000)')} type="button">Medium</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost >= 2001 AND cost <= 10000)')} type="button">High</button>
                         </div>
                     </div>
 
@@ -163,11 +163,6 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
 
     async function enterKeywordPrice(loggedInUser: LoggedInUser, keywordInputValue: string) {
         console.log("Function called");
-   // const buttonElement = document.querySelector(`button[name="buttonTest"]`);
-
-   // if (buttonElement instanceof HTMLInputElement) {
-   //     const keywordInputValue = buttonElement.value;
-    //window.location.reload();
         document.getElementById("searchedItineraries")?.remove();
         try {
             console.log(keywordInputValue);
@@ -178,6 +173,7 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
                 ) as HTMLDivElement;
                 let searchedItinerariesdiv = document.createElement("div");
                 searchedItinerariesdiv.id = "searchedItineraries";
+                
                 let searchedItinerariesListBox = (
                     <ItineraryListBox
                         idOfWrappingDiv={"searchedItineraries"}
@@ -190,7 +186,6 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
                 searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
             });
         } catch (error) {
-            //TODO: Error handling
             alert("There was an error when searching for an itinerary, please try again.");
         }}
 
