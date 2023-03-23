@@ -18,14 +18,13 @@ function goToSearchPageWithSearch() {
 }
 
 const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
-
-    const handleKeyDown = (event: { key: string; }) => {
+    const handleKeyDown = (event: { key: string }) => {
         // Check if the "Enter" key was pressed
-        if (event.key === 'Enter') {
-          goToSearchPageWithSearch();
+        if (event.key === "Enter") {
+            goToSearchPageWithSearch();
         }
     };
-      
+
     return (
         <>
             <NavBar setLoggedInUser={setLoggedInUser} />
@@ -40,14 +39,16 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                 </div> */}
 
                 <div id="search">
-                    <input id="searchBar" type="text" 
-                        placeholder="Type here to search for an itinerary" /* onChange={} */ 
-                        onKeyDown={handleKeyDown} />
+                    <input
+                        id="searchBar"
+                        type="text"
+                        placeholder="Type here to search for an itinerary" /* onChange={} */
+                        onKeyDown={handleKeyDown}
+                    />
                     <button id="searchButton" onClick={goToSearchPageWithSearch} type="button">
                         Search
                     </button>
                 </div>
-
 
                 <div id="userItineraries">
                     <ItineraryListBox
@@ -64,6 +65,54 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         itinerariesBasedOn={"Recommended itineraries"}
                         loggedInUser={loggedInUser}
                         //added this
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListEurope">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListEurope"}
+                        itinerariesBasedOn={"Asia"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListAsia">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListAsia"}
+                        itinerariesBasedOn={"Asia"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListNorthAmerica">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListNorthAmerica"}
+                        itinerariesBasedOn={"North America"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListSouthAmerica">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListSouthAmerica"}
+                        itinerariesBasedOn={"South America"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListAfrica">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListAfrica"}
+                        itinerariesBasedOn={"Africa"}
+                        loggedInUser={loggedInUser}
+                        keyword={""}
+                    />
+                </div>
+                <div id="topListOceania">
+                    <ItineraryListBox
+                        idOfWrappingDiv={"topListOceania"}
+                        itinerariesBasedOn={"Oceania"}
+                        loggedInUser={loggedInUser}
                         keyword={""}
                     />
                 </div>
