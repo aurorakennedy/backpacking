@@ -6,6 +6,7 @@
     padding-top: 100px;
 }
 
+
 #search {
     margin-top: 100px;
     margin-bottom: 50px;
@@ -27,3 +28,4 @@
 #searchBar::placeholder {
     text-align: center;
 }
+

@@ -25,7 +25,29 @@
 #searchBar::placeholder {
     text-align: center;
 }
+#buttonTest2 {
+    font-size: 10px;
+    position: relative;
+    font-weight: bold;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: none;
+    background-color: #3887ff;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
+    margin-top: 50px;
+}
 
+#buttonTest{
+    background-color: #3887ff;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
 #userItineraries,
 #recommendedItineraries,
 #likedItineraries,
@@ -35,3 +57,36 @@
     display: flex;
     flex-direction: row;
 }
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown button */
+  .dropdown button {
+    background-color: #f3baea;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-right: 10px;
+  }
+  
+  /* Dropdown content */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+  }
+  
+  /* Show the dropdown content when the dropdown button is clicked */
+  .dropdown:hover .dropdown-content {
+    display: block;
+    background-color: #f3baea;
+    border-radius: 10px;
+  }
+  

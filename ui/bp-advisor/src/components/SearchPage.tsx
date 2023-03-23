@@ -34,6 +34,35 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                             placeholder="Type here to search for an itinerary"
                         />
                     </div>
+
+                    <div className="dropdown">
+                        <button className="dropbtn">Continent</button>
+                        <div className="dropdown-content">
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Europe')} type="button">Europe</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Asia')} type="button">Asia</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Africa')} type="button">Africa</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'North America')} type="button">N. America</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'South America')} type="button">S. America</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, 'Australia')} type="button">Australia</button>
+                        </div>
+                    </div>
+
+                    <div className="dropdown">
+                        <button className="dropbtn">Price</button>
+                        <div className="dropdown-content">
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '20')} type="button">Low</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '140')} type="button">Medium</button>
+                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '200')} type="button">High</button>
+                        </div>
+                    </div>
+
+                    <button id="buttonTest2" onClick={() => filter_advancedSearch(loggedInUser, 'Japan')} type="button">
+                        Japan
+                    </button>
+                    <button id="buttonTest2" onClick={() => filter_advancedSearch(loggedInUser, 'Norway')} type="button">
+                        Norway
+                    </button>
+                
                     <button
                         id="searchButton"
                         onClick={(async) => enterKeywordInfo(loggedInUser)}
@@ -41,6 +70,7 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                     >
                         Search
                     </button>
+                    
                     <h2>Your search results: </h2>
                     <div id="searchItinerariesWrapped"></div>
                     <div id="searchedItineraries">
@@ -95,5 +125,39 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
         alert("There was an error when searching for an itinerary, please try again.");
     }
 }
+async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputValue: string) {
+    console.log("Function called");
+   // const buttonElement = document.querySelector(`button[name="buttonTest"]`);
+
+   // if (buttonElement instanceof HTMLInputElement) {
+   //     const keywordInputValue = buttonElement.value;
+    //window.location.reload();
+        document.getElementById("searchedItineraries")?.remove();
+        try {
+            console.log(keywordInputValue);
+            const promise: Promise<Itinerary[]> = httpRequests.searchByKeyword(keywordInputValue);
+            promise.then((itineraries: Itinerary[]) => {
+                let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById(
+                    "searchItinerariesWrapped"
+                ) as HTMLDivElement;
+                let searchedItinerariesdiv = document.createElement("div");
+                searchedItinerariesdiv.id = "searchedItineraries";
+                let searchedItinerariesListBox = (
+                    <ItineraryListBox
+                        idOfWrappingDiv={"searchedItineraries"}
+                        itinerariesBasedOn={"Searched itineraries"}
+                        loggedInUser={loggedInUser}
+                        keyword={keywordInputValue}
+                    />
+                );
+                createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
+                searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
+            });
+        } catch (error) {
+            //TODO: Error handling
+            alert("There was an error when searching for an itinerary, please try again.");
+        }
+    }
+
 
 export default SearchPageBox;
