@@ -71,7 +71,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                 <div id="topListEurope">
                     <ItineraryListBox
                         idOfWrappingDiv={"topListEurope"}
-                        itinerariesBasedOn={"Asia"}
+                        itinerariesBasedOn={"Europe"}
                         loggedInUser={loggedInUser}
                         keyword={""}
                     />
