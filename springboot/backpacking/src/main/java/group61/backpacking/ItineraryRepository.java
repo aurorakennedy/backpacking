@@ -660,47 +660,28 @@ public class ItineraryRepository {
     public List<Itinerary> searchByKeyword(String keyword) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
-        //PreparedStatement statement2 = null;
         ResultSet resultSet = null;
-        //ResultSet resultSet2 = null;
         List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
         try  {
             conn = connectToDB();
 
-            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) INNER JOIN Countries ON (country = country_name)  WHERE "
             + "title LIKE ?"
             + "OR itinerary_description LIKE ?"
             + "OR destination_name LIKE ?"
-            + "OR country LIKE ?";
+            + "OR country LIKE ?"
+            + "OR continent LIKE ?";
 
             statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, "%" + keyword + "%");
             statement.setString(2, "%" + keyword + "%");
             statement.setString(3, "%" + keyword + "%");
             statement.setString(4, "%" + keyword + "%");
-            
-
-            // //start testing 14th march
-            // String sqlQuery_test = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) WHERE "
-            // + "title LIKE %:keyword%"
-            // + " OR itinerary_description LIKE %keyword%"
-            // + " OR destination_name LIKE %keyword%"
-            // + " OR country LIKE %keyword%";
-            // statement = conn.prepareStatement(sqlQuery_test);
-            
-            //statement.setString(1, "'%" + keyword + "%'");
-           // statement.setString(2, "'%" + keyword + "%'");
-          //  statement.setString(3, "'%" + keyword + "%'");
-          //  statement.setString(4, "'%" + keyword + "%'");
-
+            statement.setString(5, "%" + keyword + "%");
+        
             resultSet = statement.executeQuery();
-            
-            //end testing 14th march
 
-            
-            //resultSet = statement.executeQuery();
-            
             while (resultSet.next()) {
                 Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
                // if (!itineraryList.contains(itinerary)){
@@ -709,25 +690,6 @@ public class ItineraryRepository {
                 //}
             }
             
-        //    String sqlQuery2 = "SELECT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
-        //    + "WHERE destination_name LIKE '%' || :keyword || '%' "
-        //    + "OR country LIKE '%' || :keyword || '%'";
-
-        
-            // String sqlQuery2 = "SELECT DISTINCT * FROM Itinerary INNER JOIN Itinerary_Destination ON (id = itinerary_id) "
-            // + "WHERE destination_name LIKE ? "
-            // + "OR country LIKE ?";
-            // statement2 = conn.prepareStatement(sqlQuery2);
-
-            // statement2.setString(1, keyword);
-            // statement2.setString(2, keyword);
-            // resultSet2 = statement.executeQuery();
-            
-            // while (resultSet2.next()) {
-            //     Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
-            //     itinerary.mapItineraryFromResultSet(resultSet2);
-            //     itineraryList.add(itinerary);
-            // }
 
         } catch (SQLException exception) {
             throw new SQLException(exception);
@@ -736,12 +698,6 @@ public class ItineraryRepository {
             if (statement != null) {
                 statement.close();
             }
-            //if (statement2 != null) {
-            //    statement2.close();
-            //}
-            //if (resultSet2 != null) {
-            //    resultSet2.close();
-            //}
             if (resultSet != null) {
                 resultSet.close();
             }
@@ -753,7 +709,47 @@ public class ItineraryRepository {
         return itineraryList;
     }
 
+    public List<Itinerary> searchByPrice(String price) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Itinerary> itineraryList = new ArrayList<Itinerary>();
 
+        try  {
+            conn = connectToDB();
+
+            String sqlQuery = "SELECT DISTINCT * FROM Itinerary WHERE "
+            + "?";
+
+            statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, "%" + price + "%");
+        
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Itinerary itinerary = new Itinerary(0, null, null, 0, null, null, null, 0);
+                itinerary.mapItineraryFromResultSet(resultSet);
+                itineraryList.add(itinerary);
+            }
+            
+
+        } catch (SQLException exception) {
+            throw new SQLException(exception);
+        }    
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return itineraryList;
+    }
     
 
 

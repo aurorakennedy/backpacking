@@ -199,6 +199,7 @@ async function searchByKeyword(
     return itineraries;
 }
 
+
 async function getRecommendedItineraries(userEmail: string): Promise<Itinerary[]> {
     const response: Response = await fetch(
         `http://localhost:8080/getrecommendeditineraries/${userEmail}`
@@ -401,6 +402,20 @@ async function getItineraryImage(itineraryId: number): Promise<Uint8Array> {
     return new Uint8Array(buffer);
 }
 
+async function searchByPrice(
+    price: string
+  ): Promise<Itinerary[]> {
+      const response: Response = await fetch(
+      `http://localhost:8080/searchItineraries/${price}`
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch itineraries by keyword");
+    }
+    const itineraries: Itinerary[] = await response.json();
+    return itineraries;
+}
+
+
 const httpRequests = {
     getUser,
     register,
@@ -431,6 +446,7 @@ const httpRequests = {
     isAdmin,
     getEveryItinerary,
     getItineraryImage,
+    searchByPrice,
 };
 
 export default httpRequests;

@@ -50,9 +50,9 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                     <div className="dropdown">
                         <button className="dropbtn">Price</button>
                         <div className="dropdown-content">
-                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '20')} type="button">Low</button>
-                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '140')} type="button">Medium</button>
-                            <button id="button" onClick={() => filter_advancedSearch(loggedInUser, '200')} type="button">High</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost BETWEEN 0 AND 100)')} type="button">Low</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, '(cost BETWEEN 101 AND 1000)')} type="button">Medium</button>
+                            <button id="button" onClick={() => enterKeywordPrice(loggedInUser, 'cost BETWEEN 1001 AND 5000')} type="button">High</button>
                         </div>
                     </div>
 
@@ -80,6 +80,7 @@ const SearchPageBox = ({ loggedInUser, setLoggedInUser }: searchPage) => {
                                 itinerariesBasedOn={"Searched itineraries"}
                                 loggedInUser={loggedInUser}
                                 keyword={keyword as string}
+                                
                             />
                         )}
                     </div>
@@ -115,6 +116,7 @@ async function enterKeywordInfo(loggedInUser: LoggedInUser) {
                     itinerariesBasedOn={"Searched itineraries"}
                     loggedInUser={loggedInUser}
                     keyword={keywordInputValue}
+        
                 />
             );
             createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
@@ -158,6 +160,39 @@ async function filter_advancedSearch(loggedInUser: LoggedInUser, keywordInputVal
             alert("There was an error when searching for an itinerary, please try again.");
         }
     }
+
+    async function enterKeywordPrice(loggedInUser: LoggedInUser, keywordInputValue: string) {
+        console.log("Function called");
+   // const buttonElement = document.querySelector(`button[name="buttonTest"]`);
+
+   // if (buttonElement instanceof HTMLInputElement) {
+   //     const keywordInputValue = buttonElement.value;
+    //window.location.reload();
+        document.getElementById("searchedItineraries")?.remove();
+        try {
+            console.log(keywordInputValue);
+            const promise: Promise<Itinerary[]> = httpRequests.searchByPrice(keywordInputValue);
+            promise.then((itineraries: Itinerary[]) => {
+                let searchItinerariesWrappeddiv: HTMLDivElement = document.getElementById(
+                    "searchItinerariesWrapped"
+                ) as HTMLDivElement;
+                let searchedItinerariesdiv = document.createElement("div");
+                searchedItinerariesdiv.id = "searchedItineraries";
+                let searchedItinerariesListBox = (
+                    <ItineraryListBox
+                        idOfWrappingDiv={"searchedItineraries"}
+                        itinerariesBasedOn={"Searched itineraries"}
+                        loggedInUser={loggedInUser}
+                        keyword={keywordInputValue}
+                    />
+                );
+                createRoot(searchedItinerariesdiv).render(searchedItinerariesListBox);
+                searchItinerariesWrappeddiv.appendChild(searchedItinerariesdiv);
+            });
+        } catch (error) {
+            //TODO: Error handling
+            alert("There was an error when searching for an itinerary, please try again.");
+        }}
 
 
 export default SearchPageBox;

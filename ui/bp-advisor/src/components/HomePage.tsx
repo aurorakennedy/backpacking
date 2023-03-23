@@ -51,6 +51,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         loggedInUser={loggedInUser}
                         //what if i want nothing
                         keyword={""}
+                 
                     />
                 </div>
                 <div id="recommendedItineraries">
@@ -60,6 +61,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         loggedInUser={loggedInUser}
                         //added this
                         keyword={""}
+              
                     />
                 </div>
                 <div id="likedItineraries">
@@ -69,6 +71,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         loggedInUser={loggedInUser}
                         //added this
                         keyword={""}
+                    
                     />
                 </div>
                 <div id="ratedItineraries">
@@ -77,6 +80,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         itinerariesBasedOn={"Rated itineraries"}
                         loggedInUser={loggedInUser}
                         keyword={""}
+           
                     />
                 </div>
                 <div id="allItineraries">
@@ -85,6 +89,7 @@ const HomePage = ({ setLoggedInUser, loggedInUser }: HomePageProps) => {
                         itinerariesBasedOn={"All itineraries"}
                         loggedInUser={loggedInUser}
                         keyword={""}
+             
                     />
                 </div>
             </div>
