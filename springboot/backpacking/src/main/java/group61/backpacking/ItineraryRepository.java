@@ -1837,6 +1837,9 @@ public List<Itinerary> getRecommendedItineraries(String userEmail) throws SQLExc
             i++;
         }
     }
+
+    Collections.reverse(recommendedItineraries);
+    
     return recommendedItineraries;  
     }
 
